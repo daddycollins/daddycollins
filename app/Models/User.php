@@ -3,9 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Order;
+use App\Models\Review;
+use App\Models\SystemLog;
+use App\Models\ArtisanProfile;
+use App\Models\NationalDocument;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class User extends Authenticatable
 {
@@ -17,11 +22,6 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -44,5 +44,38 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'password',
+        'role',
+        'status'
+    ];
+
+    public function artisanProfile()
+    {
+        return $this->hasOne(ArtisanProfile::class);
+    }
+
+    public function nationalIds()
+    {
+        return $this->hasMany(NationalDocument::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'client_id');
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'client_id');
+    }
+
+    public function logs()
+    {
+        return $this->hasMany(SystemLog::class);
     }
 }
