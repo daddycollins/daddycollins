@@ -156,6 +156,12 @@ use App\Http\Controllers\tables\DatatableExtensions;
 use App\Http\Controllers\charts\ApexCharts;
 use App\Http\Controllers\charts\ChartJs;
 use App\Http\Controllers\maps\Leaflet;
+use App\Http\Controllers\admin\AdminDashboard;
+use App\Http\Controllers\admin\ArtisanVerification;
+use App\Http\Controllers\admin\UserManagement as AdminUserManagement;
+use App\Http\Controllers\admin\OrderMonitor;
+use App\Http\Controllers\admin\ReviewsMonitor;
+use App\Http\Controllers\admin\Reports;
 
 // Main Page Route
 Route::get('/', [Analytics::class, 'index'])->name('dashboard-analytics');
@@ -353,3 +359,11 @@ Route::get('/maps/leaflet', [Leaflet::class, 'index'])->name('maps-leaflet');
 // laravel example
 Route::get('/laravel/user-management', [UserManagement::class, 'UserManagement'])->name('laravel-example-user-management');
 Route::resource('/user-list', UserManagement::class);
+
+// admin routes
+Route::get('/admin/dashboard', [AdminDashboard::class, 'index'])->name('admin-dashboard');
+Route::get('/admin/artisan-verification', [ArtisanVerification::class, 'index'])->name('admin-artisan-verification');
+Route::get('/admin/user-management', [AdminUserManagement::class, 'index'])->name('admin-user-management');
+Route::get('/admin/orders', [OrderMonitor::class, 'index'])->name('admin-orders');
+Route::get('/admin/reviews', [ReviewsMonitor::class, 'index'])->name('admin-reviews');
+Route::get('/admin/reports', [Reports::class, 'index'])->name('admin-reports');
