@@ -28,7 +28,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Total Orders</p>
-              <h3 class="mb-2">8,542</h3>
+              <h3 class="mb-2">{{ number_format($totalOrders) }}</h3>
               <p class="mb-0"><span class="badge bg-label-success"><i
                     class="icon-base ri ri-arrow-up-s-line me-1"></i>+18% MTD</span></p>
             </div>
@@ -46,7 +46,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Pending Payment</p>
-              <h3 class="mb-2">156</h3>
+              <h3 class="mb-2">{{ number_format($pendingPaymentOrders) }}</h3>
               <p class="mb-0"><span class="badge bg-label-warning">Action needed</span></p>
             </div>
             <div class="avatar avatar-lg bg-label-warning">
@@ -63,7 +63,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">In Progress</p>
-              <h3 class="mb-2">324</h3>
+              <h3 class="mb-2">{{ number_format($inProgressOrders) }}</h3>
               <p class="mb-0"><span class="badge bg-label-info">Being processed</span></p>
             </div>
             <div class="avatar avatar-lg bg-label-info">
@@ -80,7 +80,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Revenue (Today)</p>
-              <h3 class="mb-2">ZWL 45.2K</h3>
+              <h3 class="mb-2">ZWL {{ number_format($todayRevenue, 2) }}</h3>
               <p class="mb-0"><span class="badge bg-label-success">+12.5%</span></p>
             </div>
             <div class="avatar avatar-lg bg-label-success">
@@ -169,301 +169,76 @@
         </thead>
         <tbody>
           <!-- Order 1 -->
-          <tr>
-            <td class="py-3"><strong>#ORD-2024-001</strong></td>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/1.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <span>John Doe</span>
-              </div>
-            </td>
-            <td class="py-3">James Smith</td>
-            <td class="py-3">Plumbing Repair</td>
-            <td class="py-3"><strong>ZWL 450</strong></td>
-            <td class="py-3"><span class="badge bg-label-success">Completed</span></td>
-            <td class="py-3"><span class="badge bg-label-success">Confirmed</span></td>
-            <td class="py-3">Jan 15, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="review-payment"><i
-                        class="icon-base ri ri-bank-card-line me-2"></i>Review Payment</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item" href="#" data-action="hold"><i
-                        class="icon-base ri ri-pause-line me-2"></i>Hold Order</a></li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="cancel"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Cancel Order</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Order 2 -->
-          <tr>
-            <td class="py-3"><strong>#ORD-2024-002</strong></td>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/2.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <span>Sarah Johnson</span>
-              </div>
-            </td>
-            <td class="py-3">Maria Garcia</td>
-            <td class="py-3">Carpentry Work</td>
-            <td class="py-3"><strong>ZWL 800</strong></td>
-            <td class="py-3"><span class="badge bg-label-info">In Progress</span></td>
-            <td class="py-3"><span class="badge bg-label-success">Confirmed</span></td>
-            <td class="py-3">Jan 14, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="review-payment"><i
-                        class="icon-base ri ri-bank-card-line me-2"></i>Review Payment</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item" href="#" data-action="hold"><i
-                        class="icon-base ri ri-pause-line me-2"></i>Hold Order</a></li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="cancel"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Cancel Order</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Order 3 - Pending Payment -->
-          <tr class="table-warning">
-            <td class="py-3"><strong>#ORD-2024-003</strong></td>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/3.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <span>Mike Wilson</span>
-              </div>
-            </td>
-            <td class="py-3">Robert Brown</td>
-            <td class="py-3">Electrical Installation</td>
-            <td class="py-3"><strong>ZWL 1,200</strong></td>
-            <td class="py-3"><span class="badge bg-label-warning">Pending Payment</span></td>
-            <td class="py-3"><span class="badge bg-label-warning">Pending</span></td>
-            <td class="py-3">Jan 13, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="review-payment"><i
-                        class="icon-base ri ri-bank-card-line me-2"></i>Review Payment</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item" href="#" data-action="hold"><i
-                        class="icon-base ri ri-pause-line me-2"></i>Hold Order</a></li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="cancel"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Cancel Order</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Order 4 -->
-          <tr>
-            <td class="py-3"><strong>#ORD-2024-004</strong></td>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/4.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <span>Emma Davis</span>
-              </div>
-            </td>
-            <td class="py-3">Lisa Martinez</td>
-            <td class="py-3">Home Cleaning</td>
-            <td class="py-3"><strong>ZWL 350</strong></td>
-            <td class="py-3"><span class="badge bg-label-success">Completed</span></td>
-            <td class="py-3"><span class="badge bg-label-success">Confirmed</span></td>
-            <td class="py-3">Jan 12, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="review-payment"><i
-                        class="icon-base ri ri-bank-card-line me-2"></i>Review Payment</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item" href="#" data-action="hold"><i
-                        class="icon-base ri ri-pause-line me-2"></i>Hold Order</a></li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="cancel"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Cancel Order</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Order 5 - On Hold -->
-          <tr style="opacity: 0.7; background-color: #fef3cd;">
-            <td class="py-3"><strong>#ORD-2024-005</strong></td>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/5.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <span>David Anderson</span>
-              </div>
-            </td>
-            <td class="py-3">Christopher Lee</td>
-            <td class="py-3">Garden Design</td>
-            <td class="py-3"><strong>ZWL 950</strong></td>
-            <td class="py-3"><span class="badge bg-label-secondary">On Hold</span></td>
-            <td class="py-3"><span class="badge bg-label-warning">Pending</span></td>
-            <td class="py-3">Jan 11, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="review-payment"><i
-                        class="icon-base ri ri-bank-card-line me-2"></i>Review Payment</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="resume"><i
-                        class="icon-base ri ri-play-line me-2"></i>Resume Order</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="cancel"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Cancel Order</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Order 6 -->
-          <tr>
-            <td class="py-3"><strong>#ORD-2024-006</strong></td>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/6.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <span>Jessica White</span>
-              </div>
-            </td>
-            <td class="py-3">James Smith</td>
-            <td class="py-3">Door Installation</td>
-            <td class="py-3"><strong>ZWL 650</strong></td>
-            <td class="py-3"><span class="badge bg-label-info">In Progress</span></td>
-            <td class="py-3"><span class="badge bg-label-success">Confirmed</span></td>
-            <td class="py-3">Jan 10, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="review-payment"><i
-                        class="icon-base ri ri-bank-card-line me-2"></i>Review Payment</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item" href="#" data-action="hold"><i
-                        class="icon-base ri ri-pause-line me-2"></i>Hold Order</a></li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="cancel"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Cancel Order</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Order 7 - Cancelled -->
-          <tr style="opacity: 0.6; text-decoration: line-through;">
-            <td class="py-3"><strong>#ORD-2024-007</strong></td>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/7.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <span>Michelle Brown</span>
-              </div>
-            </td>
-            <td class="py-3">Maria Garcia</td>
-            <td class="py-3">Wall Painting</td>
-            <td class="py-3"><strong>ZWL 550</strong></td>
-            <td class="py-3"><span class="badge bg-label-danger">Cancelled</span></td>
-            <td class="py-3"><span class="badge bg-label-danger">Cancelled</span></td>
-            <td class="py-3">Jan 9, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="review-payment"><i
-                        class="icon-base ri ri-bank-card-line me-2"></i>Review Payment</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Order 8 -->
-          <tr>
-            <td class="py-3"><strong>#ORD-2024-008</strong></td>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/8.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <span>Thomas Clark</span>
-              </div>
-            </td>
-            <td class="py-3">Robert Brown</td>
-            <td class="py-3">Roof Repair</td>
-            <td class="py-3"><strong>ZWL 1,500</strong></td>
-            <td class="py-3"><span class="badge bg-label-info">In Progress</span></td>
-            <td class="py-3"><span class="badge bg-label-success">Confirmed</span></td>
-            <td class="py-3">Jan 8, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="review-payment"><i
-                        class="icon-base ri ri-bank-card-line me-2"></i>Review Payment</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item" href="#" data-action="hold"><i
-                        class="icon-base ri ri-pause-line me-2"></i>Hold Order</a></li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="cancel"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Cancel Order</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
+          @forelse($orders as $order)
+            <tr
+              @if ($order->status === 'pending') class="table-warning" @elseif($order->status === 'cancelled') style="opacity: 0.6; text-decoration: line-through;" @endif>
+              <td class="py-3">
+                <strong>#ORD-{{ $order->created_at->format('Y') }}-{{ str_pad($order->id, 3, '0', STR_PAD_LEFT) }}</strong>
+              </td>
+              <td class="py-3">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="avatar avatar-sm rounded-circle bg-label-primary">
+                    <span class="avatar-initial rounded-circle">{{ substr($order->client?->name ?? 'N', 0, 1) }}</span>
+                  </div>
+                  <span>{{ $order->client?->name ?? 'N/A' }}</span>
+                </div>
+              </td>
+              <td class="py-3">{{ $order->artisan?->name ?? 'N/A' }}</td>
+              <td class="py-3">{{ $order->artisanService?->service_name ?? 'N/A' }}</td>
+              <td class="py-3"><strong>ZWL {{ number_format($order->amount, 2) }}</strong></td>
+              <td class="py-3">
+                <span
+                  class="badge {{ $order->status === 'completed' ? 'bg-label-success' : ($order->status === 'processing' ? 'bg-label-info' : ($order->status === 'pending' ? 'bg-label-warning' : ($order->status === 'held' ? 'bg-label-secondary' : 'bg-label-danger'))) }}">
+                  {{ ucfirst(str_replace('_', ' ', $order->status)) }}
+                </span>
+              </td>
+              <td class="py-3">
+                <span
+                  class="badge {{ $order->payment_status === 'confirmed' ? 'bg-label-success' : ($order->payment_status === 'pending' ? 'bg-label-warning' : 'bg-label-danger') }}">
+                  {{ ucfirst($order->payment_status ?? 'Pending') }}
+                </span>
+              </td>
+              <td class="py-3">{{ $order->created_at->format('M d, Y') }}</td>
+              <td class="py-3">
+                <div class="dropdown">
+                  <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
+                    <i class="icon-base ri ri-more-2-line"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item order-action" href="#" data-action="view"
+                        data-order-id="{{ $order->id }}"><i class="icon-base ri ri-eye-line me-2"></i>View
+                        Details</a></li>
+                    <li><a class="dropdown-item order-action" href="#" data-action="review-payment"
+                        data-order-id="{{ $order->id }}"><i class="icon-base ri ri-bank-card-line me-2"></i>Review
+                        Payment</a></li>
+                    @if ($order->status !== 'completed' && $order->status !== 'cancelled')
+                      <li>
+                        <hr class="dropdown-divider">
+                      </li>
+                      @if ($order->status === 'held')
+                        <li><a class="dropdown-item order-action" href="#" data-action="resume"
+                            data-order-id="{{ $order->id }}"><i class="icon-base ri ri-play-line me-2"></i>Resume
+                            Order</a></li>
+                      @else
+                        <li><a class="dropdown-item order-action" href="#" data-action="hold"
+                            data-order-id="{{ $order->id }}"><i class="icon-base ri ri-pause-line me-2"></i>Hold
+                            Order</a></li>
+                      @endif
+                      <li><a class="dropdown-item text-danger order-action" href="#" data-action="cancel"
+                          data-order-id="{{ $order->id }}"><i
+                            class="icon-base ri ri-close-circle-line me-2"></i>Cancel Order</a></li>
+                    @endif
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          @empty
+            <tr>
+              <td colspan="9" class="text-center py-4">
+                <p class="text-muted mb-0">No orders found</p>
+              </td>
+            </tr>
+          @endforelse
         </tbody>
       </table>
     </div>
@@ -471,16 +246,9 @@
 
   <!-- Pagination -->
   <div class="d-flex justify-content-between align-items-center mt-4">
-    <small class="text-muted">Showing 1 to 8 of 8,542 orders</small>
-    <nav aria-label="Page navigation">
-      <ul class="pagination pagination-sm m-0">
-        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item"><a class="page-link" href="#">Next</a></li>
-      </ul>
-    </nav>
+    <small class="text-muted">Showing {{ $orders->firstItem() ?? 0 }} to {{ $orders->lastItem() ?? 0 }} of
+      {{ $orders->total() }} orders</small>
+    {{ $orders->links() }}
   </div>
 
 @endsection

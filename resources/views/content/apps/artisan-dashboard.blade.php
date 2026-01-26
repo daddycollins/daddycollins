@@ -14,22 +14,24 @@
   @vite(['resources/assets/vendor/libs/apex-charts/apexcharts.js', 'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js'])
 @endsection
 
-@section('page-script')
-  @vite('resources/assets/js/app-ecommerce-dashboard.js')
-@endsection
-
 @section('content')
+  <!-- Flash Messages Alert Component -->
+  <x-alert />
+
   <!-- Header -->
   <div class="row mb-6">
     <div class="col-12">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h4 class="mb-1">Welcome Back, John Mbewe!</h4>
-          <p class="text-muted mb-0">Here's your performance overview for today</p>
+          <h4 class="mb-1">Welcome Back, {{ $user->name }}!</h4>
+          <p class="text-muted mb-0">Here's your performance overview</p>
         </div>
         <div class="d-flex gap-2">
           <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal">
             <i class="icon-base ri ri-add-line me-1"></i>Add Service
+          </button>
+          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProductModal">
+            <i class="icon-base ri ri-add-line me-1"></i>Add Product
           </button>
         </div>
       </div>
@@ -46,8 +48,9 @@
             <div>
               <h6 class="text-muted mb-1">Verification Status</h6>
               <h4 class="mb-0">
-                <span class="badge bg-success">
-                  <i class="icon-base ri ri-check-double-line me-1"></i>Verified
+                <span class="badge bg-{{ $verificationBadgeColor }}">
+                  <i
+                    class="icon-base ri ri-{{ $verificationStatus === 'Verified' ? 'check-double-line' : 'time-line' }} me-1"></i>{{ $verificationStatus }}
                 </span>
               </h4>
             </div>
@@ -69,7 +72,7 @@
           <div class="d-flex align-items-center justify-content-between mb-4">
             <div>
               <h6 class="text-muted mb-1">Average Rating</h6>
-              <h4 class="mb-0">4.8/5</h4>
+              <h4 class="mb-0">{{ $averageRating }}/5</h4>
             </div>
             <div class="avatar bg-label-warning">
               <div class="avatar-initial rounded">
@@ -78,12 +81,16 @@
             </div>
           </div>
           <div class="text-warning small">
-            <i class="icon-base ri ri-star-fill"></i>
-            <i class="icon-base ri ri-star-fill"></i>
-            <i class="icon-base ri ri-star-fill"></i>
-            <i class="icon-base ri ri-star-fill"></i>
-            <i class="icon-base ri ri-star-half-fill"></i>
-            <span class="text-muted">(126 reviews)</span>
+            @for ($i = 1; $i <= 5; $i++)
+              @if ($i <= floor($averageRating))
+                <i class="icon-base ri ri-star-fill"></i>
+              @elseif ($i - $averageRating < 1)
+                <i class="icon-base ri ri-star-half-fill"></i>
+              @else
+                <i class="icon-base ri ri-star-line"></i>
+              @endif
+            @endfor
+            <span class="text-muted">({{ $reviewCount }} reviews)</span>
           </div>
         </div>
       </div>
@@ -96,7 +103,7 @@
           <div class="d-flex align-items-center justify-content-between mb-4">
             <div>
               <h6 class="text-muted mb-1">Total Orders</h6>
-              <h4 class="mb-0">148</h4>
+              <h4 class="mb-0">{{ $totalOrders }}</h4>
             </div>
             <div class="avatar bg-label-primary">
               <div class="avatar-initial rounded">
@@ -104,7 +111,9 @@
               </div>
             </div>
           </div>
-          <small class="text-success"><i class="icon-base ri ri-arrow-up-s-line me-1"></i>+12% this month</small>
+          <small class="text-{{ $ordersGrowth >= 0 ? 'success' : 'danger' }}"><i
+              class="icon-base ri ri-arrow-{{ $ordersGrowth >= 0 ? 'up' : 'down' }}-s-line me-1"></i>{{ $ordersGrowth >= 0 ? '+' : '' }}{{ $ordersGrowth }}%
+            this month</small>
         </div>
       </div>
     </div>
@@ -116,7 +125,7 @@
           <div class="d-flex align-items-center justify-content-between mb-4">
             <div>
               <h6 class="text-muted mb-1">Total Earnings</h6>
-              <h4 class="mb-0">ZWL 42,580</h4>
+              <h4 class="mb-0">ZWL {{ number_format($totalEarnings, 2) }}</h4>
             </div>
             <div class="avatar bg-label-success">
               <div class="avatar-initial rounded">
@@ -124,7 +133,9 @@
               </div>
             </div>
           </div>
-          <small class="text-success"><i class="icon-base ri ri-arrow-up-s-line me-1"></i>+8% vs last month</small>
+          <small class="text-{{ $earningsGrowth >= 0 ? 'success' : 'danger' }}"><i
+              class="icon-base ri ri-arrow-{{ $earningsGrowth >= 0 ? 'up' : 'down' }}-s-line me-1"></i>{{ $earningsGrowth >= 0 ? '+' : '' }}{{ $earningsGrowth }}%
+            vs last month</small>
         </div>
       </div>
     </div>
@@ -160,19 +171,19 @@
           </div>
           <div class="d-flex justify-content-between align-items-center mb-3">
             <span class="small">Completed</span>
-            <span class="badge bg-success">142</span>
+            <span class="badge bg-success">{{ $completedOrders }}</span>
           </div>
           <div class="d-flex justify-content-between align-items-center mb-3">
             <span class="small">In Progress</span>
-            <span class="badge bg-info">4</span>
+            <span class="badge bg-info">{{ $paidOrders }}</span>
           </div>
           <div class="d-flex justify-content-between align-items-center mb-3">
             <span class="small">Pending</span>
-            <span class="badge bg-warning">2</span>
+            <span class="badge bg-warning">{{ $pendingOrders }}</span>
           </div>
           <div class="d-flex justify-content-between align-items-center">
             <span class="small">Cancelled</span>
-            <span class="badge bg-danger">0</span>
+            <span class="badge bg-danger">{{ $cancelledOrders }}</span>
           </div>
         </div>
       </div>
@@ -186,7 +197,7 @@
       <div class="card h-100">
         <div class="card-header d-flex justify-content-between align-items-center">
           <h5 class="card-title mb-0">My Services</h5>
-          <a href="javascript:void(0);" class="btn btn-sm btn-primary">View All</a>
+          <a href="{{ route('artisan-my-services') }}" class="btn btn-sm btn-primary">View All</a>
         </div>
         <div class="table-responsive">
           <table class="table table-hover mb-0">
@@ -199,46 +210,29 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <div class="avatar avatar-sm me-2">
-                      <img src="{{ asset('assets/img/avatars/2.png') }}" alt="Service" class="rounded" />
+              @forelse($artisanServices as $service)
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="avatar avatar-sm me-2">
+                        <img src="{{ asset('assets/img/avatars/2.png') }}" alt="Service" class="rounded" />
+                      </div>
+                      <span>{{ $service->service_name }}</span>
                     </div>
-                    <span>Pipe Installation & Repair</span>
-                  </div>
-                </td>
-                <td>ZWL 250</td>
-                <td><span class="badge bg-label-primary">48</span></td>
-                <td><span class="badge bg-label-success">Active</span></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <div class="avatar avatar-sm me-2">
-                      <img src="{{ asset('assets/img/avatars/3.png') }}" alt="Service" class="rounded" />
-                    </div>
-                    <span>Bathroom Fixtures</span>
-                  </div>
-                </td>
-                <td>ZWL 350</td>
-                <td><span class="badge bg-label-primary">35</span></td>
-                <td><span class="badge bg-label-success">Active</span></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <div class="avatar avatar-sm me-2">
-                      <img src="{{ asset('assets/img/avatars/4.png') }}" alt="Service" class="rounded" />
-                    </div>
-                    <span>Water Leakage Detection</span>
-                  </div>
-                </td>
-                <td>ZWL 150</td>
-                <td><span class="badge bg-label-primary">65</span></td>
-                <td><span class="badge bg-label-success">Active</span></td>
-              </tr>
+                  </td>
+                  <td>ZWL {{ number_format($service->price_estimate, 2) }}</td>
+                  <td><span class="badge bg-label-primary">{{ $service->orders_count ?? 0 }}</span></td>
+                  <td><span class="badge bg-label-success">Active</span></td>
+                </tr>
+              @empty
+                <tr>
+                  <td colspan="4" class="text-center text-muted py-4">No services found. <a
+                      href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addServiceModal">Add one
+                      now</a></td>
+                </tr>
+              @endforelse
             </tbody>
+
           </table>
         </div>
       </div>
@@ -249,7 +243,7 @@
       <div class="card h-100">
         <div class="card-header d-flex justify-content-between align-items-center">
           <h5 class="card-title mb-0">Recent Orders</h5>
-          <a href="javascript:void(0);" class="btn btn-sm btn-primary">View All</a>
+          <a href="{{ route('artisan-my-orders') }}" class="btn btn-sm btn-primary">View All</a>
         </div>
         <div class="table-responsive">
           <table class="table table-hover mb-0">
@@ -262,42 +256,29 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td><span class="badge bg-label-primary">#ORD-148</span></td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <img src="{{ asset('assets/img/avatars/1.png') }}" alt="Client" class="rounded-circle me-2"
-                      width="32" height="32" />
-                    <span>Jane Smith</span>
-                  </div>
-                </td>
-                <td>ZWL 450</td>
-                <td><span class="badge bg-label-success">Completed</span></td>
-              </tr>
-              <tr>
-                <td><span class="badge bg-label-primary">#ORD-147</span></td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <img src="{{ asset('assets/img/avatars/5.png') }}" alt="Client" class="rounded-circle me-2"
-                      width="32" height="32" />
-                    <span>Michael Brown</span>
-                  </div>
-                </td>
-                <td>ZWL 800</td>
-                <td><span class="badge bg-label-success">Completed</span></td>
-              </tr>
-              <tr>
-                <td><span class="badge bg-label-primary">#ORD-146</span></td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <img src="{{ asset('assets/img/avatars/6.png') }}" alt="Client" class="rounded-circle me-2"
-                      width="32" height="32" />
-                    <span>Sarah Johnson</span>
-                  </div>
-                </td>
-                <td>ZWL 350</td>
-                <td><span class="badge bg-label-info">In Progress</span></td>
-              </tr>
+              @forelse($recentOrders as $order)
+                <tr>
+                  <td><span class="badge bg-label-primary">#ORD-{{ $order->id }}</span></td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="{{ asset('assets/img/avatars/1.png') }}" alt="Client" class="rounded-circle me-2"
+                        width="32" height="32" />
+                      <span>{{ $order->client->name ?? 'Unknown' }}</span>
+                    </div>
+                  </td>
+                  <td>ZWL {{ number_format($order->total_amount, 2) }}</td>
+                  <td>
+                    <span
+                      class="badge bg-label-{{ $order->status === 'completed' ? 'success' : ($order->status === 'paid' ? 'info' : ($order->status === 'pending' ? 'warning' : 'danger')) }}">
+                      {{ ucfirst($order->status) }}
+                    </span>
+                  </td>
+                </tr>
+              @empty
+                <tr>
+                  <td colspan="4" class="text-center text-muted py-4">No orders found yet</td>
+                </tr>
+              @endforelse
             </tbody>
           </table>
         </div>
@@ -313,19 +294,25 @@
           <h5 class="modal-title">Add New Service</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <form id="addServiceForm">
+        <form action="{{ route('artisan-service-store') }}" method="POST" enctype="multipart/form-data">
+          @csrf
+          <div class="modal-body">
             <div class="row g-4">
               <!-- Service Name -->
               <div class="col-12">
                 <label class="form-label">Service Name</label>
-                <input type="text" class="form-control" placeholder="e.g., Pipe Installation & Repair" />
+                <input type="text" name="service_name"
+                  class="form-control @error('service_name') is-invalid @enderror"
+                  placeholder="e.g., Pipe Installation & Repair" required />
+                @error('service_name')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
               </div>
 
               <!-- Category -->
               <div class="col-md-6">
                 <label class="form-label">Category</label>
-                <select class="form-select">
+                <select name="category" class="form-select @error('category') is-invalid @enderror">
                   <option value="">Select Category</option>
                   <option value="plumbing">Plumbing</option>
                   <option value="electrical">Electrical</option>
@@ -333,24 +320,40 @@
                   <option value="tailoring">Tailoring & Fashion</option>
                   <option value="other">Other</option>
                 </select>
+                @error('category')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
               </div>
 
-              <!-- Hourly Rate -->
+              <!-- Price Estimate -->
               <div class="col-md-6">
-                <label class="form-label">Hourly Rate (ZWL)</label>
-                <input type="number" class="form-control" placeholder="250" />
+                <label class="form-label">Price Estimate (ZWL)</label>
+                <input type="number" name="price_estimate" step="0.01"
+                  class="form-control @error('price_estimate') is-invalid @enderror" placeholder="250" required />
+                @error('price_estimate')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
               </div>
 
               <!-- Description -->
               <div class="col-12">
                 <label class="form-label">Description</label>
-                <textarea class="form-control" rows="4" placeholder="Describe your service in detail..."></textarea>
+                <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="4"
+                  placeholder="Describe your service in detail..."></textarea>
+                @error('description')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
               </div>
 
               <!-- Service Image -->
               <div class="col-12">
                 <label class="form-label">Service Image</label>
-                <input type="file" class="form-control" accept="image/*" />
+                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror"
+                  accept="image/*" />
+                <small class="text-muted">Max file size: 2MB (JPG, PNG, GIF)</small>
+                @error('image')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
               </div>
 
               <!-- Availability -->
@@ -368,33 +371,141 @@
                 </div>
               </div>
             </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary">Add Service</button>
-        </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Add Service</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 
+  <!-- Add Product Modal -->
+  <div class="modal fade" id="addProductModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add New Product</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{{ route('artisan-product-store') }}" method="POST" enctype="multipart/form-data">
+          @csrf
+          <div class="modal-body">
+            <div class="row g-4">
+              <!-- Product Name -->
+              <div class="col-12">
+                <label class="form-label">Product Name</label>
+                <input type="text" name="product_name"
+                  class="form-control @error('product_name') is-invalid @enderror" placeholder="e.g., Copper Pipes"
+                  required />
+                @error('product_name')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
+
+              <!-- Category -->
+              <div class="col-md-6">
+                <label class="form-label">Category</label>
+                <select name="category" class="form-select @error('category') is-invalid @enderror">
+                  <option value="">Select Category</option>
+                  <option value="plumbing">Plumbing Supplies</option>
+                  <option value="electrical">Electrical Supplies</option>
+                  <option value="building">Building Materials</option>
+                  <option value="tools">Tools & Equipment</option>
+                  <option value="other">Other</option>
+                </select>
+                @error('category')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
+
+              <!-- Price -->
+              <div class="col-md-6">
+                <label class="form-label">Price (ZWL)</label>
+                <input type="number" name="price" step="0.01"
+                  class="form-control @error('price') is-invalid @enderror" placeholder="100" required />
+                @error('price')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
+
+              <!-- Quantity -->
+              <div class="col-md-6">
+                <label class="form-label">Quantity Available</label>
+                <input type="number" name="stock_quantity"
+                  class="form-control @error('stock_quantity') is-invalid @enderror" placeholder="10" required />
+                @error('stock_quantity')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
+
+              <!-- Unit -->
+              <div class="col-md-6">
+                <label class="form-label">Unit (e.g., pieces, meters, kg)</label>
+                <input type="text" name="unit" class="form-control @error('unit') is-invalid @enderror"
+                  placeholder="pieces" />
+                @error('unit')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
+
+              <!-- Description -->
+              <div class="col-12">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="4"
+                  placeholder="Describe your product in detail..."></textarea>
+                @error('description')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
+
+              <!-- Product Image -->
+              <div class="col-12">
+                <label class="form-label">Product Image</label>
+                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror"
+                  accept="image/*" />
+                <small class="text-muted">Max file size: 2MB (JPG, PNG, GIF)</small>
+                @error('image')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
+
+              <!-- Availability -->
+              <div class="col-12">
+                <label class="form-label">Availability Status</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="availability" id="productAvailable"
+                    value="available" checked />
+                  <label class="form-check-label" for="productAvailable">Available</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="availability" id="productUnavailable"
+                    value="unavailable" />
+                  <label class="form-check-label" for="productUnavailable">Unavailable</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Add Product</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+@endsection
+
+@section('page-script')
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Orders Trend Chart
       const ordersTrendOptions = {
         series: [{
-            name: 'Completed',
-            data: [28, 35, 32, 40, 38, 42, 35]
-          },
-          {
-            name: 'In Progress',
-            data: [1, 2, 1, 3, 2, 2, 1]
-          },
-          {
-            name: 'Pending',
-            data: [0, 1, 0, 1, 1, 0, 0]
-          }
-        ],
+          name: 'Orders',
+          data: {!! $ordersTrendData !!}
+        }],
         chart: {
           type: 'area',
           stacked: false,
@@ -403,9 +514,9 @@
             show: false
           }
         },
-        colors: ['#28c76f', '#4099ff', '#ffb64d'],
+        colors: ['#696cff'],
         xaxis: {
-          categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          categories: {!! $ordersLabels !!}
         },
         legend: {
           position: 'top'
@@ -418,7 +529,7 @@
 
       // Completion Rate Chart
       const completionRateOptions = {
-        series: [96],
+        series: [{{ $completionRate }}],
         chart: {
           type: 'radialBar',
           height: 200,

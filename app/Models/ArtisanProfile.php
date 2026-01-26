@@ -22,7 +22,28 @@ class ArtisanProfile extends Model
         'location',
         'bio',
         'verified',
-        'average_rating'
+        'average_rating',
+        'phone',
+        'years_of_experience',
+        'business_hours',
+        'address',
+        'city',
+        'province',
+        'gender',
+        'date_of_birth',
+        'social_links',
+        'first_name',
+        'last_name',
+        'profile_photo_path',
+        'service_areas',
+        'public_profile',
+    ];
+
+    protected $casts = [
+        'date_of_birth' => 'date',
+        'social_links' => 'json',
+        'business_hours' => 'json',
+        'verified' => 'boolean',
     ];
 
     public function user()
@@ -58,5 +79,10 @@ class ArtisanProfile extends Model
     public function verification()
     {
         return $this->hasOne(ArtisanVerification::class, 'artisan_id');
+    }
+
+    public function payouts()
+    {
+        return $this->hasMany(Payout::class, 'artisan_id');
     }
 }

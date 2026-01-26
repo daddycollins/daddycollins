@@ -28,9 +28,9 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Total Reviews</p>
-              <h3 class="mb-2">2,847</h3>
+              <h3 class="mb-2">{{ number_format($totalReviews) }}</h3>
               <p class="mb-0"><span class="badge bg-label-success"><i
-                    class="icon-base ri ri-arrow-up-s-line me-1"></i>+24% MTD</span></p>
+                    class="icon-base ri ri-arrow-up-s-line me-1"></i>All Time</span></p>
             </div>
             <div class="avatar avatar-lg bg-label-primary">
               <div class="avatar-initial"><i class="icon-base ri ri-star-line"></i></div>
@@ -46,10 +46,13 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Average Rating</p>
-              <h3 class="mb-2">4.8<span style="font-size: 0.7em;">★</span></h3>
-              <p class="mb-0"><span class="badge bg-label-success">Excellent</span></p>
+              <h3 class="mb-2">{{ $averageRating }}<span style="font-size: 0.7em;">★</span></h3>
+              <p class="mb-0"><span
+                  class="badge {{ $averageRating >= 4.5 ? 'bg-label-success' : ($averageRating >= 3.5 ? 'bg-label-warning' : 'bg-label-danger') }}">{{ $averageRating >= 4.5 ? 'Excellent' : ($averageRating >= 3.5 ? 'Good' : 'Fair') }}</span>
+              </p>
             </div>
-            <div class="avatar avatar-lg bg-label-success">
+            <div
+              class="avatar avatar-lg {{ $averageRating >= 4.5 ? 'bg-label-success' : ($averageRating >= 3.5 ? 'bg-label-warning' : 'bg-label-danger') }}">
               <div class="avatar-initial"><i class="icon-base ri ri-star-smile-line"></i></div>
             </div>
           </div>
@@ -63,7 +66,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Pending Approval</p>
-              <h3 class="mb-2">42</h3>
+              <h3 class="mb-2">{{ number_format($pendingApprovalReviews) }}</h3>
               <p class="mb-0"><span class="badge bg-label-warning">Awaiting review</span></p>
             </div>
             <div class="avatar avatar-lg bg-label-warning">
@@ -80,7 +83,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Flagged Reviews</p>
-              <h3 class="mb-2">18</h3>
+              <h3 class="mb-2">{{ number_format($flaggedReviews) }}</h3>
               <p class="mb-0"><span class="badge bg-label-danger">Needs action</span></p>
             </div>
             <div class="avatar avatar-lg bg-label-danger">
@@ -103,40 +106,44 @@
           <div class="d-flex align-items-center gap-2 mb-2">
             <small class="fw-medium">5 Star</small>
             <div class="progress flex-grow-1 bg-label-primary" style="height:8px;">
-              <div class="progress-bar bg-primary" role="progressbar" style="width: 62%" aria-valuenow="62"
-                aria-valuemin="0" aria-valuemax="100"></div>
+              <div class="progress-bar bg-primary" role="progressbar"
+                style="width: {{ $totalReviews > 0 ? ($fiveStarCount / $totalReviews) * 100 : 0 }}%"
+                aria-valuenow="{{ $fiveStarCount }}" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
-            <small class="fw-medium">1,765</small>
+            <small class="fw-medium">{{ number_format($fiveStarCount) }}</small>
           </div>
         </div>
         <div class="col-md-3 mb-3 mb-md-0">
           <div class="d-flex align-items-center gap-2 mb-2">
             <small class="fw-medium">4 Star</small>
             <div class="progress flex-grow-1 bg-label-primary" style="height:8px;">
-              <div class="progress-bar bg-primary" role="progressbar" style="width: 22%" aria-valuenow="22"
-                aria-valuemin="0" aria-valuemax="100"></div>
+              <div class="progress-bar bg-primary" role="progressbar"
+                style="width: {{ $totalReviews > 0 ? ($fourStarCount / $totalReviews) * 100 : 0 }}%"
+                aria-valuenow="{{ $fourStarCount }}" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
-            <small class="fw-medium">626</small>
+            <small class="fw-medium">{{ number_format($fourStarCount) }}</small>
           </div>
         </div>
         <div class="col-md-3 mb-3 mb-md-0">
           <div class="d-flex align-items-center gap-2 mb-2">
             <small class="fw-medium">3 Star</small>
             <div class="progress flex-grow-1 bg-label-primary" style="height:8px;">
-              <div class="progress-bar bg-primary" role="progressbar" style="width: 10%" aria-valuenow="10"
-                aria-valuemin="0" aria-valuemax="100"></div>
+              <div class="progress-bar bg-primary" role="progressbar"
+                style="width: {{ $totalReviews > 0 ? ($threeStarCount / $totalReviews) * 100 : 0 }}%"
+                aria-valuenow="{{ $threeStarCount }}" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
-            <small class="fw-medium">284</small>
+            <small class="fw-medium">{{ number_format($threeStarCount) }}</small>
           </div>
         </div>
         <div class="col-md-3">
           <div class="d-flex align-items-center gap-2 mb-2">
             <small class="fw-medium">Below 3</small>
             <div class="progress flex-grow-1 bg-label-primary" style="height:8px;">
-              <div class="progress-bar bg-danger" role="progressbar" style="width: 6%" aria-valuenow="6"
-                aria-valuemin="0" aria-valuemax="100"></div>
+              <div class="progress-bar bg-danger" role="progressbar"
+                style="width: {{ $totalReviews > 0 ? ($belowThreeCount / $totalReviews) * 100 : 0 }}%"
+                aria-valuenow="{{ $belowThreeCount }}" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
-            <small class="fw-medium">172</small>
+            <small class="fw-medium">{{ number_format($belowThreeCount) }}</small>
           </div>
         </div>
       </div>
@@ -215,346 +222,69 @@
           </tr>
         </thead>
         <tbody>
-          <!-- Review 1 - 5 Stars Service -->
-          <tr>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/1.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <div>
-                  <strong>John Doe</strong>
-                  <br><small class="text-muted">Verified Customer</small>
+          @forelse($reviews as $review)
+            <tr
+              @if ($review->rating >= 4) class="table-success" style="opacity: 0.9;" @elseif($review->rating < 3) class="table-danger" style="opacity: 0.8;" @elseif($review->rating == 3) class="table-info" style="opacity: 0.85;" @endif>
+              <td class="py-3">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="avatar avatar-sm rounded-circle bg-label-primary">
+                    <span class="avatar-initial">{{ substr($review->client?->name ?? 'N', 0, 1) }}</span>
+                  </div>
+                  <div>
+                    <strong>{{ $review->client?->name ?? 'N/A' }}</strong>
+                    <br><small class="text-muted">Verified Customer</small>
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td class="py-3"><strong>Plumbing Service</strong><br><small class="text-muted">James Smith</small></td>
-            <td class="py-3"><span class="badge bg-label-info">Service</span></td>
-            <td class="py-3"><span class="text-warning">★★★★★</span> <strong>5.0</strong></td>
-            <td class="py-3">
-              <small>"Excellent work! James fixed the issue quickly and professionally. Highly recommend!"</small>
-            </td>
-            <td class="py-3"><span class="badge bg-label-success">Approved</span></td>
-            <td class="py-3">Jan 20, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Full Review</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="feature"><i
-                        class="icon-base ri ri-star-line me-2"></i>Feature Review</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="edit"><i
-                        class="icon-base ri ri-edit-line me-2"></i>Edit</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="remove"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Remove Inappropriate</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Review 2 - 4 Stars Artisan -->
-          <tr>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/2.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <div>
-                  <strong>Sarah Johnson</strong>
-                  <br><small class="text-muted">Verified Customer</small>
+              </td>
+              <td class="py-3">
+                <strong>Service</strong><br>
+                <small class="text-muted">{{ $review->artisan?->user?->name ?? 'N/A' }}</small>
+              </td>
+              <td class="py-3"><span class="badge bg-label-info">Service</span></td>
+              <td class="py-3">
+                <span class="text-warning">
+                  @for ($i = 0; $i < $review->rating; $i++)
+                    ★
+                  @endfor
+                  @for ($i = $review->rating; $i < 5; $i++)
+                    ☆
+                  @endfor
+                </span>
+                <strong>{{ $review->rating }}.0</strong>
+              </td>
+              <td class="py-3">
+                <small>"{{ substr($review->comment, 0, 60) }}{{ strlen($review->comment) > 60 ? '...' : '' }}"</small>
+              </td>
+              <td class="py-3"><span class="badge bg-label-success">Approved</span></td>
+              <td class="py-3">{{ $review->created_at->format('M d, Y') }}</td>
+              <td class="py-3">
+                <div class="dropdown">
+                  <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
+                    <i class="icon-base ri ri-more-2-line"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#" data-action="view"><i
+                          class="icon-base ri ri-eye-line me-2"></i>View Full Review</a></li>
+                    <li><a class="dropdown-item" href="#" data-action="feature"><i
+                          class="icon-base ri ri-star-line me-2"></i>Feature Review</a></li>
+                    <li><a class="dropdown-item" href="#" data-action="edit"><i
+                          class="icon-base ri ri-edit-line me-2"></i>Edit</a></li>
+                    <li>
+                      <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item text-danger" href="#" data-action="remove"><i
+                          class="icon-base ri ri-close-circle-line me-2"></i>Remove Inappropriate</a></li>
+                  </ul>
                 </div>
-              </div>
-            </td>
-            <td class="py-3"><strong>Carpenter Rating</strong><br><small class="text-muted">Maria Garcia</small></td>
-            <td class="py-3"><span class="badge bg-label-success">Artisan</span></td>
-            <td class="py-3"><span class="text-warning">★★★★☆</span> <strong>4.0</strong></td>
-            <td class="py-3">
-              <small>"Great craftsmanship and attention to detail. Would rate higher if communication was faster."</small>
-            </td>
-            <td class="py-3"><span class="badge bg-label-success">Approved</span></td>
-            <td class="py-3">Jan 19, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Full Review</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="feature"><i
-                        class="icon-base ri ri-star-line me-2"></i>Feature Review</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="edit"><i
-                        class="icon-base ri ri-edit-line me-2"></i>Edit</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="remove"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Remove Inappropriate</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Review 3 - Pending Approval -->
-          <tr class="table-info" style="opacity: 0.85;">
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/3.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <div>
-                  <strong>Mike Wilson</strong>
-                  <br><small class="text-muted">Verified Customer</small>
-                </div>
-              </div>
-            </td>
-            <td class="py-3"><strong>Electrical Work</strong><br><small class="text-muted">Robert Brown</small></td>
-            <td class="py-3"><span class="badge bg-label-info">Service</span></td>
-            <td class="py-3"><span class="text-warning">★★★★★</span> <strong>5.0</strong></td>
-            <td class="py-3">
-              <small>"Perfect installation. Robert is very professional and knowledgeable. Would definitely hire
-                again."</small>
-            </td>
-            <td class="py-3"><span class="badge bg-label-warning">Pending</span></td>
-            <td class="py-3">Jan 18, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Full Review</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="approve"><i
-                        class="icon-base ri ri-check-line me-2"></i>Approve</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="edit"><i
-                        class="icon-base ri ri-edit-line me-2"></i>Edit</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="remove"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Remove Inappropriate</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Review 4 - 2 Stars Flagged -->
-          <tr class="table-danger" style="opacity: 0.8;">
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/4.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <div>
-                  <strong>Emma Davis</strong>
-                  <br><small class="text-muted">Verified Customer</small>
-                </div>
-              </div>
-            </td>
-            <td class="py-3"><strong>Cleaning Service</strong><br><small class="text-muted">Lisa Martinez</small></td>
-            <td class="py-3"><span class="badge bg-label-info">Service</span></td>
-            <td class="py-3"><span class="text-warning">★★☆☆☆</span> <strong>2.0</strong></td>
-            <td class="py-3">
-              <small>"Service was not up to standard. Unprofessional behavior. Not satisfied with the work."</small>
-            </td>
-            <td class="py-3"><span class="badge bg-label-danger">Flagged</span></td>
-            <td class="py-3">Jan 17, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Full Review</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="approve"><i
-                        class="icon-base ri ri-check-line me-2"></i>Approve as Legitimate</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="edit"><i
-                        class="icon-base ri ri-edit-line me-2"></i>Edit</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="remove"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Remove Inappropriate</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Review 5 - 5 Stars Product -->
-          <tr>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/5.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <div>
-                  <strong>David Anderson</strong>
-                  <br><small class="text-muted">Verified Customer</small>
-                </div>
-              </div>
-            </td>
-            <td class="py-3"><strong>Custom Furniture</strong><br><small class="text-muted">Christopher Lee</small>
-            </td>
-            <td class="py-3"><span class="badge bg-label-secondary">Product</span></td>
-            <td class="py-3"><span class="text-warning">★★★★★</span> <strong>5.0</strong></td>
-            <td class="py-3">
-              <small>"Amazing quality! The furniture is exactly as described. Christopher's craftsmanship is
-                outstanding."</small>
-            </td>
-            <td class="py-3"><span class="badge bg-label-success">Approved</span></td>
-            <td class="py-3">Jan 16, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Full Review</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="feature"><i
-                        class="icon-base ri ri-star-line me-2"></i>Feature Review</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="edit"><i
-                        class="icon-base ri ri-edit-line me-2"></i>Edit</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="remove"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Remove Inappropriate</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Review 6 - 3 Stars Pending -->
-          <tr class="table-info" style="opacity: 0.85;">
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/6.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <div>
-                  <strong>Jessica White</strong>
-                  <br><small class="text-muted">Verified Customer</small>
-                </div>
-              </div>
-            </td>
-            <td class="py-3"><strong>Door Installation</strong><br><small class="text-muted">James Smith</small></td>
-            <td class="py-3"><span class="badge bg-label-info">Service</span></td>
-            <td class="py-3"><span class="text-warning">★★★☆☆</span> <strong>3.0</strong></td>
-            <td class="py-3">
-              <small>"Good work but took longer than expected. Quality is acceptable but pricing seems a bit
-                high."</small>
-            </td>
-            <td class="py-3"><span class="badge bg-label-warning">Pending</span></td>
-            <td class="py-3">Jan 15, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Full Review</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="approve"><i
-                        class="icon-base ri ri-check-line me-2"></i>Approve</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="edit"><i
-                        class="icon-base ri ri-edit-line me-2"></i>Edit</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="remove"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Remove Inappropriate</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Review 7 - 1 Star Flagged -->
-          <tr class="table-danger" style="opacity: 0.8;">
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/7.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <div>
-                  <strong>Michelle Brown</strong>
-                  <br><small class="text-muted">Unverified</small>
-                </div>
-              </div>
-            </td>
-            <td class="py-3"><strong>Painting Service</strong><br><small class="text-muted">Maria Garcia</small></td>
-            <td class="py-3"><span class="badge bg-label-info">Service</span></td>
-            <td class="py-3"><span class="text-warning">★☆☆☆☆</span> <strong>1.0</strong></td>
-            <td class="py-3">
-              <small>"Worst experience ever! Stay away from this artisan. Complete waste of money and time!"</small>
-            </td>
-            <td class="py-3"><span class="badge bg-label-danger">Flagged</span></td>
-            <td class="py-3">Jan 14, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Full Review</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="approve"><i
-                        class="icon-base ri ri-check-line me-2"></i>Approve as Legitimate</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="edit"><i
-                        class="icon-base ri ri-edit-line me-2"></i>Edit</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="remove"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Remove Inappropriate</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Review 8 - 4.5 Stars Service -->
-          <tr>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/8.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <div>
-                  <strong>Thomas Clark</strong>
-                  <br><small class="text-muted">Verified Customer</small>
-                </div>
-              </div>
-            </td>
-            <td class="py-3"><strong>Roof Repair</strong><br><small class="text-muted">Robert Brown</small></td>
-            <td class="py-3"><span class="badge bg-label-info">Service</span></td>
-            <td class="py-3"><span class="text-warning">★★★★☆</span> <strong>4.5</strong></td>
-            <td class="py-3">
-              <small>"Professional and thorough work. Robert provided excellent guidance on maintenance. Very
-                satisfied."</small>
-            </td>
-            <td class="py-3"><span class="badge bg-label-success">Approved</span></td>
-            <td class="py-3">Jan 13, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Full Review</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="feature"><i
-                        class="icon-base ri ri-star-line me-2"></i>Feature Review</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="edit"><i
-                        class="icon-base ri ri-edit-line me-2"></i>Edit</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="remove"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Remove Inappropriate</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
+              </td>
+            </tr>
+          @empty
+            <tr>
+              <td colspan="8" class="text-center py-4">
+                <p class="text-muted mb-0">No reviews found</p>
+              </td>
+            </tr>
+          @endforelse
         </tbody>
       </table>
     </div>
@@ -562,16 +292,9 @@
 
   <!-- Pagination -->
   <div class="d-flex justify-content-between align-items-center mt-4">
-    <small class="text-muted">Showing 1 to 8 of 2,847 reviews</small>
-    <nav aria-label="Page navigation">
-      <ul class="pagination pagination-sm m-0">
-        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item"><a class="page-link" href="#">Next</a></li>
-      </ul>
-    </nav>
+    <small class="text-muted">Showing {{ $reviews->firstItem() ?? 0 }} to {{ $reviews->lastItem() ?? 0 }} of
+      {{ $reviews->total() }} reviews</small>
+    {{ $reviews->links() }}
   </div>
 
 @endsection

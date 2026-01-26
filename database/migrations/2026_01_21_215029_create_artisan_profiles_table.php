@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->text('bio')->nullable();
             $table->boolean('verified')->default(false);
             $table->decimal('average_rating', 2, 1)->default(0);
+            $table->string('phone');
             $table->timestamps();
         });
     }

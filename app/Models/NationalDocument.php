@@ -9,6 +9,7 @@ class NationalDocument extends Model
 {
     //
 
+    protected $table = 'national_id_documents';   
     protected $fillable = [
         'user_id',
         'id_number',

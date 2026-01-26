@@ -14,10 +14,6 @@
   <!-- Header -->
   <div
     class="d-flex flex-column flex-sm-row align-items-center justify-content-sm-between mb-6 text-center text-sm-start gap-2">
-    <div class="mb-2 mb-sm-0">
-      <h4 class="mb-1"><i class="icon-base ri ri-verified-badge-line me-2 text-warning"></i>Artisan Verifications</h4>
-      <p class="mb-0">Review and verify pending artisan applications</p>
-    </div>
     <button type="button" class="btn btn-outline-success" id="autoVerifyBtn" data-bs-toggle="tooltip"
       title="Enable system to auto-verify artisans meeting all criteria">
       <i class="icon-base ri ri-robot-2-line me-2"></i>Auto Verify
@@ -38,85 +34,31 @@
         </div>
         <div class="card-body p-0" style="max-height: 700px; overflow-y: auto;">
           <div class="list-group list-group-flush" id="artisansList">
-            <!-- Artisan 1 -->
-            <a href="#" class="list-group-item list-group-item-action artisan-item active" data-id="1"
-              data-name="James Smith">
-              <div class="d-flex w-100 align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 flex-grow-1">
-                  <img src="/images/avatars/1.png" alt="avatar" class="rounded-circle"
-                    style="width: 40px; height: 40px;">
-                  <div class="flex-grow-1 min-width-0">
-                    <h6 class="mb-1 text-truncate">James Smith</h6>
-                    <small class="text-muted d-block text-truncate">Plumber</small>
+            @forelse($pendingVerifications as $index => $verification)
+              <a href="#"
+                class="list-group-item list-group-item-action artisan-item {{ $index === 0 ? 'active' : '' }}"
+                data-id="{{ $verification->user->id }}" data-name="{{ $verification->user->name }}">
+                <div class="d-flex w-100 align-items-center justify-content-between">
+                  <div class="d-flex align-items-center gap-3 flex-grow-1">
+                    <div class="avatar avatar-sm rounded-circle">
+                      <span
+                        class="avatar-initial rounded-circle bg-label-primary">{{ substr($verification->user->name, 0, 1) }}</span>
+                    </div>
+                    <div class="flex-grow-1 min-width-0">
+                      <h6 class="mb-1 text-truncate">{{ $verification->user->name }}</h6>
+                      <small
+                        class="text-muted d-block text-truncate">{{ $verification->user->artisanProfile?->category ?? 'N/A' }}</small>
+                    </div>
                   </div>
+                  <span class="badge bg-label-warning rounded-pill">Pending</span>
                 </div>
-                <span class="badge bg-label-warning rounded-pill">Pending</span>
+              </a>
+            @empty
+              <div class="p-4 text-center text-muted">
+                <i class="icon-base ri ri-checkbox-circle-line icon-48px mb-3 d-block"></i>
+                <p class="mb-0">No pending verifications</p>
               </div>
-            </a>
-
-            <!-- Artisan 2 -->
-            <a href="#" class="list-group-item list-group-item-action artisan-item" data-id="2"
-              data-name="Maria Garcia">
-              <div class="d-flex w-100 align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 flex-grow-1">
-                  <img src="/images/avatars/2.png" alt="avatar" class="rounded-circle"
-                    style="width: 40px; height: 40px;">
-                  <div class="flex-grow-1 min-width-0">
-                    <h6 class="mb-1 text-truncate">Maria Garcia</h6>
-                    <small class="text-muted d-block text-truncate">Carpenter</small>
-                  </div>
-                </div>
-                <span class="badge bg-label-warning rounded-pill">Pending</span>
-              </div>
-            </a>
-
-            <!-- Artisan 3 -->
-            <a href="#" class="list-group-item list-group-item-action artisan-item" data-id="3"
-              data-name="Robert Brown">
-              <div class="d-flex w-100 align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 flex-grow-1">
-                  <img src="/images/avatars/3.png" alt="avatar" class="rounded-circle"
-                    style="width: 40px; height: 40px;">
-                  <div class="flex-grow-1 min-width-0">
-                    <h6 class="mb-1 text-truncate">Robert Brown</h6>
-                    <small class="text-muted d-block text-truncate">Electrician</small>
-                  </div>
-                </div>
-                <span class="badge bg-label-warning rounded-pill">Pending</span>
-              </div>
-            </a>
-
-            <!-- Artisan 4 -->
-            <a href="#" class="list-group-item list-group-item-action artisan-item" data-id="4"
-              data-name="Lisa Martinez">
-              <div class="d-flex w-100 align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 flex-grow-1">
-                  <img src="/images/avatars/4.png" alt="avatar" class="rounded-circle"
-                    style="width: 40px; height: 40px;">
-                  <div class="flex-grow-1 min-width-0">
-                    <h6 class="mb-1 text-truncate">Lisa Martinez</h6>
-                    <small class="text-muted d-block text-truncate">House Cleaner</small>
-                  </div>
-                </div>
-                <span class="badge bg-label-warning rounded-pill">Pending</span>
-              </div>
-            </a>
-
-            <!-- Artisan 5 -->
-            <a href="#" class="list-group-item list-group-item-action artisan-item" data-id="5"
-              data-name="Christopher Lee">
-              <div class="d-flex w-100 align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 flex-grow-1">
-                  <img src="/images/avatars/5.png" alt="avatar" class="rounded-circle"
-                    style="width: 40px; height: 40px;">
-                  <div class="flex-grow-1 min-width-0">
-                    <h6 class="mb-1 text-truncate">Christopher Lee</h6>
-                    <small class="text-muted d-block text-truncate">Landscaper</small>
-                  </div>
-                </div>
-                <span class="badge bg-label-warning rounded-pill">Pending</span>
-              </div>
-            </a>
+            @endforelse
           </div>
         </div>
       </div>
@@ -129,10 +71,13 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-4 text-center">
-              <img src="/images/avatars/1.png" alt="avatar" class="rounded-3 mb-4"
-                style="width: 140px; height: 140px;">
-              <h5 id="artisanName" class="mb-1">James Smith</h5>
-              <p id="artisanTrade" class="text-muted small mb-4">Plumber</p>
+              <div class="avatar avatar-xl rounded-3 mb-4 mx-auto bg-label-primary" style="width: 140px; height: 140px;">
+                <span class="avatar-initial rounded-3"
+                  style="font-size: 3rem;">{{ substr($selectedVerification?->user?->name ?? 'N', 0, 1) }}</span>
+              </div>
+              <h5 id="artisanName" class="mb-1">{{ $selectedVerification?->user?->name ?? 'No artisan selected' }}</h5>
+              <p id="artisanTrade" class="text-muted small mb-4">
+                {{ $selectedVerification?->user?->artisanProfile?->category ?? 'N/A' }}</p>
               <div class="d-grid gap-2">
                 <div class="badge bg-label-info py-2"><i class="icon-base ri ri-verified-badge-line me-1"></i>Pending
                   Review
@@ -144,27 +89,33 @@
               <div class="row mb-4">
                 <div class="col-sm-6 mb-3">
                   <small class="text-muted d-block mb-1">Email</small>
-                  <h6 id="artisanEmail" class="mb-0">james.smith@email.com</h6>
+                  <h6 id="artisanEmail" class="mb-0">{{ $selectedVerification?->user?->email ?? '-' }}</h6>
                 </div>
                 <div class="col-sm-6 mb-3">
                   <small class="text-muted d-block mb-1">Phone</small>
-                  <h6 id="artisanPhone" class="mb-0">+263 78 123 4567</h6>
+                  <h6 id="artisanPhone" class="mb-0">{{ $selectedVerification?->user?->artisanProfile?->phone ?? '-' }}
+                  </h6>
                 </div>
                 <div class="col-sm-6 mb-3">
                   <small class="text-muted d-block mb-1">Registration Date</small>
-                  <h6 id="artisanRegDate" class="mb-0">Jan 10, 2024</h6>
+                  <h6 id="artisanRegDate" class="mb-0">
+                    {{ $selectedVerification?->user?->created_at?->format('M d, Y') ?? '-' }}</h6>
                 </div>
                 <div class="col-sm-6 mb-3">
-                  <small class="text-muted d-block mb-1">Experience (Years)</small>
-                  <h6 id="artisanExperience" class="mb-0">5 years</h6>
+                  <small class="text-muted d-block mb-1">Business Name</small>
+                  <h6 id="artisanBusiness" class="mb-0">
+                    {{ $selectedVerification?->user?->artisanProfile?->business_name ?? '-' }}</h6>
                 </div>
                 <div class="col-sm-6 mb-3">
                   <small class="text-muted d-block mb-1">Location</small>
-                  <h6 id="artisanLocation" class="mb-0">Harare, Zimbabwe</h6>
+                  <h6 id="artisanLocation" class="mb-0">
+                    {{ $selectedVerification?->user?->artisanProfile?->location ?? '-' }}</h6>
                 </div>
                 <div class="col-sm-6 mb-3">
-                  <small class="text-muted d-block mb-1">Verification Rate</small>
-                  <h6 class="mb-0"><span class="badge bg-label-success">Excellent</span></h6>
+                  <small class="text-muted d-block mb-1">Verification Status</small>
+                  <h6 class="mb-0"><span
+                      class="badge bg-label-warning">{{ ucfirst($selectedVerification?->status ?? 'pending') }}</span>
+                  </h6>
                 </div>
               </div>
             </div>
@@ -189,10 +140,12 @@
                 </div>
                 <h6 class="mb-2">National ID Document</h6>
                 <small class="text-muted d-block mb-3">Status: <span
-                    class="badge bg-label-success">Uploaded</span></small>
-                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#idModal">
-                  <i class="icon-base ri ri-eye-line me-1"></i>View
-                </button>
+                    class="badge {{ $selectedVerification?->nationalDocument ? 'bg-label-success' : 'bg-label-warning' }}">{{ $selectedVerification?->nationalDocument ? 'Verified' : 'Pending' }}</span></small>
+                @if ($selectedVerification?->nationalDocument)
+                  <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#idModal">
+                    <i class="icon-base ri ri-eye-line me-1"></i>View
+                  </button>
+                @endif
               </div>
             </div>
 
@@ -205,10 +158,8 @@
                 </div>
                 <h6 class="mb-2">Trade License</h6>
                 <small class="text-muted d-block mb-3">Status: <span
-                    class="badge bg-label-success">Uploaded</span></small>
-                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#licenseModal">
-                  <i class="icon-base ri ri-eye-line me-1"></i>View
-                </button>
+                    class="badge bg-label-warning">Pending</span></small>
+                <p class="text-muted small mb-0">Awaiting upload</p>
               </div>
             </div>
 
@@ -221,10 +172,8 @@
                 </div>
                 <h6 class="mb-2">Insurance Document</h6>
                 <small class="text-muted d-block mb-3">Status: <span
-                    class="badge bg-label-success">Uploaded</span></small>
-                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insuranceModal">
-                  <i class="icon-base ri ri-eye-line me-1"></i>View
-                </button>
+                    class="badge bg-label-warning">Pending</span></small>
+                <p class="text-muted small mb-0">Awaiting upload</p>
               </div>
             </div>
 
@@ -237,10 +186,12 @@
                 </div>
                 <h6 class="mb-2">Bank Details</h6>
                 <small class="text-muted d-block mb-3">Status: <span
-                    class="badge bg-label-success">Uploaded</span></small>
-                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#bankModal">
-                  <i class="icon-base ri ri-eye-line me-1"></i>View
-                </button>
+                    class="badge {{ $selectedVerification?->user?->paynowAccount ? 'bg-label-success' : 'bg-label-warning' }}">{{ $selectedVerification?->user?->paynowAccount ? 'Verified' : 'Pending' }}</span></small>
+                @if ($selectedVerification?->user?->paynowAccount)
+                  <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#bankModal">
+                    <i class="icon-base ri ri-eye-line me-1"></i>View
+                  </button>
+                @endif
               </div>
             </div>
           </div>
@@ -275,27 +226,35 @@
                   <table class="table table-sm mb-0">
                     <tr>
                       <td><strong>Full Name</strong></td>
-                      <td>James Christopher Smith</td>
+                      <td>{{ $selectedVerification?->nationalDocument?->full_name ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                       <td><strong>ID Number</strong></td>
-                      <td>63-294056-Y-23</td>
+                      <td>{{ $selectedVerification?->nationalDocument?->id_number ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                       <td><strong>Date of Birth</strong></td>
-                      <td>March 15, 1989</td>
+                      <td>
+                        {{ $selectedVerification?->nationalDocument?->dob ? \Carbon\Carbon::parse($selectedVerification->nationalDocument->dob)->format('M d, Y') : 'N/A' }}
+                      </td>
                     </tr>
                     <tr>
                       <td><strong>Issue Date</strong></td>
-                      <td>Jan 10, 2020</td>
+                      <td>
+                        {{ $selectedVerification?->nationalDocument?->issue_date ? \Carbon\Carbon::parse($selectedVerification->nationalDocument->issue_date)->format('M d, Y') : 'N/A' }}
+                      </td>
                     </tr>
                     <tr>
                       <td><strong>Expiry Date</strong></td>
-                      <td>Jan 10, 2030</td>
+                      <td>
+                        {{ $selectedVerification?->nationalDocument?->expiry_date ? \Carbon\Carbon::parse($selectedVerification->nationalDocument->expiry_date)->format('M d, Y') : 'N/A' }}
+                      </td>
                     </tr>
                     <tr>
                       <td><strong>Status</strong></td>
-                      <td><span class="badge bg-label-success">Valid</span></td>
+                      <td><span
+                          class="badge {{ $selectedVerification?->nationalDocument?->expiry_date && \Carbon\Carbon::parse($selectedVerification->nationalDocument->expiry_date)->isFuture() ? 'bg-label-success' : 'bg-label-danger' }}">{{ $selectedVerification?->nationalDocument?->expiry_date && \Carbon\Carbon::parse($selectedVerification->nationalDocument->expiry_date)->isFuture() ? 'Valid' : 'Expired' }}</span>
+                      </td>
                     </tr>
                   </table>
                 </div>
@@ -305,55 +264,51 @@
                   <table class="table table-sm mb-0">
                     <tr>
                       <td><strong>Business Name</strong></td>
-                      <td>Smith Plumbing Services</td>
-                    </tr>
-                    <tr>
-                      <td><strong>License Number</strong></td>
-                      <td>PL-2024-001548</td>
+                      <td>{{ $selectedVerification?->user?->artisanProfile?->business_name ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                       <td><strong>Trade Category</strong></td>
-                      <td>Plumbing & Water Services</td>
+                      <td>{{ $selectedVerification?->user?->artisanProfile?->category ?? 'N/A' }}</td>
                     </tr>
                     <tr>
-                      <td><strong>Issue Date</strong></td>
-                      <td>Jan 15, 2024</td>
+                      <td><strong>Location</strong></td>
+                      <td>{{ $selectedVerification?->user?->artisanProfile?->location ?? 'N/A' }}</td>
                     </tr>
                     <tr>
-                      <td><strong>Expiry Date</strong></td>
-                      <td>Jan 15, 2025</td>
+                      <td><strong>Bio</strong></td>
+                      <td>{{ $selectedVerification?->user?->artisanProfile?->bio ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                       <td><strong>Status</strong></td>
-                      <td><span class="badge bg-label-success">Active</span></td>
+                      <td><span class="badge bg-label-info">Pending Verification</span></td>
                     </tr>
                   </table>
                 </div>
               </div>
               <div class="tab-pane fade" id="ocrBank" role="tabpanel">
                 <div class="table-responsive mt-3">
-                  <table class="table table-sm mb-0">
-                    <tr>
-                      <td><strong>Account Holder</strong></td>
-                      <td>James Christopher Smith</td>
-                    </tr>
-                    <tr>
-                      <td><strong>Bank Name</strong></td>
-                      <td>First Capital Bank</td>
-                    </tr>
-                    <tr>
-                      <td><strong>Account Number</strong></td>
-                      <td>••••••••8923</td>
-                    </tr>
-                    <tr>
-                      <td><strong>Account Type</strong></td>
-                      <td>Business Checking</td>
-                    </tr>
-                    <tr>
-                      <td><strong>Verification</strong></td>
-                      <td><span class="badge bg-label-success">Verified</span></td>
-                    </tr>
-                  </table>
+                  @if ($selectedVerification?->user?->paynowAccount)
+                    <table class="table table-sm mb-0">
+                      <tr>
+                        <td><strong>Account Holder</strong></td>
+                        <td>{{ $selectedVerification->user->name ?? 'N/A' }}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Account Number</strong></td>
+                        <td>
+                          {{ substr($selectedVerification->user->paynowAccount->account_number, -4) ? '••••••••' . substr($selectedVerification->user->paynowAccount->account_number, -4) : 'N/A' }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><strong>Account Status</strong></td>
+                        <td><span class="badge bg-label-success">Active</span></td>
+                      </tr>
+                    </table>
+                  @else
+                    <div class="alert alert-warning" role="alert">
+                      <i class="icon-base ri ri-alert-line me-2"></i>No bank account details on file yet
+                    </div>
+                  @endif
                 </div>
               </div>
             </div>

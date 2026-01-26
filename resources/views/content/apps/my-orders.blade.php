@@ -23,7 +23,7 @@
           <h4 class="mb-2">My Orders</h4>
           <p class="text-muted mb-0">Track and manage all your artisan service orders</p>
         </div>
-        <span class="badge bg-label-info">24 Total Orders</span>
+        <span class="badge bg-label-info">{{ $totalOrders }} Total Order{{ $totalOrders !== 1 ? 's' : '' }}</span>
       </div>
     </div>
   </div>
@@ -37,8 +37,9 @@
           <div class="d-flex align-items-center justify-content-between">
             <div>
               <p class="mb-1 text-muted">Completed Orders</p>
-              <h4 class="mb-2">18</h4>
-              <p class="mb-0 text-success"><i class="icon-base ri ri-arrow-up-s-line"></i> +25% this month</p>
+              <h4 class="mb-2">{{ $completedCount }}</h4>
+              <p class="mb-0 text-success"><i class="icon-base ri ri-arrow-up-s-line"></i>
+                Order{{ $completedCount !== 1 ? 's' : '' }} finished</p>
             </div>
             <div class="avatar bg-label-success">
               <div class="avatar-initial rounded">
@@ -57,7 +58,7 @@
           <div class="d-flex align-items-center justify-content-between">
             <div>
               <p class="mb-1 text-muted">In Progress</p>
-              <h4 class="mb-2">4</h4>
+              <h4 class="mb-2">{{ $inProgressCount }}</h4>
               <p class="mb-0 text-warning"><i class="icon-base ri ri-time-line"></i> Being worked on</p>
             </div>
             <div class="avatar bg-label-warning">
@@ -77,7 +78,7 @@
           <div class="d-flex align-items-center justify-content-between">
             <div>
               <p class="mb-1 text-muted">Pending Payment</p>
-              <h4 class="mb-2">2</h4>
+              <h4 class="mb-2">{{ $pendingPaymentCount }}</h4>
               <p class="mb-0 text-danger"><i class="icon-base ri ri-alert-line"></i> Awaiting payment</p>
             </div>
             <div class="avatar bg-label-danger">
@@ -97,8 +98,8 @@
           <div class="d-flex align-items-center justify-content-between">
             <div>
               <p class="mb-1 text-muted">Total Spent</p>
-              <h4 class="mb-2">$3,245</h4>
-              <p class="mb-0 text-primary"><i class="icon-base ri ri-money-dollar-circle-line"></i> This year</p>
+              <h4 class="mb-2">${{ number_format($totalSpent, 2) }}</h4>
+              <p class="mb-0 text-primary"><i class="icon-base ri ri-money-dollar-circle-line"></i> Completed orders</p>
             </div>
             <div class="avatar bg-label-primary">
               <div class="avatar-initial rounded">
@@ -212,178 +213,88 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><span class="badge bg-label-primary">#ORD001</span></td>
-            <td>
-              <div class="d-flex align-items-center">
-                <div class="avatar avatar-sm me-2">
-                  <img src="{{ asset('assets/img/avatars/1.png') }}" alt="Avatar" class="rounded-circle" />
+          @forelse($orders as $order)
+            <tr>
+              <td><span class="badge bg-label-primary">#{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}</span></td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="avatar avatar-sm me-2">
+                    <img
+                      src="{{ $order->artisan->profile_photo_path ? asset('storage/' . $order->artisan->profile_photo_path) : asset('assets/img/avatars/1.png') }}"
+                      alt="Avatar" class="rounded-circle" />
+                  </div>
+                  <span>{{ $order->artisan->user->name }}</span>
                 </div>
-                <span>John Mbewe</span>
-              </div>
-            </td>
-            <td>Plumbing Repair</td>
-            <td>Jan 20, 2026</td>
-            <td><strong>$450</strong></td>
-            <td><span class="badge bg-label-success">Paid</span></td>
-            <td><span class="badge bg-label-success">Completed</span></td>
-            <td>
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary rounded-pill p-0" type="button"
-                  data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <div class="dropdown-menu dropdown-menu-end">
-                  <a class="dropdown-item" href="javascript:void(0);">
-                    <i class="icon-base ri ri-eye-line me-2"></i>View Details
-                  </a>
-                  <a class="dropdown-item" href="javascript:void(0);">
-                    <i class="icon-base ri ri-download-line me-2"></i>Download Invoice
-                  </a>
-                  <a class="dropdown-item" href="javascript:void(0);">
-                    <i class="icon-base ri ri-star-line me-2"></i>Leave Review
-                  </a>
+              </td>
+              <td>{{ $order->items->first()?->artisanService?->service_name ?? 'N/A' }}</td>
+              <td>{{ $order->created_at->format('M d, Y') }}</td>
+              <td><strong>${{ number_format($order->total_amount ?? 0, 2) }}</strong></td>
+              <td>
+                @if ($order->payment_status === 'paid')
+                  <span class="badge bg-label-success">Paid</span>
+                @else
+                  <span class="badge bg-label-warning">Pending</span>
+                @endif
+              </td>
+              <td>
+                @php
+                  $statusColors = [
+                      'completed' => 'success',
+                      'processing' => 'info',
+                      'paid' => 'success',
+                      'pending' => 'warning',
+                      'cancelled' => 'danger',
+                  ];
+                  $statusColor = $statusColors[$order->status] ?? 'secondary';
+                  $statusLabel = ucfirst(str_replace('_', ' ', $order->status));
+                @endphp
+                <span class="badge bg-label-{{ $statusColor }}">{{ $statusLabel }}</span>
+              </td>
+              <td>
+                <div class="dropdown">
+                  <button class="btn btn-icon btn-text-secondary rounded-pill p-0" type="button"
+                    data-bs-toggle="dropdown">
+                    <i class="icon-base ri ri-more-2-line"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-end">
+                    <a class="dropdown-item" href="{{ route('user-order-details', $order->id) }}">
+                      <i class="icon-base ri ri-eye-line me-2"></i>View Details
+                    </a>
+                    @if ($order->status === 'completed')
+                      <a class="dropdown-item" href="javascript:void(0);">
+                        <i class="icon-base ri ri-download-line me-2"></i>Download Invoice
+                      </a>
+                      <a class="dropdown-item" href="javascript:void(0);">
+                        <i class="icon-base ri ri-star-line me-2"></i>Leave Review
+                      </a>
+                    @elseif($order->status === 'processing' || $order->status === 'paid')
+                      <a class="dropdown-item" href="javascript:void(0);">
+                        <i class="icon-base ri ri-phone-line me-2"></i>Contact Artisan
+                      </a>
+                      <a class="dropdown-item" href="javascript:void(0);">
+                        <i class="icon-base ri ri-time-line me-2"></i>Track Progress
+                      </a>
+                    @elseif($order->payment_status === 'unpaid')
+                      <a class="dropdown-item" href="javascript:void(0);">
+                        <i class="icon-base ri ri-bank-card-line me-2"></i>Pay Now
+                      </a>
+                    @endif
+                  </div>
                 </div>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td><span class="badge bg-label-primary">#ORD002</span></td>
-            <td>
-              <div class="d-flex align-items-center">
-                <div class="avatar avatar-sm me-2">
-                  <img src="{{ asset('assets/img/avatars/3.png') }}" alt="Avatar" class="rounded-circle" />
+              </td>
+            </tr>
+          @empty
+            <tr>
+              <td colspan="8" class="text-center py-4">
+                <div class="text-muted mb-3">
+                  <i class="icon-base ri ri-inbox-archive-line icon-48px"></i>
                 </div>
-                <span>Grace Muleya</span>
-              </div>
-            </td>
-            <td>Tailoring Services</td>
-            <td>Jan 21, 2026</td>
-            <td><strong>$120</strong></td>
-            <td><span class="badge bg-label-success">Paid</span></td>
-            <td><span class="badge bg-label-info">In Progress</span></td>
-            <td>
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary rounded-pill p-0" type="button"
-                  data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <div class="dropdown-menu dropdown-menu-end">
-                  <a class="dropdown-item" href="javascript:void(0);">
-                    <i class="icon-base ri ri-eye-line me-2"></i>View Details
-                  </a>
-                  <a class="dropdown-item" href="javascript:void(0);">
-                    <i class="icon-base ri ri-phone-line me-2"></i>Contact Artisan
-                  </a>
-                  <a class="dropdown-item" href="javascript:void(0);">
-                    <i class="icon-base ri ri-time-line me-2"></i>Track Progress
-                  </a>
-                </div>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td><span class="badge bg-label-primary">#ORD003</span></td>
-            <td>
-              <div class="d-flex align-items-center">
-                <div class="avatar avatar-sm me-2">
-                  <img src="{{ asset('assets/img/avatars/2.png') }}" alt="Avatar" class="rounded-circle" />
-                </div>
-                <span>Peter Nkomo</span>
-              </div>
-            </td>
-            <td>Carpentry Work</td>
-            <td>Jan 21, 2026</td>
-            <td><strong>$800</strong></td>
-            <td><span class="badge bg-label-warning">Pending</span></td>
-            <td><span class="badge bg-label-warning">Pending</span></td>
-            <td>
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary rounded-pill p-0" type="button"
-                  data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <div class="dropdown-menu dropdown-menu-end">
-                  <a class="dropdown-item" href="javascript:void(0);">
-                    <i class="icon-base ri ri-eye-line me-2"></i>View Details
-                  </a>
-                  <a class="dropdown-item" href="javascript:void(0);">
-                    <i class="icon-base ri ri-bank-card-line me-2"></i>Pay Now
-                  </a>
-                </div>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td><span class="badge bg-label-primary">#ORD004</span></td>
-            <td>
-              <div class="d-flex align-items-center">
-                <div class="avatar avatar-sm me-2">
-                  <img src="{{ asset('assets/img/avatars/4.png') }}" alt="Avatar" class="rounded-circle" />
-                </div>
-                <span>Tendai Moyo</span>
-              </div>
-            </td>
-            <td>Electrical Installation</td>
-            <td>Jan 19, 2026</td>
-            <td><strong>$350</strong></td>
-            <td><span class="badge bg-label-success">Paid</span></td>
-            <td><span class="badge bg-label-success">Completed</span></td>
-            <td>
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary rounded-pill p-0" type="button"
-                  data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <div class="dropdown-menu dropdown-menu-end">
-                  <a class="dropdown-item" href="javascript:void(0);">
-                    <i class="icon-base ri ri-eye-line me-2"></i>View Details
-                  </a>
-                  <a class="dropdown-item" href="javascript:void(0);">
-                    <i class="icon-base ri ri-download-line me-2"></i>Download Invoice
-                  </a>
-                  <a class="dropdown-item" href="javascript:void(0);">
-                    <i class="icon-base ri ri-star-line me-2"></i>Leave Review
-                  </a>
-                </div>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td><span class="badge bg-label-primary">#ORD005</span></td>
-            <td>
-              <div class="d-flex align-items-center">
-                <div class="avatar avatar-sm me-2">
-                  <img src="{{ asset('assets/img/avatars/5.png') }}" alt="Avatar" class="rounded-circle" />
-                </div>
-                <span>Chipo Mwale</span>
-              </div>
-            </td>
-            <td>Beadwork & Crafts</td>
-            <td>Jan 18, 2026</td>
-            <td><strong>$95</strong></td>
-            <td><span class="badge bg-label-success">Paid</span></td>
-            <td><span class="badge bg-label-success">Completed</span></td>
-            <td>
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary rounded-pill p-0" type="button"
-                  data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <div class="dropdown-menu dropdown-menu-end">
-                  <a class="dropdown-item" href="javascript:void(0);">
-                    <i class="icon-base ri ri-eye-line me-2"></i>View Details
-                  </a>
-                  <a class="dropdown-item" href="javascript:void(0);">
-                    <i class="icon-base ri ri-download-line me-2"></i>Download Invoice
-                  </a>
-                  <a class="dropdown-item" href="javascript:void(0);">
-                    <i class="icon-base ri ri-star-line me-2"></i>Leave Review
-                  </a>
-                </div>
-              </div>
-            </td>
-          </tr>
+                <p class="mb-2 fw-medium">No orders yet</p>
+                <p class="text-muted mb-3">Start browsing artisans and place your first order</p>
+                <a href="{{ route('user-browse-artisans') }}" class="btn btn-primary btn-sm">Browse Artisans</a>
+              </td>
+            </tr>
+          @endforelse
         </tbody>
       </table>
     </div>
@@ -393,16 +304,16 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const orderTrendsChart = new ApexCharts(document.querySelector("#orderTrendsChart"), {
-        series: [{
-          name: 'Completed',
-          data: [12, 15, 18, 16, 20, 18, 25]
-        }, {
-          name: 'In Progress',
-          data: [2, 3, 2, 4, 3, 5, 4]
-        }, {
-          name: 'Pending',
-          data: [1, 2, 1, 2, 1, 2, 1]
-        }],
+        series: [
+          @if ($chartData['series'])
+            @foreach ($chartData['series'] as $series)
+              {
+                name: '{{ $series['name'] }}',
+                data: {{ json_encode($series['data']) }}
+              },
+            @endforeach
+          @endif
+        ],
         chart: {
           type: 'bar',
           height: 350,
@@ -422,7 +333,7 @@
           enabled: false
         },
         xaxis: {
-          categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          categories: {{ json_encode($chartData['categories']) }}
         },
         yaxis: {
           title: {

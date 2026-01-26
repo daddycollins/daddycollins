@@ -4,7 +4,7 @@
 
 <!-- Vendor Styles -->
 @section('vendor-style')
-  @vite(['resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss', 'resources/assets/vendor/libs/apex-charts/apex-charts.scss'])
+  @vite(['resources/assets/vendor/libs/select2/select2.scss'])
 @endsection
 
 <!-- Page Styles -->
@@ -14,12 +14,7 @@
 
 <!-- Vendor Scripts -->
 @section('vendor-script')
-  @vite(['resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js', 'resources/assets/vendor/libs/apex-charts/apexcharts.js'])
-@endsection
-
-<!-- Page Scripts -->
-@section('page-script')
-  @vite(['resources/assets/js/pages-profile-user.js'])
+  @vite(['resources/assets/vendor/libs/select2/select2.js'])
 @endsection
 
 @section('content')
@@ -39,21 +34,29 @@
             <div
               class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-5 flex-md-row flex-column gap-6">
               <div class="user-profile-info">
-                <h4 class="mb-2">John Doe</h4>
+                <h4 class="mb-2">{{ $user->name }}</h4>
                 <ul
                   class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-4">
-                  <li class="list-inline-item"><i class="icon-base ri ri-map-pin-line me-2 icon-24px"></i><span
-                      class="fw-medium">Harare, Zimbabwe</span></li>
-                  <li class="list-inline-item"><i class="icon-base ri ri-calendar-line me-2 icon-24px"></i><span
-                      class="fw-medium">Member since Jan 2024</span></li>
-                  <li class="list-inline-item"><i
-                      class="icon-base ri ri-check-double-line me-2 icon-24px text-success"></i><span
-                      class="fw-medium">Verified</span></li>
+                  <li class="list-inline-item">
+                    <i class="icon-base ri ri-mail-line me-2 icon-24px"></i>
+                    <span class="fw-medium">{{ $user->email }}</span>
+                  </li>
+                  <li class="list-inline-item">
+                    <i class="icon-base ri ri-calendar-line me-2 icon-24px"></i>
+                    <span class="fw-medium">Member since {{ $user->created_at->format('M Y') }}</span>
+                  </li>
+                  @if ($user->email_verified_at)
+                    <li class="list-inline-item">
+                      <i class="icon-base ri ri-check-double-line me-2 icon-24px text-success"></i>
+                      <span class="fw-medium">Verified</span>
+                    </li>
+                  @endif
                 </ul>
               </div>
               <div class="d-flex gap-2">
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal"> <i
-                    class="icon-base ri ri-edit-line icon-16px me-2"></i>Edit Profile </button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                  <i class="icon-base ri ri-edit-line icon-16px me-2"></i>Edit Profile
+                </button>
               </div>
             </div>
           </div>
@@ -73,16 +76,31 @@
           <small class="card-text text-uppercase text-body-secondary small fw-bold mb-3 d-block">Account
             Information</small>
           <ul class="list-unstyled my-0">
-            <li class="d-flex align-items-center mb-4"><i class="icon-base ri ri-user-3-line icon-24px"></i><span
-                class="fw-medium mx-2">Full Name:</span> <span>John Doe</span></li>
-            <li class="d-flex align-items-center mb-4"><i class="icon-base ri ri-mail-open-line icon-24px"></i><span
-                class="fw-medium mx-2">Email:</span> <span>john.doe@example.com</span></li>
-            <li class="d-flex align-items-center mb-4"><i class="icon-base ri ri-phone-line icon-24px"></i><span
-                class="fw-medium mx-2">Phone:</span> <span>+263 78 123 4567</span></li>
-            <li class="d-flex align-items-center mb-4"><i class="icon-base ri ri-map-pin-line icon-24px"></i><span
-                class="fw-medium mx-2">Location:</span> <span>Harare, Zimbabwe</span></li>
-            <li class="d-flex align-items-center"><i class="icon-base ri ri-calendar-line icon-24px"></i><span
-                class="fw-medium mx-2">Join Date:</span> <span>15 Jan 2024</span></li>
+            <li class="d-flex align-items-center mb-4">
+              <i class="icon-base ri ri-user-3-line icon-24px"></i>
+              <span class="fw-medium mx-2">Full Name:</span>
+              <span>{{ $user->name }}</span>
+            </li>
+            <li class="d-flex align-items-center mb-4">
+              <i class="icon-base ri ri-mail-open-line icon-24px"></i>
+              <span class="fw-medium mx-2">Email:</span>
+              <span>{{ $user->email }}</span>
+            </li>
+            <li class="d-flex align-items-center mb-4">
+              <i class="icon-base ri ri-phone-line icon-24px"></i>
+              <span class="fw-medium mx-2">Phone:</span>
+              <span>{{ $user->phone ?? 'Not provided' }}</span>
+            </li>
+            <li class="d-flex align-items-center mb-4">
+              <i class="icon-base ri ri-shield-user-line icon-24px"></i>
+              <span class="fw-medium mx-2">Role:</span>
+              <span class="badge bg-label-primary">{{ ucfirst($user->role) }}</span>
+            </li>
+            <li class="d-flex align-items-center">
+              <i class="icon-base ri ri-calendar-line icon-24px"></i>
+              <span class="fw-medium mx-2">Join Date:</span>
+              <span>{{ $user->created_at->format('d M Y') }}</span>
+            </li>
           </ul>
         </div>
       </div>
@@ -95,19 +113,27 @@
           <div class="mb-3">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <span class="small">Email Verified</span>
-              <span class="badge bg-success">Verified</span>
+              @if ($user->email_verified_at)
+                <span class="badge bg-success">Verified</span>
+              @else
+                <span class="badge bg-warning">Pending</span>
+              @endif
             </div>
             <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="small">Identity Verified</span>
-              <span class="badge bg-success">Verified</span>
-            </div>
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="small">Phone Verified</span>
-              <span class="badge bg-success">Verified</span>
+              <span class="small">Account Status</span>
+              @if ($user->status === 'active')
+                <span class="badge bg-success">Active</span>
+              @else
+                <span class="badge bg-danger">{{ ucfirst($user->status ?? 'Inactive') }}</span>
+              @endif
             </div>
             <div class="d-flex justify-content-between align-items-center">
-              <span class="small">Payment Method</span>
-              <span class="badge bg-info">Added</span>
+              <span class="small">Phone Number</span>
+              @if ($user->phone)
+                <span class="badge bg-success">Added</span>
+              @else
+                <span class="badge bg-secondary">Not Added</span>
+              @endif
             </div>
           </div>
           <button class="btn btn-sm btn-outline-primary w-100" data-bs-toggle="modal"
@@ -123,14 +149,17 @@
         <div class="card-body">
           <small class="card-text text-uppercase text-body-secondary small fw-bold mb-3 d-block">Quick Actions</small>
           <div class="d-grid gap-2">
-            <a href="{{ url('apps/client-dashboard') }}" class="btn btn-outline-primary btn-sm">
+            <a href="{{ route('user-dashboard') }}" class="btn btn-outline-primary btn-sm">
               <i class="icon-base ri ri-dashboard-line me-1"></i>My Dashboard
             </a>
-            <a href="{{ url('apps/my-orders') }}" class="btn btn-outline-primary btn-sm">
+            <a href="{{ route('user-my-orders') }}" class="btn btn-outline-primary btn-sm">
               <i class="icon-base ri ri-shopping-cart-line me-1"></i>My Orders
             </a>
-            <a href="{{ url('apps/artisan-review') }}" class="btn btn-outline-primary btn-sm">
+            <a href="{{ route('user-create-review') }}" class="btn btn-outline-primary btn-sm">
               <i class="icon-base ri ri-chat-3-line me-1"></i>My Reviews
+            </a>
+            <a href="{{ route('user-browse-artisans') }}" class="btn btn-outline-primary btn-sm">
+              <i class="icon-base ri ri-search-line me-1"></i>Browse Artisans
             </a>
           </div>
         </div>
@@ -139,226 +168,130 @@
 
     <!-- Main Content -->
     <div class="col-xl-8 col-lg-7 col-md-7">
-      <!-- Statistics Cards -->
-      <div class="row g-4 mb-6">
-        <div class="col-sm-6">
-          <div class="card">
-            <div class="card-body">
-              <div class="d-flex align-items-center justify-content-between">
-                <div>
-                  <h6 class="mb-2 text-muted">Total Orders</h6>
-                  <h4 class="mb-0">24</h4>
-                </div>
-                <div class="avatar bg-label-primary">
-                  <div class="avatar-initial rounded"><i class="icon-base ri ri-shopping-bag-line icon-24px"></i></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <div class="card">
-            <div class="card-body">
-              <div class="d-flex align-items-center justify-content-between">
-                <div>
-                  <h6 class="mb-2 text-muted">Total Spent</h6>
-                  <h4 class="mb-0">ZWL 15,240</h4>
-                </div>
-                <div class="avatar bg-label-success">
-                  <div class="avatar-initial rounded"><i class="icon-base ri ri-money-dollar-circle-line icon-24px"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <div class="card">
-            <div class="card-body">
-              <div class="d-flex align-items-center justify-content-between">
-                <div>
-                  <h6 class="mb-2 text-muted">Favorite Artisans</h6>
-                  <h4 class="mb-0">8</h4>
-                </div>
-                <div class="avatar bg-label-warning">
-                  <div class="avatar-initial rounded"><i class="icon-base ri ri-star-line icon-24px"></i></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <div class="card">
-            <div class="card-body">
-              <div class="d-flex align-items-center justify-content-between">
-                <div>
-                  <h6 class="mb-2 text-muted">Average Rating Given</h6>
-                  <h4 class="mb-0">4.6/5</h4>
-                </div>
-                <div class="avatar bg-label-info">
-                  <div class="avatar-initial rounded"><i class="icon-base ri ri-feedback-line icon-24px"></i></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Recent Orders -->
+      <!-- Account Settings Card -->
       <div class="card mb-6">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <h5 class="card-title mb-0">Recent Orders</h5>
-          <a href="{{ url('apps/my-orders') }}" class="btn btn-sm btn-primary">View All</a>
-        </div>
-        <div class="table-responsive">
-          <table class="table table-hover mb-0">
-            <thead class="table-light">
-              <tr>
-                <th>Order ID</th>
-                <th>Artisan</th>
-                <th>Service</th>
-                <th>Amount</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="badge bg-label-primary">#ORD-001</span></td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <img src="{{ asset('assets/img/avatars/2.png') }}" alt="Avatar" class="rounded-circle me-2"
-                      width="32" height="32" />
-                    <span>John Mbewe</span>
-                  </div>
-                </td>
-                <td>Plumbing Repair</td>
-                <td>ZWL 450</td>
-                <td><span class="badge bg-label-success">Completed</span></td>
-              </tr>
-              <tr>
-                <td><span class="badge bg-label-primary">#ORD-002</span></td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <img src="{{ asset('assets/img/avatars/3.png') }}" alt="Avatar" class="rounded-circle me-2"
-                      width="32" height="32" />
-                    <span>Grace Muleya</span>
-                  </div>
-                </td>
-                <td>Custom Tailoring</td>
-                <td>ZWL 800</td>
-                <td><span class="badge bg-label-success">Completed</span></td>
-              </tr>
-              <tr>
-                <td><span class="badge bg-label-primary">#ORD-003</span></td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <img src="{{ asset('assets/img/avatars/4.png') }}" alt="Avatar" class="rounded-circle me-2"
-                      width="32" height="32" />
-                    <span>Peter Nkomo</span>
-                  </div>
-                </td>
-                <td>Furniture Making</td>
-                <td>ZWL 2,500</td>
-                <td><span class="badge bg-label-warning">In Progress</span></td>
-              </tr>
-              <tr>
-                <td><span class="badge bg-label-primary">#ORD-004</span></td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <img src="{{ asset('assets/img/avatars/5.png') }}" alt="Avatar" class="rounded-circle me-2"
-                      width="32" height="32" />
-                    <span>Tendai Moyo</span>
-                  </div>
-                </td>
-                <td>Electrical Installation</td>
-                <td>ZWL 1,200</td>
-                <td><span class="badge bg-label-info">Pending</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Favorite Artisans -->
-      <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <h5 class="card-title mb-0">Favorite Artisans</h5>
-          <a href="{{ url('apps/browse-artisans') }}" class="btn btn-sm btn-primary">Browse More</a>
+        <div class="card-header">
+          <h5 class="card-title mb-0">Account Settings</h5>
         </div>
         <div class="card-body">
           <div class="row g-4">
-            <div class="col-md-6">
-              <div class="d-flex align-items-center">
-                <img src="{{ asset('assets/img/avatars/2.png') }}" alt="Artisan" class="rounded-circle me-3"
-                  width="48" height="48" />
-                <div class="flex-grow-1">
-                  <h6 class="mb-1">John Mbewe</h6>
-                  <p class="text-muted small mb-1">Plumbing & Repairs</p>
-                  <small class="text-warning">
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    <i class="icon-base ri ri-star-half-fill icon-14px"></i>
-                    4.8
-                  </small>
+            <!-- Personal Information -->
+            <div class="col-12">
+              <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="avatar bg-label-primary">
+                    <div class="avatar-initial rounded"><i class="icon-base ri ri-user-settings-line icon-24px"></i>
+                    </div>
+                  </div>
+                  <div>
+                    <h6 class="mb-1">Personal Information</h6>
+                    <small class="text-muted">Update your name, email, and phone number</small>
+                  </div>
                 </div>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                  Edit
+                </button>
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="d-flex align-items-center">
-                <img src="{{ asset('assets/img/avatars/3.png') }}" alt="Artisan" class="rounded-circle me-3"
-                  width="48" height="48" />
-                <div class="flex-grow-1">
-                  <h6 class="mb-1">Grace Muleya</h6>
-                  <p class="text-muted small mb-1">Tailoring & Fashion</p>
-                  <small class="text-warning">
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    5.0
-                  </small>
+
+            <!-- Security Settings -->
+            <div class="col-12">
+              <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="avatar bg-label-warning">
+                    <div class="avatar-initial rounded"><i class="icon-base ri ri-lock-password-line icon-24px"></i>
+                    </div>
+                  </div>
+                  <div>
+                    <h6 class="mb-1">Password & Security</h6>
+                    <small class="text-muted">Change your password and secure your account</small>
+                  </div>
                 </div>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                  Update
+                </button>
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="d-flex align-items-center">
-                <img src="{{ asset('assets/img/avatars/4.png') }}" alt="Artisan" class="rounded-circle me-3"
-                  width="48" height="48" />
-                <div class="flex-grow-1">
-                  <h6 class="mb-1">Peter Nkomo</h6>
-                  <p class="text-muted small mb-1">Carpentry & Woodwork</p>
-                  <small class="text-warning">
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    <i class="icon-base ri ri-star-line icon-14px"></i>
-                    4.3
-                  </small>
+
+            <!-- Email Verification -->
+            <div class="col-12">
+              <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="avatar {{ $user->email_verified_at ? 'bg-label-success' : 'bg-label-danger' }}">
+                    <div class="avatar-initial rounded"><i class="icon-base ri ri-mail-check-line icon-24px"></i></div>
+                  </div>
+                  <div>
+                    <h6 class="mb-1">Email Verification</h6>
+                    @if ($user->email_verified_at)
+                      <small class="text-success">Your email has been verified on
+                        {{ $user->email_verified_at->format('M d, Y') }}</small>
+                    @else
+                      <small class="text-danger">Your email is not verified yet</small>
+                    @endif
+                  </div>
                 </div>
+                @if (!$user->email_verified_at)
+                  <button class="btn btn-sm btn-warning">
+                    Verify Now
+                  </button>
+                @else
+                  <span class="badge bg-success">Verified</span>
+                @endif
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="d-flex align-items-center">
-                <img src="{{ asset('assets/img/avatars/5.png') }}" alt="Artisan" class="rounded-circle me-3"
-                  width="48" height="48" />
-                <div class="flex-grow-1">
-                  <h6 class="mb-1">Tendai Moyo</h6>
-                  <p class="text-muted small mb-1">Electrical Services</p>
-                  <small class="text-warning">
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    <i class="icon-base ri ri-star-half-fill icon-14px"></i>
-                    4.7
-                  </small>
-                </div>
-              </div>
-            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Activity -->
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Account Details</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-borderless">
+              <tbody>
+                <tr>
+                  <td class="text-muted" style="width: 200px;">Account ID</td>
+                  <td><strong>#{{ str_pad($user->id, 6, '0', STR_PAD_LEFT) }}</strong></td>
+                </tr>
+                <tr>
+                  <td class="text-muted">Full Name</td>
+                  <td>{{ $user->name }}</td>
+                </tr>
+                <tr>
+                  <td class="text-muted">Email Address</td>
+                  <td>{{ $user->email }}</td>
+                </tr>
+                <tr>
+                  <td class="text-muted">Phone Number</td>
+                  <td>{{ $user->phone ?? 'Not provided' }}</td>
+                </tr>
+                <tr>
+                  <td class="text-muted">Account Type</td>
+                  <td><span class="badge bg-label-primary">{{ ucfirst($user->role) }}</span></td>
+                </tr>
+                <tr>
+                  <td class="text-muted">Account Status</td>
+                  <td>
+                    @if ($user->status === 'active')
+                      <span class="badge bg-success">Active</span>
+                    @else
+                      <span class="badge bg-danger">{{ ucfirst($user->status ?? 'Inactive') }}</span>
+                    @endif
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-muted">Member Since</td>
+                  <td>{{ $user->created_at->format('F d, Y') }}</td>
+                </tr>
+                <tr>
+                  <td class="text-muted">Last Updated</td>
+                  <td>{{ $user->updated_at->format('F d, Y \a\t h:i A') }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -374,108 +307,57 @@
           <h5 class="modal-title">Update Personal Details</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <form id="editProfileForm">
+        <form action="{{ route('user-profile-update') }}" method="POST" id="editProfileForm">
+          @csrf
+          @method('PUT')
+          <div class="modal-body">
             <div class="row g-4">
-              <!-- Profile Picture -->
-              <div class="col-12">
-                <div class="card bg-light p-4">
-                  <div class="text-center">
-                    <img src="{{ asset('assets/img/avatars/1.png') }}" alt="Profile Picture"
-                      class="rounded-circle mb-3" width="120" height="120" />
-                    <h6 class="mb-3">John Doe</h6>
-                    <input type="file" class="form-control" id="profilePictureInput" accept="image/*"
-                      style="display: none;" />
-                    <button type="button" class="btn btn-sm btn-primary"
-                      onclick="document.getElementById('profilePictureInput').click()">
-                      <i class="icon-base ri ri-camera-line me-1"></i>Change Picture
-                    </button>
-                  </div>
-                </div>
-              </div>
-
               <!-- First Name -->
               <div class="col-md-6">
-                <label class="form-label">First Name</label>
-                <input type="text" class="form-control" placeholder="John" value="John" />
+                <label class="form-label">First Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="first_name" value="{{ $firstName }}" required />
               </div>
 
               <!-- Last Name -->
               <div class="col-md-6">
-                <label class="form-label">Last Name</label>
-                <input type="text" class="form-control" placeholder="Doe" value="Doe" />
+                <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="last_name" value="{{ $lastName }}" required />
               </div>
 
               <!-- Email -->
               <div class="col-12">
-                <label class="form-label">Email Address</label>
-                <input type="email" class="form-control" placeholder="john.doe@example.com"
-                  value="john.doe@example.com" />
+                <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                <input type="email" class="form-control" name="email" value="{{ $user->email }}" required />
+                <small class="text-muted">Changing your email will require re-verification</small>
               </div>
 
               <!-- Phone -->
-              <div class="col-md-6">
+              <div class="col-12">
                 <label class="form-label">Phone Number</label>
-                <input type="tel" class="form-control" placeholder="+263 78 123 4567" value="+263 78 123 4567" />
+                <input type="tel" class="form-control" name="phone" value="{{ $user->phone }}"
+                  placeholder="+263 78 123 4567" />
               </div>
 
-              <!-- Date of Birth -->
-              <div class="col-md-6">
-                <label class="form-label">Date of Birth</label>
-                <input type="date" class="form-control" value="1990-01-15" />
-              </div>
-
-              <!-- Country -->
-              <div class="col-md-6">
-                <label class="form-label">Country</label>
-                <select class="form-select">
-                  <option value="">Select Country</option>
-                  <option value="zimbabwe" selected>Zimbabwe</option>
-                  <option value="south-africa">South Africa</option>
-                  <option value="botswana">Botswana</option>
-                  <option value="zambia">Zambia</option>
-                  <option value="malawi">Malawi</option>
-                </select>
-              </div>
-
-              <!-- City -->
-              <div class="col-md-6">
-                <label class="form-label">City</label>
-                <input type="text" class="form-control" placeholder="Harare" value="Harare" />
-              </div>
-
-              <!-- Bio -->
+              <!-- Current Info -->
               <div class="col-12">
-                <label class="form-label">Bio / About Me</label>
-                <textarea class="form-control" rows="4" placeholder="Tell us about yourself...">I'm a busy professional looking for reliable artisans to help with home and office projects.</textarea>
-              </div>
-
-              <!-- Visibility Toggle -->
-              <div class="col-12">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="publicProfileSwitch" checked />
-                  <label class="form-check-label" for="publicProfileSwitch">
-                    Make my profile public (Other users can see your rating and reviews)
-                  </label>
-                </div>
-              </div>
-
-              <!-- Verification Badge -->
-              <div class="col-12">
-                <div class="alert alert-success d-flex align-items-center" role="alert">
-                  <i class="icon-base ri ri-check-double-line me-2"></i>
-                  <div>Your account has been verified. All details are secure.</div>
+                <div class="alert alert-info d-flex align-items-center mb-0" role="alert">
+                  <i class="icon-base ri ri-information-line me-2"></i>
+                  <div>
+                    <strong>Account ID:</strong> #{{ str_pad($user->id, 6, '0', STR_PAD_LEFT) }} |
+                    <strong>Role:</strong> {{ ucfirst($user->role) }} |
+                    <strong>Status:</strong> {{ ucfirst($user->status ?? 'Active') }}
+                  </div>
                 </div>
               </div>
             </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" onclick="saveProfileChanges()">
-            <i class="icon-base ri ri-save-line me-1"></i>Save Changes
-          </button>
-        </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="icon-base ri ri-save-line me-1"></i>Save Changes
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -489,31 +371,32 @@
           <h5 class="modal-title">Change Password</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <form id="changePasswordForm">
+        <form action="{{ route('user-password-change') }}" method="POST" id="changePasswordForm">
+          @csrf
+          <div class="modal-body">
             <!-- Current Password -->
             <div class="mb-4">
-              <label class="form-label">Current Password</label>
+              <label class="form-label">Current Password <span class="text-danger">*</span></label>
               <div class="input-group">
-                <input type="password" class="form-control" id="currentPassword"
-                  placeholder="Enter current password" />
+                <input type="password" class="form-control" name="current_password" id="currentPassword"
+                  placeholder="Enter current password" required />
                 <button class="btn btn-outline-secondary" type="button" id="toggleCurrentPassword">
                   <i class="icon-base ri ri-eye-line"></i>
                 </button>
               </div>
-              <small class="text-muted d-block mt-2">Enter your current password for verification</small>
             </div>
 
             <!-- New Password -->
             <div class="mb-4">
-              <label class="form-label">New Password</label>
+              <label class="form-label">New Password <span class="text-danger">*</span></label>
               <div class="input-group">
-                <input type="password" class="form-control" id="newPassword" placeholder="Enter new password" />
+                <input type="password" class="form-control" name="password" id="newPassword"
+                  placeholder="Enter new password" required />
                 <button class="btn btn-outline-secondary" type="button" id="toggleNewPassword">
                   <i class="icon-base ri ri-eye-line"></i>
                 </button>
               </div>
-              <small class="text-muted d-block mt-2">Password must be at least 8 characters long</small>
+              <small class="text-muted d-block mt-2">Password must be at least 8 characters</small>
 
               <!-- Password Strength Indicator -->
               <div class="mt-3">
@@ -529,9 +412,10 @@
 
             <!-- Confirm Password -->
             <div class="mb-4">
-              <label class="form-label">Confirm New Password</label>
+              <label class="form-label">Confirm New Password <span class="text-danger">*</span></label>
               <div class="input-group">
-                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm new password" />
+                <input type="password" class="form-control" name="password_confirmation" id="confirmPassword"
+                  placeholder="Confirm new password" required />
                 <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
                   <i class="icon-base ri ri-eye-line"></i>
                 </button>
@@ -540,7 +424,7 @@
             </div>
 
             <!-- Password Requirements -->
-            <div class="card bg-light p-3 mb-4">
+            <div class="card bg-light p-3">
               <h6 class="mb-2">Password Requirements</h6>
               <ul class="list-unstyled mb-0 small">
                 <li class="mb-2">
@@ -565,146 +449,114 @@
                 </li>
               </ul>
             </div>
-
-            <!-- Security Notice -->
-            <div class="alert alert-warning d-flex align-items-start" role="alert">
-              <i class="icon-base ri ri-alert-line me-2 mt-1"></i>
-              <div>
-                <strong>Security Notice:</strong> Your password will be changed across all active sessions.
-              </div>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" id="changePasswordBtn" onclick="changePassword()" disabled>
-            <i class="icon-base ri ri-shield-check-line me-1"></i>Update Password
-          </button>
-        </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="changePasswordBtn" disabled>
+              <i class="icon-base ri ri-shield-check-line me-1"></i>Update Password
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
   <!--/ Change Password Modal -->
 
-  <!-- Password Changed Success Modal -->
-  <div class="modal fade" id="passwordChangedModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-body text-center py-5">
-          <div class="mb-4">
-            <i class="icon-base ri ri-checkbox-circle-line icon-64px text-success"></i>
-          </div>
-          <h5 class="mb-3">Password Changed Successfully!</h5>
-          <p class="text-muted mb-4">Your password has been updated. For security purposes, you may need to log in again
-            on other devices.</p>
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Done</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--/ Password Changed Success Modal -->
-
   <script>
-    // Password strength validation
-    const newPasswordInput = document.getElementById('newPassword');
-    const strengthBar = document.getElementById('strengthBar');
-    const strengthText = document.getElementById('strengthText');
-    const matchWarning = document.getElementById('matchWarning');
-    const changePasswordBtn = document.getElementById('changePasswordBtn');
+    document.addEventListener('DOMContentLoaded', function() {
+      // Password strength validation
+      const newPasswordInput = document.getElementById('newPassword');
+      const confirmPasswordInput = document.getElementById('confirmPassword');
+      const strengthBar = document.getElementById('strengthBar');
+      const strengthText = document.getElementById('strengthText');
+      const matchWarning = document.getElementById('matchWarning');
+      const changePasswordBtn = document.getElementById('changePasswordBtn');
 
-    function validatePassword() {
-      const password = newPasswordInput.value;
-      let strength = 0;
-      let requirements = {
-        length: password.length >= 8,
-        uppercase: /[A-Z]/.test(password),
-        lowercase: /[a-z]/.test(password),
-        number: /[0-9]/.test(password)
-      };
+      function validatePassword() {
+        const password = newPasswordInput.value;
+        let strength = 0;
+        let requirements = {
+          length: password.length >= 8,
+          uppercase: /[A-Z]/.test(password),
+          lowercase: /[a-z]/.test(password),
+          number: /[0-9]/.test(password)
+        };
 
-      // Update requirement indicators
-      document.getElementById('req-length').className = requirements.length ? 'text-success' : 'text-danger';
-      document.getElementById('req-uppercase').className = requirements.uppercase ? 'text-success' : 'text-danger';
-      document.getElementById('req-lowercase').className = requirements.lowercase ? 'text-success' : 'text-danger';
-      document.getElementById('req-number').className = requirements.number ? 'text-success' : 'text-danger';
+        // Update requirement indicators
+        updateRequirement('req-length', requirements.length);
+        updateRequirement('req-uppercase', requirements.uppercase);
+        updateRequirement('req-lowercase', requirements.lowercase);
+        updateRequirement('req-number', requirements.number);
 
-      // Calculate strength
-      strength += requirements.length ? 25 : 0;
-      strength += requirements.uppercase ? 25 : 0;
-      strength += requirements.lowercase ? 25 : 0;
-      strength += requirements.number ? 25 : 0;
+        // Calculate strength
+        strength += requirements.length ? 25 : 0;
+        strength += requirements.uppercase ? 25 : 0;
+        strength += requirements.lowercase ? 25 : 0;
+        strength += requirements.number ? 25 : 0;
 
-      // Update strength bar
-      strengthBar.style.width = strength + '%';
-      if (strength < 50) {
-        strengthBar.className = 'progress-bar bg-danger';
-        strengthText.textContent = 'Weak';
-        strengthText.className = 'text-danger';
-      } else if (strength < 75) {
-        strengthBar.className = 'progress-bar bg-warning';
-        strengthText.textContent = 'Fair';
-        strengthText.className = 'text-warning';
-      } else {
-        strengthBar.className = 'progress-bar bg-success';
-        strengthText.textContent = 'Strong';
-        strengthText.className = 'text-success';
-      }
-
-      // Check password match
-      const confirmPassword = document.getElementById('confirmPassword').value;
-      if (confirmPassword && password !== confirmPassword) {
-        matchWarning.classList.remove('d-none');
-      } else {
-        matchWarning.classList.add('d-none');
-      }
-
-      // Enable/disable button
-      const currentPassword = document.getElementById('currentPassword').value;
-      const isValid = currentPassword && strength >= 75 && password === confirmPassword;
-      changePasswordBtn.disabled = !isValid;
-    }
-
-    newPasswordInput.addEventListener('input', validatePassword);
-    document.getElementById('confirmPassword').addEventListener('input', validatePassword);
-
-    // Toggle password visibility
-    function setupPasswordToggle(inputId, buttonId) {
-      const input = document.getElementById(inputId);
-      const button = document.getElementById(buttonId);
-      button.addEventListener('click', function() {
-        if (input.type === 'password') {
-          input.type = 'text';
-          button.innerHTML = '<i class="icon-base ri ri-eye-off-line"></i>';
+        // Update strength bar
+        strengthBar.style.width = strength + '%';
+        if (strength < 50) {
+          strengthBar.className = 'progress-bar bg-danger';
+          strengthText.textContent = 'Weak';
+          strengthText.className = 'text-danger';
+        } else if (strength < 75) {
+          strengthBar.className = 'progress-bar bg-warning';
+          strengthText.textContent = 'Fair';
+          strengthText.className = 'text-warning';
         } else {
-          input.type = 'password';
-          button.innerHTML = '<i class="icon-base ri ri-eye-line"></i>';
+          strengthBar.className = 'progress-bar bg-success';
+          strengthText.textContent = 'Strong';
+          strengthText.className = 'text-success';
         }
-      });
-    }
 
-    setupPasswordToggle('currentPassword', 'toggleCurrentPassword');
-    setupPasswordToggle('newPassword', 'toggleNewPassword');
-    setupPasswordToggle('confirmPassword', 'toggleConfirmPassword');
+        // Check password match
+        const confirmPassword = confirmPasswordInput.value;
+        if (confirmPassword && password !== confirmPassword) {
+          matchWarning.classList.remove('d-none');
+        } else {
+          matchWarning.classList.add('d-none');
+        }
 
-    // Functions for modal actions
-    function saveProfileChanges() {
-      const form = document.getElementById('editProfileForm');
-      console.log('Saving profile changes...');
-      const editModal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
-      editModal.hide();
-      alert('Profile updated successfully!');
-    }
+        // Enable/disable button
+        const currentPassword = document.getElementById('currentPassword').value;
+        const isValid = currentPassword && strength >= 75 && password === confirmPassword;
+        changePasswordBtn.disabled = !isValid;
+      }
 
-    function changePassword() {
-      const currentPassword = document.getElementById('currentPassword').value;
-      const newPassword = document.getElementById('newPassword').value;
-      console.log('Changing password...');
-      const changeModal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
-      changeModal.hide();
+      function updateRequirement(id, met) {
+        const el = document.getElementById(id);
+        if (met) {
+          el.className = 'text-success';
+          el.innerHTML = '<i class="icon-base ri ri-check-line me-1"></i>' + el.textContent.replace(/^[^\w]*/, '');
+        } else {
+          el.className = 'text-danger';
+          el.innerHTML = '<i class="icon-base ri ri-close-line me-1"></i>' + el.textContent.replace(/^[^\w]*/, '');
+        }
+      }
 
-      // Show success modal
-      const successModal = new bootstrap.Modal(document.getElementById('passwordChangedModal'));
-      successModal.show();
-    }
+      newPasswordInput.addEventListener('input', validatePassword);
+      confirmPasswordInput.addEventListener('input', validatePassword);
+      document.getElementById('currentPassword').addEventListener('input', validatePassword);
+
+      // Toggle password visibility
+      function setupPasswordToggle(inputId, buttonId) {
+        const input = document.getElementById(inputId);
+        const button = document.getElementById(buttonId);
+        button.addEventListener('click', function() {
+          if (input.type === 'password') {
+            input.type = 'text';
+            button.innerHTML = '<i class="icon-base ri ri-eye-off-line"></i>';
+          } else {
+            input.type = 'password';
+            button.innerHTML = '<i class="icon-base ri ri-eye-line"></i>';
+          }
+        });
+      }
+
+      setupPasswordToggle('currentPassword', 'toggleCurrentPassword');
+      setupPasswordToggle('newPassword', 'toggleNewPassword');
+      setupPasswordToggle('confirmPassword', 'toggleConfirmPassword');
+    });
   </script>
 @endsection

@@ -158,7 +158,7 @@ class Helpers
       // Ensure we have a proper boolean conversion
       $semiDarkEnabled = $semiDarkFromCookie !== null ?
         filter_var($semiDarkFromCookie, FILTER_VALIDATE_BOOLEAN) :
-        (bool)$data['hasSemiDark'];
+        (bool) $data['hasSemiDark'];
     } else {
       // For front-end layouts, use defaults
       $skinName = 'default';
@@ -281,14 +281,16 @@ class Helpers
    */
   public static function generatePrimaryColorCSS($color)
   {
-    if (!$color) return '';
+    if (!$color)
+      return '';
 
     // Check if the color actually came from a cookie or explicit configuration
     // Don't generate CSS if there's no specific need for a custom color
     $configColor = config('custom.custom.primaryColor', null);
     $isFromCookie = isset($_COOKIE['admin-primaryColor']) || isset($_COOKIE['front-primaryColor']);
 
-    if (!$configColor && !$isFromCookie) return '';
+    if (!$configColor && !$isFromCookie)
+      return '';
 
     $r = hexdec(substr($color, 1, 2));
     $g = hexdec(substr($color, 3, 2));
@@ -307,5 +309,47 @@ class Helpers
   --bs-primary-contrast: {$contrastColor};
 }
 CSS;
+  }
+
+  /**
+   * Filter menu items based on user role
+   *
+   * @param array $menuData The menu data to filter
+   * @return array Filtered menu data based on user role
+   */
+  public static function filterMenuByRole($menuData)
+  {
+    if (!auth()->check()) {
+      return [];
+    }
+
+    $userRole = auth()->user()->role;
+    $filteredMenu = [];
+
+    foreach ($menuData as $item) {
+      // Check if item has role restrictions
+      if (isset($item->roles) && !in_array($userRole, $item->roles)) {
+        continue;
+      }
+
+      // If item has submenu, filter submenu items as well
+      if (isset($item->submenu) && is_array($item->submenu)) {
+        $item->submenu = array_filter($item->submenu, function ($subitem) use ($userRole) {
+          if (!isset($subitem->roles)) {
+            return true;
+          }
+          return in_array($userRole, $subitem->roles);
+        });
+
+        // Only add item if it still has submenu items or doesn't require submenu
+        if (!isset($item->roles) || in_array($userRole, $item->roles)) {
+          $filteredMenu[] = $item;
+        }
+      } else {
+        $filteredMenu[] = $item;
+      }
+    }
+
+    return $filteredMenu;
   }
 }

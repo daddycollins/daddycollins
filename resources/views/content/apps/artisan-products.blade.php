@@ -15,6 +15,9 @@
 @endsection
 
 @section('content')
+  <!-- Flash Messages Alert Component -->
+  <x-alert />
+
   <!-- Header -->
   <div class="row g-6 mb-6">
     <div class="col-sm-6 col-lg-3">
@@ -23,9 +26,9 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Total Products</p>
-              <h3 class="mb-2">24</h3>
-              <p class="mb-0"><span class="badge bg-label-success"><i class="icon-base ri ri-arrow-up-s-line me-1"></i>2
-                  this month</span></p>
+              <h3 class="mb-2">{{ $totalProducts }}</h3>
+              <p class="mb-0"><span class="badge bg-label-success"><i
+                    class="icon-base ri ri-arrow-up-s-line me-1"></i>{{ $availableProducts }} available</span></p>
             </div>
             <div class="avatar avatar-lg bg-label-primary">
               <div class="avatar-initial"><i class="icon-base ri ri-shopping-bag-line"></i></div>
@@ -40,10 +43,10 @@
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-start">
             <div>
-              <p class="text-muted small mb-1">Total Sales Value</p>
-              <h3 class="mb-2">ZWL 45,230</h3>
+              <p class="text-muted small mb-1">Total Earnings</p>
+              <h3 class="mb-2">ZWL {{ number_format($totalEarnings, 0) }}</h3>
               <p class="mb-0"><span class="badge bg-label-success"><i
-                    class="icon-base ri ri-arrow-up-s-line me-1"></i>+18%</span></p>
+                    class="icon-base ri ri-arrow-up-s-line me-1"></i>From sales</span></p>
             </div>
             <div class="avatar avatar-lg bg-label-success">
               <div class="avatar-initial"><i class="icon-base ri ri-money-dollar-circle-line"></i></div>
@@ -58,13 +61,13 @@
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-start">
             <div>
-              <p class="text-muted small mb-1">Low Stock Items</p>
-              <h3 class="mb-2">3</h3>
-              <p class="mb-0"><span class="badge bg-label-warning"><i class="icon-base ri ri-alert-line me-1"></i>Needs
-                  action</span></p>
+              <p class="text-muted small mb-1">Stock Value</p>
+              <h3 class="mb-2">ZWL {{ number_format($totalStockValue, 0) }}</h3>
+              <p class="mb-0"><span class="badge bg-label-info"><i
+                    class="icon-base ri ri-inbox-line me-1"></i>Inventory</span></p>
             </div>
-            <div class="avatar avatar-lg bg-label-warning">
-              <div class="avatar-initial"><i class="icon-base ri ri-alert-fill"></i></div>
+            <div class="avatar avatar-lg bg-label-info">
+              <div class="avatar-initial"><i class="icon-base ri ri-inbox-line"></i></div>
             </div>
           </div>
         </div>
@@ -77,11 +80,11 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Avg Rating</p>
-              <h3 class="mb-2">4.7 / 5</h3>
-              <p class="mb-0"><span class="badge bg-label-info"><i class="icon-base ri ri-star-fill me-1"
-                    style="color: #ffc107;"></i>12 reviews</span></p>
+              <h3 class="mb-2">{{ number_format($avgRating, 1) }} / 5</h3>
+              <p class="mb-0"><span class="badge bg-label-warning"><i class="icon-base ri ri-star-fill me-1"
+                    style="color: #ffc107;"></i>{{ $reviewCount }} reviews</span></p>
             </div>
-            <div class="avatar avatar-lg bg-label-info">
+            <div class="avatar avatar-lg bg-label-warning">
               <div class="avatar-initial"><i class="icon-base ri ri-star-line"></i></div>
             </div>
           </div>
@@ -149,167 +152,80 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>
-                <div class="d-flex align-items-center">
-                  <div class="avatar avatar-md me-3 bg-light">
-                    <img src="{{ asset('assets/img/products/product-1.png') }}" alt="Product" class="rounded" />
+            @forelse($products as $product)
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="avatar avatar-md me-3 bg-light">
+                      @if ($product->image_path)
+                        <img src="{{ asset($product->image_path) }}" alt="{{ $product->product_name }}" class="rounded" />
+                      @else
+                        <i class="icon-base ri ri-shopping-bag-line" style="font-size: 24px; color: #ccc;"></i>
+                      @endif
+                    </div>
+                    <div>
+                      <h6 class="mb-0 fw-medium">{{ $product->product_name }}</h6>
+                      <small class="text-muted">{{ Str::limit($product->description, 25) }}</small>
+                    </div>
                   </div>
-                  <div>
-                    <h6 class="mb-0 fw-medium">Hand-Crafted Wooden Chair</h6>
-                    <small class="text-muted">SKU: HC-2024-001</small>
+                </td>
+                <td><code>PROD-{{ $product->id }}</code></td>
+                <td><span
+                    class="badge bg-label-{{ $product->category ? 'primary' : 'secondary' }}">{{ $product->category ?? 'General' }}</span>
+                </td>
+                <td><strong>ZWL {{ number_format($product->price, 2) }}</strong></td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="fw-medium">{{ $product->stock_quantity }}</span>
+                    <small
+                      class="badge bg-label-{{ $product->stock_quantity > 20 ? 'success' : ($product->stock_quantity > 10 ? 'warning' : 'danger') }}">
+                      {{ $product->stock_quantity > 20 ? '✓' : '!' }}
+                    </small>
                   </div>
-                </div>
-              </td>
-              <td><code>HC-2024-001</code></td>
-              <td><span class="badge bg-label-info">Furniture</span></td>
-              <td><strong>ZWL 2,450</strong></td>
-              <td>
-                <div class="d-flex align-items-center gap-2">
-                  <span class="fw-medium">45</span>
-                  <small class="badge bg-label-success">✓</small>
-                </div>
-              </td>
-              <td><span class="fw-medium text-success">128 sold</span></td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <i class="icon-base ri ri-star-fill" style="color: #ffc107;"></i>
-                  <span class="ms-1">4.8</span>
-                </div>
-              </td>
-              <td><span class="badge bg-label-success">Active</span></td>
-              <td>
-                <div class="dropdown">
-                  <button type="button" class="btn btn-sm btn-icon btn-text-secondary rounded-pill"
-                    data-bs-toggle="dropdown">
-                    <i class="icon-base ri ri-more-2-fill"></i>
-                  </button>
-                  <div class="dropdown-menu">
-                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
-                      data-bs-target="#editProductModal">
-                      <i class="icon-base ri ri-edit-line me-2"></i>Edit
-                    </a>
-                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
-                      data-bs-target="#updateStockModal">
-                      <i class="icon-base ri ri-refresh-line me-2"></i>Update Stock
-                    </a>
-                    <hr class="dropdown-divider" />
-                    <a class="dropdown-item text-danger" href="javascript:void(0);" data-bs-toggle="modal"
-                      data-bs-target="#deleteProductModal">
-                      <i class="icon-base ri ri-delete-bin-line me-2"></i>Delete
-                    </a>
+                </td>
+                <td><span class="fw-medium text-success">0 sold</span></td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <i class="icon-base ri ri-star-fill" style="color: #ffc107;"></i>
+                    <span class="ms-1">{{ number_format($avgRating, 1) }}</span>
                   </div>
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                <div class="d-flex align-items-center">
-                  <div class="avatar avatar-md me-3 bg-light">
-                    <img src="{{ asset('assets/img/products/product-2.png') }}" alt="Product" class="rounded" />
+                </td>
+                <td>
+                  <span class="badge bg-label-{{ $product->availability ? 'success' : 'warning' }}">
+                    {{ $product->availability ? 'Active' : 'Inactive' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="dropdown">
+                    <button type="button" class="btn btn-sm btn-icon btn-text-secondary rounded-pill"
+                      data-bs-toggle="dropdown">
+                      <i class="icon-base ri ri-more-2-fill"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                        data-bs-target="#editProductModal" data-product-id="{{ $product->id }}">
+                        <i class="icon-base ri ri-edit-line me-2"></i>Edit
+                      </a>
+                      <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                        data-bs-target="#updateStockModal" data-product-id="{{ $product->id }}">
+                        <i class="icon-base ri ri-refresh-line me-2"></i>Update Stock
+                      </a>
+                      <hr class="dropdown-divider" />
+                      <a class="dropdown-item text-danger" href="javascript:void(0);">
+                        <i class="icon-base ri ri-delete-bin-line me-2"></i>Delete
+                      </a>
+                    </div>
                   </div>
-                  <div>
-                    <h6 class="mb-0 fw-medium">Woven Basket Set</h6>
-                    <small class="text-muted">SKU: WB-2024-002</small>
-                  </div>
-                </div>
-              </td>
-              <td><code>WB-2024-002</code></td>
-              <td><span class="badge bg-label-warning">Home Decor</span></td>
-              <td><strong>ZWL 890</strong></td>
-              <td>
-                <div class="d-flex align-items-center gap-2">
-                  <span class="fw-medium text-danger">8</span>
-                  <small class="badge bg-label-warning">!</small>
-                </div>
-              </td>
-              <td><span class="fw-medium text-success">342 sold</span></td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <i class="icon-base ri ri-star-fill" style="color: #ffc107;"></i>
-                  <span class="ms-1">4.6</span>
-                </div>
-              </td>
-              <td><span class="badge bg-label-success">Active</span></td>
-              <td>
-                <div class="dropdown">
-                  <button type="button" class="btn btn-sm btn-icon btn-text-secondary rounded-pill"
-                    data-bs-toggle="dropdown">
-                    <i class="icon-base ri ri-more-2-fill"></i>
-                  </button>
-                  <div class="dropdown-menu">
-                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
-                      data-bs-target="#editProductModal">
-                      <i class="icon-base ri ri-edit-line me-2"></i>Edit
-                    </a>
-                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
-                      data-bs-target="#updateStockModal">
-                      <i class="icon-base ri ri-refresh-line me-2"></i>Update Stock
-                    </a>
-                    <hr class="dropdown-divider" />
-                    <a class="dropdown-item text-danger" href="javascript:void(0);" data-bs-toggle="modal"
-                      data-bs-target="#deleteProductModal">
-                      <i class="icon-base ri ri-delete-bin-line me-2"></i>Delete
-                    </a>
-                  </div>
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                <div class="d-flex align-items-center">
-                  <div class="avatar avatar-md me-3 bg-light">
-                    <img src="{{ asset('assets/img/products/product-3.png') }}" alt="Product" class="rounded" />
-                  </div>
-                  <div>
-                    <h6 class="mb-0 fw-medium">Leather Handbag</h6>
-                    <small class="text-muted">SKU: LH-2024-003</small>
-                  </div>
-                </div>
-              </td>
-              <td><code>LH-2024-003</code></td>
-              <td><span class="badge bg-label-danger">Accessories</span></td>
-              <td><strong>ZWL 3,200</strong></td>
-              <td>
-                <div class="d-flex align-items-center gap-2">
-                  <span class="fw-medium">62</span>
-                  <small class="badge bg-label-success">✓</small>
-                </div>
-              </td>
-              <td><span class="fw-medium text-success">95 sold</span></td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <i class="icon-base ri ri-star-fill" style="color: #ffc107;"></i>
-                  <span class="ms-1">4.9</span>
-                </div>
-              </td>
-              <td><span class="badge bg-label-success">Active</span></td>
-              <td>
-                <div class="dropdown">
-                  <button type="button" class="btn btn-sm btn-icon btn-text-secondary rounded-pill"
-                    data-bs-toggle="dropdown">
-                    <i class="icon-base ri ri-more-2-fill"></i>
-                  </button>
-                  <div class="dropdown-menu">
-                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
-                      data-bs-target="#editProductModal">
-                      <i class="icon-base ri ri-edit-line me-2"></i>Edit
-                    </a>
-                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
-                      data-bs-target="#updateStockModal">
-                      <i class="icon-base ri ri-refresh-line me-2"></i>Update Stock
-                    </a>
-                    <hr class="dropdown-divider" />
-                    <a class="dropdown-item text-danger" href="javascript:void(0);" data-bs-toggle="modal"
-                      data-bs-target="#deleteProductModal">
-                      <i class="icon-base ri ri-delete-bin-line me-2"></i>Delete
-                    </a>
-                  </div>
-                </div>
-              </td>
-            </tr>
+                </td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="9" class="text-center py-4">
+                  <p class="text-muted mb-0"><i class="icon-base ri ri-inbox-line me-2"></i>No products found. <a
+                      href="{{ route('artisan-dashboard') }}" class="text-primary">Add your first product</a></p>
+                </td>
+              </tr>
+            @endforelse
           </tbody>
         </table>
       </div>
