@@ -3,7 +3,10 @@
     "allow": [
       "Bash(php artisan storage:link:*)",
       "Bash(php artisan make:migration:*)",
-      "Bash(php artisan migrate:*)"
+      "Bash(php artisan migrate:*)",
+      "Bash(composer require:*)",
+      "Bash(composer update:*)",
+      "Bash(composer show:*)"
     ]
   }
 }

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\Review;
 use App\Models\OrderItem;
+use App\Models\User;
+use App\Models\ArtisanProfile;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -19,7 +21,10 @@ class Order extends Model
         'amount',
         'shipping_address',
         'billing_address',
-        'payment_method'
+        'payment_method',
+        'service_fee',
+        'paynow_poll_url',
+        'paynow_reference'
     ];
 
     public function items()

@@ -414,6 +414,23 @@ Route::middleware(['auth', 'role:client'])->group(function () {
   Route::get('/user/order/{order}/contact', [GeneralUSerController::class, 'contactArtisan'])->name('user-contact-artisan');
   Route::get('/user/order/{order}/pay', [GeneralUSerController::class, 'payNow'])->name('user-pay-now');
   Route::get('/user/create/review', [GeneralUSerController::class, 'createReview'])->name('user-create-review');
+
+  // Cart routes
+  Route::prefix('cart')->name('cart.')->group(function () {
+    Route::get('/', [App\Http\Controllers\CartController::class, 'index'])->name('index');
+    Route::post('/add', [App\Http\Controllers\CartController::class, 'addItem'])->name('add');
+    Route::put('/item/{cartItem}/update', [App\Http\Controllers\CartController::class, 'updateQuantity'])->name('update');
+    Route::delete('/item/{cartItem}', [App\Http\Controllers\CartController::class, 'removeItem'])->name('remove');
+    Route::delete('/clear', [App\Http\Controllers\CartController::class, 'clearCart'])->name('clear');
+    Route::get('/count', [App\Http\Controllers\CartController::class, 'getCartCount'])->name('count');
+  });
+
+  // Checkout routes
+  Route::prefix('checkout')->name('checkout.')->group(function () {
+    Route::get('/{cart}', [App\Http\Controllers\CheckoutController::class, 'show'])->name('show');
+    Route::post('/process/{cart}', [App\Http\Controllers\CheckoutController::class, 'process'])->name('process');
+    Route::get('/success/{order}', [App\Http\Controllers\CheckoutController::class, 'success'])->name('success');
+  });
 });
 
 // artisan routes
@@ -461,3 +478,8 @@ Route::middleware(['auth', 'role:artisan'])->group(function () {
   Route::put('/artisan/profile', [ArtisanController::class, 'updateProfile'])->name('artisan-profile-update');
   Route::post('/artisan/profile/password', [ArtisanController::class, 'changePassword'])->name('artisan-profile-password');
 });
+
+// Paynow webhook (public endpoint - outside middleware groups)
+Route::post('/paynow/webhook', [App\Http\Controllers\PaynowWebhookController::class, 'handle'])
+    ->name('paynow.webhook')
+    ->middleware('verify.paynow.webhook');

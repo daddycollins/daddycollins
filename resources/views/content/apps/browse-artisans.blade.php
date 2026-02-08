@@ -208,9 +208,10 @@
             <div class="position-absolute bottom-0 start-0 end-0 p-3"
               style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">
               <div class="d-flex gap-2">
-                <button class="btn btn-icon btn-sm btn-light" title="View Profile">
+                <a href="{{ route('artisan-public-profile', $artisan->id) }}" class="btn btn-icon btn-sm btn-light"
+                  title="View Profile">
                   <i class="icon-base ri ri-eye-line icon-16px"></i>
-                </button>
+                </a>
                 @if ($artisan->phone)
                   <a href="tel:{{ $artisan->phone }}" class="btn btn-icon btn-sm btn-light" title="Contact">
                     <i class="icon-base ri ri-phone-line icon-16px"></i>
@@ -291,7 +292,8 @@
               </div>
             </div>
 
-            <button class="btn btn-primary w-100 btn-sm">View Profile</button>
+            <a href="{{ route('artisan-public-profile', $artisan->id) }}" class="btn btn-primary w-100 btn-sm">View
+              Profile</a>
           </div>
 
           <!-- Bottom Stats -->

@@ -264,18 +264,18 @@ class GeneralUSerController extends Controller
             'user',
             'services' => function ($q) {
                 $q->where('availability', 'available')
-                  ->orderBy('price_estimate');
+                    ->orderBy('price_estimate');
             },
             'goods' => function ($q) {
                 $q->where('availability', 'available')
-                  ->where('stock_quantity', '>', 0)
-                  ->orderBy('price');
+                    ->where('stock_quantity', '>', 0)
+                    ->orderBy('price');
             },
             'reviews' => function ($q) {
                 $q->where('is_hidden', false)
-                  ->with('client')
-                  ->latest()
-                  ->limit(10);
+                    ->with('client')
+                    ->latest()
+                    ->limit(10);
             }
         ]);
 
@@ -745,7 +745,7 @@ class GeneralUSerController extends Controller
     public function storeReview()
     {
         $user = Auth::user();
-        
+
         $validated = request()->validate([
             'order_id' => 'required|exists:orders,id',
             'rating' => 'required|integer|min:1|max:5',
@@ -788,9 +788,12 @@ class GeneralUSerController extends Controller
             return redirect()->route('user-my-orders')->with('error', 'Unauthorized access');
         }
 
-        $review->load(['artisan' => function ($q) {
-            $q->with('user');
-        }, 'order']);
+        $review->load([
+            'artisan' => function ($q) {
+                $q->with('user');
+            },
+            'order'
+        ]);
 
         return view('content.apps.review-view', compact('review'));
     }
@@ -802,9 +805,12 @@ class GeneralUSerController extends Controller
             return redirect()->route('user-create-review')->with('error', 'Unauthorized access');
         }
 
-        $review->load(['artisan' => function ($q) {
-            $q->with('user');
-        }, 'order']);
+        $review->load([
+            'artisan' => function ($q) {
+                $q->with('user');
+            },
+            'order'
+        ]);
 
         return view('content.apps.review-edit', compact('review'));
     }
@@ -837,3 +843,4 @@ class GeneralUSerController extends Controller
 
         return redirect()->route('user-create-review')->with('success', 'Review deleted successfully');
     }
+}

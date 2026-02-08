@@ -163,15 +163,6 @@
       ]
     },
     {
-      "name": "Order Details",
-      "icon": "menu-icon icon-base ri ri-file-list-line",
-      "slug": "user-order-details",
-      "url": "user/order-details",
-      "roles": [
-        "client"
-      ]
-    },
-    {
       "name": "Browse Artisans",
       "icon": "menu-icon icon-base ri ri-user-star-line",
       "slug": "user-browse-artisans",
