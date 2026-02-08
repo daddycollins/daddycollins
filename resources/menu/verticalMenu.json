@@ -1,0 +1,202 @@
+{
+  "menu": [
+    {
+      "menuHeader": "Admin Panel",
+      "roles": [
+        "admin"
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "icon": "menu-icon icon-base ri ri-admin-line",
+      "slug": "admin-dashboard",
+      "url": "admin/dashboard",
+      "roles": [
+        "admin"
+      ]
+    },
+    {
+      "name": "Artisan Management",
+      "icon": "menu-icon icon-base ri ri-user-star-line",
+      "slug": "admin-artisan-verification",
+      "url": "admin/artisan-verification",
+      "roles": [
+        "admin"
+      ]
+    },
+    {
+      "name": "User Management",
+      "icon": "menu-icon icon-base ri ri-user-3-line",
+      "slug": "admin-user-management",
+      "url": "admin/user-management",
+      "roles": [
+        "admin"
+      ]
+    },
+    {
+      "name": "Orders Monitor",
+      "icon": "menu-icon icon-base ri ri-shopping-cart-line",
+      "slug": "admin-orders",
+      "url": "admin/orders",
+      "roles": [
+        "admin"
+      ]
+    },
+    {
+      "name": "Reviews Monitor",
+      "icon": "menu-icon icon-base ri ri-star-line",
+      "slug": "admin-reviews",
+      "url": "admin/reviews",
+      "roles": [
+        "admin"
+      ]
+    },
+    {
+      "name": "Reports",
+      "icon": "menu-icon icon-base ri ri-bar-chart-line",
+      "slug": "admin-reports",
+      "url": "admin/reports",
+      "roles": [
+        "admin"
+      ]
+    },
+    {
+      "menuHeader": "Artisan Panel",
+      "roles": [
+        "artisan"
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "icon": "menu-icon icon-base ri ri-home-smile-line",
+      "slug": "artisan-dashboard",
+      "url": "artisan/dashboard",
+      "roles": [
+        "artisan"
+      ]
+    },
+    {
+      "name": "Profile",
+      "icon": "menu-icon icon-base ri ri-user-line",
+      "slug": "artisan-profile",
+      "url": "artisan/profile",
+      "roles": [
+        "artisan"
+      ]
+    },
+    {
+      "name": "My Orders",
+      "icon": "menu-icon icon-base ri ri-shopping-cart-line",
+      "slug": "artisan-my-orders",
+      "url": "artisan/my-orders",
+      "roles": [
+        "artisan"
+      ]
+    },
+    {
+      "name": "My Products",
+      "icon": "menu-icon icon-base ri ri-shopping-cart-line",
+      "slug": "artisan-my-products",
+      "url": "artisan/my-products",
+      "roles": [
+        "artisan"
+      ]
+    },
+    {
+      "name": "My Services",
+      "icon": "menu-icon icon-base ri ri-service-line",
+      "slug": "artisan-my-services",
+      "url": "artisan/my-services",
+      "roles": [
+        "artisan"
+      ]
+    },
+    {
+      "name": "Reviews",
+      "icon": "menu-icon icon-base ri ri-star-line",
+      "slug": "artisan-my-reviews",
+      "url": "artisan/reviews",
+      "roles": [
+        "artisan"
+      ]
+    },
+    {
+      "name": "Payments",
+      "icon": "menu-icon icon-base ri ri-bank-card-line",
+      "slug": "artisan-view-payments",
+      "url": "artisan/view/payments",
+      "roles": [
+        "artisan"
+      ]
+    },
+    {
+      "name": "Verification",
+      "icon": "menu-icon icon-base ri ri-checkbox-circle-line",
+      "slug": "artisan-verification",
+      "url": "artisan/verification",
+      "roles": [
+        "artisan"
+      ]
+    },
+    {
+      "menuHeader": "Customer Panel",
+      "roles": [
+        "client"
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "icon": "menu-icon icon-base ri ri-home-smile-line",
+      "slug": "user-dashboard",
+      "url": "user/dashboard",
+      "roles": [
+        "client"
+      ]
+    },
+    {
+      "name": "My Orders",
+      "icon": "menu-icon icon-base ri ri-shopping-cart-line",
+      "slug": "user-my-orders",
+      "url": "user/orders",
+      "roles": [
+        "client"
+      ]
+    },
+    {
+      "name": "Order Details",
+      "icon": "menu-icon icon-base ri ri-file-list-line",
+      "slug": "user-order-details",
+      "url": "user/order-details",
+      "roles": [
+        "client"
+      ]
+    },
+    {
+      "name": "Browse Artisans",
+      "icon": "menu-icon icon-base ri ri-user-star-line",
+      "slug": "user-browse-artisans",
+      "url": "user/browse",
+      "roles": [
+        "client"
+      ]
+    },
+    {
+      "name": "My Reviews",
+      "icon": "menu-icon icon-base ri ri-star-line",
+      "slug": "user-create-review",
+      "url": "user/create/review",
+      "roles": [
+        "client"
+      ]
+    },
+    {
+      "name": "Profile",
+      "icon": "menu-icon icon-base ri ri-user-line",
+      "slug": "user-profile",
+      "url": "user/profile",
+      "roles": [
+        "client"
+      ]
+    }
+  ]
+}
