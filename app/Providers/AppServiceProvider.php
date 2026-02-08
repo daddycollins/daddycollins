@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\Facades\View;
+use App\View\Composers\CartComposer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,5 +30,8 @@ class AppServiceProvider extends ServiceProvider
             }
             return [];
         });
+
+        // Register view composers
+        View::composer('layouts.sections.navbar.navbar-partial', CartComposer::class);
     }
 }

@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Cart;
+use App\Models\ArtisanService;
+use App\Models\ArtisanGood;
 
 class CartItem extends Model
 {
@@ -15,12 +18,12 @@ class CartItem extends Model
 
     public function artisanService()
     {
-        return $this->belongsTo(ArtisanService::class, 'item_id')->where('item_type', 'service');
+        return $this->belongsTo(ArtisanService::class, 'item_id');
     }
 
     public function artisanGood()
     {
-        return $this->belongsTo(ArtisanGood::class, 'item_id')->where('item_type', 'product');
+        return $this->belongsTo(ArtisanGood::class, 'item_id');
     }
 
     /**

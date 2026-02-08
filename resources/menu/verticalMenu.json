@@ -155,9 +155,18 @@
     },
     {
       "name": "My Orders",
-      "icon": "menu-icon icon-base ri ri-shopping-cart-line",
+      "icon": "menu-icon icon-base ri ri-shopping-bag-line",
       "slug": "user-my-orders",
       "url": "user/orders",
+      "roles": [
+        "client"
+      ]
+    },
+    {
+      "name": "My Cart",
+      "icon": "menu-icon icon-base ri ri-shopping-cart-line",
+      "slug": "cart",
+      "url": "cart",
       "roles": [
         "client"
       ]

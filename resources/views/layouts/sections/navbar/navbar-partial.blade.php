@@ -288,6 +288,26 @@
       </ul>
     </li>
     <!--/ Notification -->
+
+    <!-- Shopping Cart (Only for client users) -->
+    @auth
+      @if(auth()->user()->role === 'client')
+        <li class="nav-item me-4 me-xl-1">
+          <a class="nav-link btn btn-icon btn-text-secondary rounded-pill position-relative"
+             href="{{ route('cart.index') }}"
+             title="My Cart">
+            <i class="icon-base ri ri-shopping-cart-2-line icon-22px"></i>
+            @if(isset($cartCount) && $cartCount > 0)
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ $cartCount }}
+              </span>
+            @endif
+          </a>
+        </li>
+      @endif
+    @endauth
+    <!--/ Shopping Cart -->
+
     <!-- User -->
     <li class="nav-item navbar-dropdown dropdown-user dropdown">
       <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
