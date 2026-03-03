@@ -470,7 +470,7 @@ class GeneralUSerController extends Controller
         return view('content.apps.my-orders', compact(
             'orders',
             'completedCount',
-            'inProgressCount',
+            'inProgressCount', 
             'pendingPaymentCount',
             'totalOrders',
             'totalSpent',
