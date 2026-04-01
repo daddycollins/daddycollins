@@ -25,26 +25,30 @@
 @endsection
 
 @section('content')
-  <div class="authentication-wrapper authentication-cover">
-    <!-- Logo -->
-    <a href="{{ url('/') }}" class="auth-cover-brand d-flex align-items-center gap-2">
-      <span class="app-brand-logo demo">@include('_partials.macros')</span>
-      <span class="app-brand-text demo text-heading fw-semibold">Verified Artisan Connect</span>
-    </a>
-    <!-- /Logo -->
-    <div class="authentication-inner row m-0">
-      <!-- /Left Section -->
-      <div class="d-none d-lg-flex col-lg-7 col-xl-8 align-items-center justify-content-center p-12 pb-2">
-        <img src="{{ asset('assets/img/illustrations/auth-login-illustration-' . $configData['theme'] . '.png') }}"
-          class="auth-cover-illustration w-100" alt="auth-illustration"
-          data-app-light-img="illustrations/auth-login-illustration-light.png"
-          data-app-dark-img="illustrations/auth-login-illustration-dark.png" />
-        <img alt="mask"
-          src="{{ asset('assets/img/illustrations/auth-basic-login-mask-' . $configData['theme'] . '.png') }}"
-          class="authentication-image d-none d-lg-block"
-          data-app-light-img="illustrations/auth-basic-login-mask-light.png"
-          data-app-dark-img="illustrations/auth-basic-login-mask-dark.png" />
-      </div>
+<div class="authentication-wrapper authentication-cover">
+  <!-- Logo -->
+  <a href="{{ url('/') }}" class="auth-cover-brand d-flex align-items-center gap-2">
+    <span class="app-brand-logo demo">@include('_partials.macros')</span>
+    <span class="app-brand-text demo text-heading fw-semibold">Verified Artisan Connect</span>
+  </a>
+
+  <div class="authentication-inner row m-0">
+    <!-- Left Section -->
+    <div class="d-none d-lg-flex col-lg-7 col-xl-8 align-items-center justify-content-center p-12 pb-2">
+
+      <img src="{{ asset('assets/img/logoo.png') }}"
+        class="auth-cover-illustration w-100"
+        alt="auth-illustration"
+        data-app-light-img=""
+        data-app-dark-img="" />
+
+      <img alt="mask"
+        src="{{ asset('assets/img/logoo.png') }}"
+        class="authentication-image d-none d-lg-block"
+        data-app-light-img=""
+        data-app-dark-img="" />
+
+    </div>
       <!-- /Left Section -->
 
       <!-- Login -->
