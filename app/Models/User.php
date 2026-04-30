@@ -48,10 +48,10 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'phone',
         'password',
         'role',
-        'status'
+        'status',
+        'phone',
     ];
 
     public function artisanProfile()

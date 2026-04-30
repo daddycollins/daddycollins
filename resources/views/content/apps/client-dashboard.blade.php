@@ -24,9 +24,7 @@
     <div class="col-12">
       <div class="d-flex align-items-center gap-2">
         <h4 class="mb-0">Dashboard</h4>
-        <span class="badge bg-label-primary">Stage 1</span>
       </div>
-      <p class="text-muted mb-0">Welcome back! Here's an overview of your activity on ArtisanConnect.</p>
     </div>
   </div>
 
@@ -39,8 +37,8 @@
           <div class="d-flex align-items-center justify-content-between">
             <div>
               <p class="mb-1 text-muted">Total Orders</p>
-              <h4 class="mb-2">24</h4>
-              <p class="mb-0 text-success"><i class="icon-base ri ri-arrow-up-s-line"></i> +12.5%</p>
+              <h4 class="mb-2">{{ $totalOrders }}</h4>
+              <p class="mb-0 text-muted"><i class="icon-base ri ri-arrow-up-s-line"></i> All time</p>
             </div>
             <div class="avatar bg-label-primary">
               <div class="avatar-initial rounded">
@@ -59,7 +57,7 @@
           <div class="d-flex align-items-center justify-content-between">
             <div>
               <p class="mb-1 text-muted">Pending Orders</p>
-              <h4 class="mb-2">5</h4>
+              <h4 class="mb-2">{{ $pendingOrders }}</h4>
               <p class="mb-0 text-warning"><i class="icon-base ri ri-time-line"></i> Awaiting Processing</p>
             </div>
             <div class="avatar bg-label-warning">
@@ -79,7 +77,7 @@
           <div class="d-flex align-items-center justify-content-between">
             <div>
               <p class="mb-1 text-muted">Completed Orders</p>
-              <h4 class="mb-2">18</h4>
+              <h4 class="mb-2">{{ $completedOrders }}</h4>
               <p class="mb-0 text-success"><i class="icon-base ri ri-check-double-line"></i> Successfully Done</p>
             </div>
             <div class="avatar bg-label-success">
@@ -99,8 +97,8 @@
           <div class="d-flex align-items-center justify-content-between">
             <div>
               <p class="mb-1 text-muted">Artisans Hired</p>
-              <h4 class="mb-2">8</h4>
-              <p class="mb-0 text-info"><i class="icon-base ri ri-user-star-line"></i> This Month</p>
+              <h4 class="mb-2">{{ $artisansHired }}</h4>
+              <p class="mb-0 text-info"><i class="icon-base ri ri-user-star-line"></i> Total</p>
             </div>
             <div class="avatar bg-label-info">
               <div class="avatar-initial rounded">
@@ -121,7 +119,7 @@
         <div class="card-header">
           <div class="d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Recent Orders</h5>
-            <a href="javascript:void(0);" class="text-primary small fw-medium">View All</a>
+            <a href="{{ route('user-my-orders') }}" class="text-primary small fw-medium">View All</a>
           </div>
         </div>
         <div class="table-responsive text-nowrap">
@@ -137,91 +135,51 @@
               </tr>
             </thead>
             <tbody class="table-border-bottom-0">
-              <tr>
-                <td>
-                  <span class="badge bg-label-primary">#ORD001</span>
-                </td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <div class="avatar avatar-sm me-2">
-                      <img src="{{ asset('assets/img/avatars/1.png') }}" alt="Avatar" class="rounded-circle" />
+              @forelse($recentOrders as $order)
+                <tr>
+                  <td>
+                    <span class="badge bg-label-primary">#{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}</span>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="avatar avatar-sm me-2">
+                        <img
+                          src="{{ $order->artisan->profile_photo_path ? asset('storage/' . $order->artisan->profile_photo_path) : asset('assets/img/avatars/default.png') }}"
+                          alt="Avatar" class="rounded-circle" />
+                      </div>
+                      <span>{{ $order->artisan->user->name }}</span>
                     </div>
-                    <span>John Mbewe</span>
-                  </div>
-                </td>
-                <td>Plumbing Repair</td>
-                <td><strong>$450</strong></td>
-                <td><span class="badge bg-label-success">Completed</span></td>
-                <td>Jan 20, 2026</td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="badge bg-label-primary">#ORD002</span>
-                </td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <div class="avatar avatar-sm me-2">
-                      <img src="{{ asset('assets/img/avatars/3.png') }}" alt="Avatar" class="rounded-circle" />
-                    </div>
-                    <span>Grace Muleya</span>
-                  </div>
-                </td>
-                <td>Tailoring Services</td>
-                <td><strong>$120</strong></td>
-                <td><span class="badge bg-label-info">In Progress</span></td>
-                <td>Jan 21, 2026</td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="badge bg-label-primary">#ORD003</span>
-                </td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <div class="avatar avatar-sm me-2">
-                      <img src="{{ asset('assets/img/avatars/2.png') }}" alt="Avatar" class="rounded-circle" />
-                    </div>
-                    <span>Peter Nkomo</span>
-                  </div>
-                </td>
-                <td>Carpentry Work</td>
-                <td><strong>$800</strong></td>
-                <td><span class="badge bg-label-warning">Pending</span></td>
-                <td>Jan 21, 2026</td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="badge bg-label-primary">#ORD004</span>
-                </td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <div class="avatar avatar-sm me-2">
-                      <img src="{{ asset('assets/img/avatars/4.png') }}" alt="Avatar" class="rounded-circle" />
-                    </div>
-                    <span>Tendai Moyo</span>
-                  </div>
-                </td>
-                <td>Electrical Installation</td>
-                <td><strong>$350</strong></td>
-                <td><span class="badge bg-label-success">Completed</span></td>
-                <td>Jan 19, 2026</td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="badge bg-label-primary">#ORD005</span>
-                </td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <div class="avatar avatar-sm me-2">
-                      <img src="{{ asset('assets/img/avatars/5.png') }}" alt="Avatar" class="rounded-circle" />
-                    </div>
-                    <span>Chipo Mwale</span>
-                  </div>
-                </td>
-                <td>Beadwork & Crafts</td>
-                <td><strong>$95</strong></td>
-                <td><span class="badge bg-label-success">Completed</span></td>
-                <td>Jan 18, 2026</td>
-              </tr>
+                  </td>
+                  <td>
+                    @if ($order->items->count() > 0)
+                      {{ $order->items->first()->artisanService->service_name ?? 'Service' }}
+                    @else
+                      Service
+                    @endif
+                  </td>
+                  <td><strong>${{ number_format($order->total_amount ?? 0, 2) }}</strong></td>
+                  <td>
+                    @php
+                      $statusBadgeClass = match ($order->status) {
+                          'completed' => 'bg-label-success',
+                          'processing', 'paid' => 'bg-label-info',
+                          'pending' => 'bg-label-warning',
+                          'cancelled' => 'bg-label-danger',
+                          default => 'bg-label-secondary',
+                      };
+                    @endphp
+                    <span class="badge {{ $statusBadgeClass }}">{{ ucfirst($order->status) }}</span>
+                  </td>
+                  <td>{{ $order->created_at->format('M d, Y') }}</td>
+                </tr>
+              @empty
+                <tr>
+                  <td colspan="6" class="text-center py-4">
+                    <p class="text-muted mb-0">No orders yet. <a href="{{ route('user-browse-artisans') }}"
+                        class="text-primary">Browse artisans</a> to place your first order.</p>
+                  </td>
+                </tr>
+              @endforelse
             </tbody>
           </table>
         </div>
@@ -235,55 +193,62 @@
           <h5 class="mb-0">Order Status Summary</h5>
         </div>
         <div class="card-body">
-          <div class="mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="text-muted">Completed</span>
-              <span class="badge bg-label-success">60%</span>
+          @if ($totalStatusCount > 0)
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted">Completed</span>
+                <span class="badge bg-label-success">{{ $completedPercent }}%</span>
+              </div>
+              <div class="progress" style="height: 8px;">
+                <div class="progress-bar bg-success" style="width: {{ $completedPercent }}%"></div>
+              </div>
+              <small class="text-muted">{{ $completedCount }} {{ $completedCount === 1 ? 'order' : 'orders' }}</small>
             </div>
-            <div class="progress" style="height: 8px;">
-              <div class="progress-bar bg-success" style="width: 60%"></div>
-            </div>
-            <small class="text-muted">18 orders</small>
-          </div>
 
-          <div class="mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="text-muted">In Progress</span>
-              <span class="badge bg-label-info">25%</span>
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted">In Progress</span>
+                <span class="badge bg-label-info">{{ $inProgressPercent }}%</span>
+              </div>
+              <div class="progress" style="height: 8px;">
+                <div class="progress-bar bg-info" style="width: {{ $inProgressPercent }}%"></div>
+              </div>
+              <small class="text-muted">{{ $inProgressCount }} {{ $inProgressCount === 1 ? 'order' : 'orders' }}</small>
             </div>
-            <div class="progress" style="height: 8px;">
-              <div class="progress-bar bg-info" style="width: 25%"></div>
-            </div>
-            <small class="text-muted">6 orders</small>
-          </div>
 
-          <div class="mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="text-muted">Pending</span>
-              <span class="badge bg-label-warning">10%</span>
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted">Pending</span>
+                <span class="badge bg-label-warning">{{ $pendingPercent }}%</span>
+              </div>
+              <div class="progress" style="height: 8px;">
+                <div class="progress-bar bg-warning" style="width: {{ $pendingPercent }}%"></div>
+              </div>
+              <small class="text-muted">{{ $pendingCount }} {{ $pendingCount === 1 ? 'order' : 'orders' }}</small>
             </div>
-            <div class="progress" style="height: 8px;">
-              <div class="progress-bar bg-warning" style="width: 10%"></div>
-            </div>
-            <small class="text-muted">5 orders</small>
-          </div>
 
-          <div class="mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="text-muted">Cancelled</span>
-              <span class="badge bg-label-danger">5%</span>
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted">Cancelled</span>
+                <span class="badge bg-label-danger">{{ $cancelledPercent }}%</span>
+              </div>
+              <div class="progress" style="height: 8px;">
+                <div class="progress-bar bg-danger" style="width: {{ $cancelledPercent }}%"></div>
+              </div>
+              <small class="text-muted">{{ $cancelledCount }} {{ $cancelledCount === 1 ? 'order' : 'orders' }}</small>
             </div>
-            <div class="progress" style="height: 8px;">
-              <div class="progress-bar bg-danger" style="width: 5%"></div>
+
+            <hr class="my-4" />
+
+            <div class="text-center">
+              <p class="text-muted small mb-0">Total Orders: <strong>{{ $totalStatusCount }}</strong></p>
             </div>
-            <small class="text-muted">1 order</small>
-          </div>
-
-          <hr class="my-4" />
-
-          <div class="text-center">
-            <p class="text-muted small mb-0">Total Orders: <strong>24</strong></p>
-          </div>
+          @else
+            <div class="text-center py-6">
+              <i class="icon-base ri ri-inbox-line icon-56px text-muted mb-3 d-block"></i>
+              <p class="text-muted small mb-0">No orders yet. Place an order to see summary.</p>
+            </div>
+          @endif
         </div>
       </div>
     </div>
@@ -296,108 +261,62 @@
         <div class="card-header">
           <div class="d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Recommended Artisans</h5>
-            <a href="javascript:void(0);" class="text-primary small fw-medium">View More</a>
+            <a href="{{ route('user-browse-artisans') }}" class="text-primary small fw-medium">View More</a>
           </div>
           <p class="card-subtitle mb-0">Top-rated artisans based on your preferences</p>
         </div>
         <div class="card-body">
-          <div class="row g-6">
-            <!-- Artisan Card 1 -->
-            <div class="col-lg-3 col-md-6 col-sm-6">
-              <div class="text-center">
-                <div class="mb-3">
-                  <div class="avatar avatar-lg mx-auto mb-3">
-                    <img src="{{ asset('assets/img/avatars/1.png') }}" alt="Artisan" class="rounded-circle" />
-                  </div>
-                  <h6 class="mb-1">John Mbewe</h6>
-                  <p class="text-muted small mb-2">Plumbing & Repairs</p>
-                  <div class="mb-3">
-                    <div class="text-warning">
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                      <i class="icon-base ri ri-star-half-fill icon-14px"></i>
+          @if ($recommendedArtisans->count() > 0)
+            <div class="row g-6">
+              @foreach ($recommendedArtisans as $artisan)
+                <!-- Artisan Card -->
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                  <div class="text-center">
+                    <div class="mb-3">
+                      <div class="avatar avatar-lg mx-auto mb-3">
+                        <img
+                          src="{{ $artisan->profile_photo_path ? asset('storage/' . $artisan->profile_photo_path) : asset('assets/img/avatars/default.png') }}"
+                          alt="{{ $artisan->user->name }}" class="rounded-circle" />
+                      </div>
+                      <h6 class="mb-1">{{ $artisan->user->name }}</h6>
+                      <p class="text-muted small mb-2">{{ $artisan->category ?? 'Artisan Services' }}</p>
+                      <div class="mb-3">
+                        <div class="text-warning">
+                          @php
+                            $rating = $artisan->average_rating ?? 0;
+                            $fullStars = floor($rating);
+                            $hasHalfStar = $rating - $fullStars >= 0.5;
+                          @endphp
+                          @for ($i = 0; $i < $fullStars; $i++)
+                            <i class="icon-base ri ri-star-fill icon-14px"></i>
+                          @endfor
+                          @if ($hasHalfStar)
+                            <i class="icon-base ri ri-star-half-fill icon-14px"></i>
+                            @php $i++ @endphp
+                          @endif
+                          @for ($j = $i; $j < 5; $j++)
+                            <i class="icon-base ri ri-star-line icon-14px"></i>
+                          @endfor
+                        </div>
+                        <small class="text-muted">{{ number_format($artisan->average_rating, 1) }}/5
+                          ({{ $artisan->reviews_count }}
+                          {{ $artisan->reviews_count === 1 ? 'review' : 'reviews' }})
+                        </small>
+                      </div>
+                      <a href="{{ route('user-browse-artisans') }}" class="btn btn-sm btn-primary w-100">View
+                        Profile</a>
                     </div>
-                    <small class="text-muted">4.5/5 (127 reviews)</small>
                   </div>
-                  <button type="button" class="btn btn-sm btn-primary w-100">View Profile</button>
                 </div>
-              </div>
+              @endforeach
             </div>
-
-            <!-- Artisan Card 2 -->
-            <div class="col-lg-3 col-md-6 col-sm-6">
-              <div class="text-center">
-                <div class="mb-3">
-                  <div class="avatar avatar-lg mx-auto mb-3">
-                    <img src="{{ asset('assets/img/avatars/3.png') }}" alt="Artisan" class="rounded-circle" />
-                  </div>
-                  <h6 class="mb-1">Grace Muleya</h6>
-                  <p class="text-muted small mb-2">Tailoring & Fashion</p>
-                  <div class="mb-3">
-                    <div class="text-warning">
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                    </div>
-                    <small class="text-muted">5.0/5 (98 reviews)</small>
-                  </div>
-                  <button type="button" class="btn btn-sm btn-primary w-100">View Profile</button>
-                </div>
-              </div>
+          @else
+            <div class="text-center py-8">
+              <i class="icon-base ri ri-search-line icon-56px text-muted mb-3 d-block"></i>
+              <p class="text-muted small mb-2">No recommended artisans available at this time.</p>
+              <a href="{{ route('user-browse-artisans') }}" class="btn btn-sm btn-primary">Browse All Artisans</a>
             </div>
-
-            <!-- Artisan Card 3 -->
-            <div class="col-lg-3 col-md-6 col-sm-6">
-              <div class="text-center">
-                <div class="mb-3">
-                  <div class="avatar avatar-lg mx-auto mb-3">
-                    <img src="{{ asset('assets/img/avatars/2.png') }}" alt="Artisan" class="rounded-circle" />
-                  </div>
-                  <h6 class="mb-1">Peter Nkomo</h6>
-                  <p class="text-muted small mb-2">Carpentry & Woodwork</p>
-                  <div class="mb-3">
-                    <div class="text-warning">
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                      <i class="icon-base ri ri-star-line icon-14px"></i>
-                    </div>
-                    <small class="text-muted">4.0/5 (64 reviews)</small>
-                  </div>
-                  <button type="button" class="btn btn-sm btn-primary w-100">View Profile</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Artisan Card 4 -->
-            <div class="col-lg-3 col-md-6 col-sm-6">
-              <div class="text-center">
-                <div class="mb-3">
-                  <div class="avatar avatar-lg mx-auto mb-3">
-                    <img src="{{ asset('assets/img/avatars/4.png') }}" alt="Artisan" class="rounded-circle" />
-                  </div>
-                  <h6 class="mb-1">Tendai Moyo</h6>
-                  <p class="text-muted small mb-2">Electrical Services</p>
-                  <div class="mb-3">
-                    <div class="text-warning">
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                      <i class="icon-base ri ri-star-fill icon-14px"></i>
-                      <i class="icon-base ri ri-star-half-fill icon-14px"></i>
-                    </div>
-                    <small class="text-muted">4.5/5 (156 reviews)</small>
-                  </div>
-                  <button type="button" class="btn btn-sm btn-primary w-100">View Profile</button>
-                </div>
-              </div>
-            </div>
-          </div>
+          @endif
         </div>
       </div>
     </div>

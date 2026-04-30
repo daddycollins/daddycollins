@@ -15,6 +15,9 @@
 @endsection
 
 @section('content')
+  <!-- Flash Messages Alert Component -->
+  <x-alert />
+
   <!-- Header Stats -->
   <div class="row g-6 mb-6">
     <div class="col-sm-6 col-lg-3">
@@ -23,9 +26,10 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Total Orders</p>
-              <h3 class="mb-2">486</h3>
-              <p class="mb-0"><span class="badge bg-label-success"><i class="icon-base ri ri-arrow-up-s-line me-1"></i>+12
-                  today</span></p>
+              <h3 class="mb-2">{{ $totalOrders }}</h3>
+              <p class="mb-0"><span class="badge bg-label-success"><i
+                    class="icon-base ri ri-arrow-up-s-line me-1"></i>{{ $totalOrders > 0 ? '+' . $totalOrders : 'No orders' }}</span>
+              </p>
             </div>
             <div class="avatar avatar-lg bg-label-primary">
               <div class="avatar-initial"><i class="icon-base ri ri-shopping-bag-line"></i></div>
@@ -41,7 +45,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Pending Orders</p>
-              <h3 class="mb-2">24</h3>
+              <h3 class="mb-2">{{ $pendingOrders }}</h3>
               <p class="mb-0"><span class="badge bg-label-warning"><i
                     class="icon-base ri ri-alert-line me-1"></i>Awaiting action</span></p>
             </div>
@@ -59,9 +63,9 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Completed Orders</p>
-              <h3 class="mb-2">438</h3>
+              <h3 class="mb-2">{{ $completedOrders }}</h3>
               <p class="mb-0"><span class="badge bg-label-success"><i
-                    class="icon-base ri ri-check-line me-1"></i>90%</span></p>
+                    class="icon-base ri ri-check-line me-1"></i>{{ $completionRate }}%</span></p>
             </div>
             <div class="avatar avatar-lg bg-label-success">
               <div class="avatar-initial"><i class="icon-base ri ri-check-double-line"></i></div>
@@ -77,9 +81,9 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Total Revenue</p>
-              <h3 class="mb-2">ZWL 145,620</h3>
-              <p class="mb-0"><span class="badge bg-label-info"><i
-                    class="icon-base ri ri-arrow-up-s-line me-1"></i>+8.5%</span></p>
+              <h3 class="mb-2">ZWL {{ number_format($totalRevenue, 0) }}</h3>
+              <p class="mb-0"><span class="badge bg-label-info"><i class="icon-base ri ri-arrow-up-s-line me-1"></i>From
+                  completed orders</span></p>
             </div>
             <div class="avatar avatar-lg bg-label-info">
               <div class="avatar-initial"><i class="icon-base ri ri-money-dollar-circle-line"></i></div>
@@ -154,166 +158,73 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><strong>#ORD-2026-1234</strong></td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <div class="avatar avatar-sm me-2">
-                    <img src="{{ asset('assets/img/avatars/1.png') }}" alt="Client" class="rounded-circle" />
+            @forelse($orders as $order)
+              <tr data-status="{{ $order->status }}">
+                <td><strong>#ORD-{{ $order->id }}</strong></td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="avatar avatar-sm me-2">
+                      <img src="{{ asset('assets/img/avatars/1.png') }}" alt="Client" class="rounded-circle" />
+                    </div>
+                    <div>
+                      <h6 class="mb-0 fw-medium">{{ $order->client->name ?? 'Unknown' }}</h6>
+                      <small class="text-muted">Client</small>
+                    </div>
                   </div>
-                  <div>
-                    <h6 class="mb-0 fw-medium">Sarah Mwangi</h6>
-                    <small class="text-muted">Harare</small>
+                </td>
+                <td><span
+                    class="badge bg-label-{{ $order->order_type === 'service' ? 'primary' : 'info' }}">{{ ucfirst($order->order_type) }}</span>
+                </td>
+                <td>{{ $order->created_at->format('d M Y') }}</td>
+                <td><strong>ZWL {{ number_format($order->total_amount, 2) }}</strong></td>
+                <td>
+                  <span
+                    class="badge bg-label-{{ $order->status === 'completed'
+                        ? 'success'
+                        : ($order->status === 'paid'
+                            ? 'info'
+                            : ($order->status === 'pending'
+                                ? 'warning'
+                                : 'danger')) }}">
+                    {{ ucfirst($order->status) }}
+                  </span>
+                </td>
+                <td><span
+                    class="badge bg-label-{{ $order->payment_status === 'paid' ? 'success' : 'warning' }}">{{ ucfirst($order->payment_status) }}</span>
+                </td>
+                <td>
+                  <div class="dropdown">
+                    <button type="button" class="btn btn-sm btn-icon btn-text-secondary rounded-pill"
+                      data-bs-toggle="dropdown">
+                      <i class="icon-base ri ri-more-2-fill"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{{ route('artisan-order-details', $order->id) }}">
+                        <i class="icon-base ri ri-eye-line me-2"></i>View Details
+                      </a>
+                      @if ($order->status !== 'completed' && $order->status !== 'cancelled')
+                        <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                          data-bs-target="#updateOrderModal" data-order-id="{{ $order->id }}"
+                          data-order-status="{{ $order->status }}">
+                          <i class="icon-base ri ri-edit-line me-2"></i>Update Status
+                        </a>
+                      @endif
+                      <hr class="dropdown-divider" />
+                      <a class="dropdown-item invoice-download" href="javascript:void(0);"
+                        data-order-id="{{ $order->id }}">
+                        <i class="icon-base ri ri-file-download-line me-2"></i>Invoice
+                      </a>
+                    </div>
                   </div>
-                </div>
-              </td>
-              <td><span class="badge bg-label-primary">Carpentry Work</span></td>
-              <td>22 Jan 2026</td>
-              <td><strong>ZWL 3,500</strong></td>
-              <td><span class="badge bg-label-success">Completed</span></td>
-              <td><span class="badge bg-label-success">Paid</span></td>
-              <td>
-                <div class="dropdown">
-                  <button type="button" class="btn btn-sm btn-icon btn-text-secondary rounded-pill"
-                    data-bs-toggle="dropdown">
-                    <i class="icon-base ri ri-more-2-fill"></i>
-                  </button>
-                  <div class="dropdown-menu">
-                    <a class="dropdown-item" href="javascript:void(0);">
-                      <i class="icon-base ri ri-eye-line me-2"></i>View Details
-                    </a>
-                    <a class="dropdown-item" href="javascript:void(0);">
-                      <i class="icon-base ri ri-message-2-line me-2"></i>Message Client
-                    </a>
-                    <hr class="dropdown-divider" />
-                    <a class="dropdown-item" href="javascript:void(0);">
-                      <i class="icon-base ri ri-file-download-line me-2"></i>Invoice
-                    </a>
-                  </div>
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td><strong>#ORD-2026-1235</strong></td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <div class="avatar avatar-sm me-2">
-                    <img src="{{ asset('assets/img/avatars/2.png') }}" alt="Client" class="rounded-circle" />
-                  </div>
-                  <div>
-                    <h6 class="mb-0 fw-medium">James Musarurwa</h6>
-                    <small class="text-muted">Bulawayo</small>
-                  </div>
-                </div>
-              </td>
-              <td><span class="badge bg-label-warning">Beadwork Design</span></td>
-              <td>21 Jan 2026</td>
-              <td><strong>ZWL 2,800</strong></td>
-              <td><span class="badge bg-label-info">In Progress</span></td>
-              <td><span class="badge bg-label-success">Paid</span></td>
-              <td>
-                <div class="dropdown">
-                  <button type="button" class="btn btn-sm btn-icon btn-text-secondary rounded-pill"
-                    data-bs-toggle="dropdown">
-                    <i class="icon-base ri ri-more-2-fill"></i>
-                  </button>
-                  <div class="dropdown-menu">
-                    <a class="dropdown-item" href="javascript:void(0);">
-                      <i class="icon-base ri ri-eye-line me-2"></i>View Details
-                    </a>
-                    <a class="dropdown-item" href="javascript:void(0);">
-                      <i class="icon-base ri ri-message-2-line me-2"></i>Message Client
-                    </a>
-                    <hr class="dropdown-divider" />
-                    <a class="dropdown-item" href="javascript:void(0);">
-                      <i class="icon-base ri ri-file-download-line me-2"></i>Invoice
-                    </a>
-                  </div>
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td><strong>#ORD-2026-1236</strong></td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <div class="avatar avatar-sm me-2">
-                    <img src="{{ asset('assets/img/avatars/3.png') }}" alt="Client" class="rounded-circle" />
-                  </div>
-                  <div>
-                    <h6 class="mb-0 fw-medium">Zinhle Dube</h6>
-                    <small class="text-muted">Chitungwiza</small>
-                  </div>
-                </div>
-              </td>
-              <td><span class="badge bg-label-success">Painting Service</span></td>
-              <td>20 Jan 2026</td>
-              <td><strong>ZWL 4,200</strong></td>
-              <td><span class="badge bg-label-warning">Pending</span></td>
-              <td><span class="badge bg-label-warning">Awaiting</span></td>
-              <td>
-                <div class="dropdown">
-                  <button type="button" class="btn btn-sm btn-icon btn-text-secondary rounded-pill"
-                    data-bs-toggle="dropdown">
-                    <i class="icon-base ri ri-more-2-fill"></i>
-                  </button>
-                  <div class="dropdown-menu">
-                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
-                      data-bs-target="#updateOrderModal">
-                      <i class="icon-base ri ri-edit-line me-2"></i>Update Status
-                    </a>
-                    <a class="dropdown-item" href="javascript:void(0);">
-                      <i class="icon-base ri ri-message-2-line me-2"></i>Message Client
-                    </a>
-                    <hr class="dropdown-divider" />
-                    <a class="dropdown-item text-danger" href="javascript:void(0);">
-                      <i class="icon-base ri ri-close-line me-2"></i>Cancel Order
-                    </a>
-                  </div>
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td><strong>#ORD-2026-1237</strong></td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <div class="avatar avatar-sm me-2">
-                    <img src="{{ asset('assets/img/avatars/4.png') }}" alt="Client" class="rounded-circle" />
-                  </div>
-                  <div>
-                    <h6 class="mb-0 fw-medium">Lindiwe Khumalo</h6>
-                    <small class="text-muted">Mutare</small>
-                  </div>
-                </div>
-              </td>
-              <td><span class="badge bg-label-info">Custom Furniture</span></td>
-              <td>19 Jan 2026</td>
-              <td><strong>ZWL 5,600</strong></td>
-              <td><span class="badge bg-label-success">Completed</span></td>
-              <td><span class="badge bg-label-success">Paid</span></td>
-              <td>
-                <div class="dropdown">
-                  <button type="button" class="btn btn-sm btn-icon btn-text-secondary rounded-pill"
-                    data-bs-toggle="dropdown">
-                    <i class="icon-base ri ri-more-2-fill"></i>
-                  </button>
-                  <div class="dropdown-menu">
-                    <a class="dropdown-item" href="javascript:void(0);">
-                      <i class="icon-base ri ri-eye-line me-2"></i>View Details
-                    </a>
-                    <a class="dropdown-item" href="javascript:void(0);">
-                      <i class="icon-base ri ri-message-2-line me-2"></i>Message Client
-                    </a>
-                    <hr class="dropdown-divider" />
-                    <a class="dropdown-item" href="javascript:void(0);">
-                      <i class="icon-base ri ri-file-download-line me-2"></i>Invoice
-                    </a>
-                  </div>
-                </div>
-              </td>
-            </tr>
+                </td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="8" class="text-center py-4">
+                  <p class="text-muted mb-0"><i class="icon-base ri ri-inbox-line me-2 fs-5"></i>No orders found</p>
+                </td>
+              </tr>
+            @endforelse
           </tbody>
         </table>
       </div>
@@ -328,106 +239,224 @@
           <h5 class="modal-title"><i class="icon-base ri ri-edit-line me-2 text-primary"></i>Update Order Status</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <form id="updateOrderForm">
+        <form id="updateOrderForm" method="POST">
+          @csrf
+          <div class="modal-body">
             <div class="mb-4">
-              <label class="form-label fw-medium mb-3">Current Status: <strong
+              <label class="form-label fw-medium mb-3">Current Status: <strong id="currentStatus"
                   class="text-warning">Pending</strong></label>
               <div class="alert alert-light" role="alert">
-                <small><strong>Order:</strong> #ORD-2026-1236</small>
+                <small><strong>Order:</strong> #<span id="orderNumber">2026-0000</span></small>
               </div>
             </div>
             <div class="mb-4">
               <label class="form-label fw-medium">New Status *</label>
-              <select class="form-select" required>
+              <select class="form-select" name="status" required>
                 <option value="">Select status</option>
-                <option value="confirmed">Confirmed</option>
-                <option value="in_progress">In Progress</option>
+                <option value="pending">Pending</option>
+                <option value="paid">Paid</option>
                 <option value="completed">Completed</option>
-                <option value="delivered">Delivered</option>
                 <option value="cancelled">Cancelled</option>
               </select>
             </div>
-            <div class="mb-0">
-              <label class="form-label fw-medium">Status Notes (Optional)</label>
-              <textarea class="form-control" rows="3" placeholder="Add notes about this status update..."></textarea>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer border-top">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary" form="updateOrderForm">
-            <i class="icon-base ri ri-check-line me-2"></i>Update Status
-          </button>
-        </div>
+          </div>
+          <div class="modal-footer border-top">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="icon-base ri ri-check-line me-2"></i>Update Status
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 
-  <script>
-    // Order Trend Chart
-    const orderTrendChart = new ApexCharts(document.querySelector("#orderTrendChart"), {
-      series: [{
-          name: "Completed",
-          data: [35, 41, 35, 51, 49, 62, 69]
-        },
-        {
-          name: "In Progress",
-          data: [8, 12, 10, 15, 14, 18, 16]
-        },
-        {
-          name: "Pending",
-          data: [2, 4, 3, 5, 4, 6, 5]
-        }
-      ],
-      chart: {
-        type: "area",
-        height: 350,
-        sparkline: {
-          enabled: false
-        }
-      },
-      colors: ["#28a745", "#667eea", "#ffc107"],
-      stroke: {
-        curve: "smooth",
-        width: 2
-      },
-      fill: {
-        type: "gradient",
-        gradient: {
-          shadeIntensity: 1,
-          opacityFrom: 0.45,
-          opacityTo: 0.05
-        }
-      },
-      xaxis: {
-        categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-      },
-      yaxis: {
-        title: {
-          text: "Orders"
-        }
-      },
-      tooltip: {
-        shared: true,
-        intersect: false
-      }
-    });
-    orderTrendChart.render();
+@endsection
 
-    // Status Distribution Chart
-    const statusDistributionChart = new ApexCharts(document.querySelector("#statusDistributionChart"), {
-      series: [438, 24, 24],
-      chart: {
-        type: "donut",
-        height: 350
-      },
-      labels: ["Completed", "In Progress", "Pending"],
-      colors: ["#28a745", "#667eea", "#ffc107"],
-      legend: {
-        position: "bottom"
+@section('page-script')
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Filter Orders by Status
+      const filterInputs = document.querySelectorAll('input[name="orderFilter"]');
+      const tableRows = document.querySelectorAll('table tbody tr[data-status]');
+
+      filterInputs.forEach(input => {
+        input.addEventListener('change', function(e) {
+          const selectedFilter = e.target.value;
+
+          tableRows.forEach(row => {
+            const rowStatus = row.getAttribute('data-status');
+
+            if (selectedFilter === 'all') {
+              row.style.display = '';
+            } else if (selectedFilter === rowStatus) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
+
+          // Store filter preference in sessionStorage
+          sessionStorage.setItem('orderFilter', selectedFilter);
+        });
+      });
+
+      // Restore filter preference from sessionStorage
+      const savedFilter = sessionStorage.getItem('orderFilter') || 'all';
+      const filterRadio = document.querySelector(`input[name="orderFilter"][value="${savedFilter}"]`);
+      if (filterRadio) {
+        filterRadio.click();
       }
+
+      // Update Order Modal - Set dynamic data
+      const updateOrderModal = document.getElementById('updateOrderModal');
+      updateOrderModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const orderId = button.getAttribute('data-order-id');
+        const orderStatus = button.getAttribute('data-order-status');
+
+        // Update modal content
+        document.getElementById('orderNumber').textContent = orderId;
+        document.getElementById('currentStatus').textContent = orderStatus.charAt(0).toUpperCase() + orderStatus
+          .slice(1);
+
+        // Update form action
+        const form = document.getElementById('updateOrderForm');
+        form.action = `/artisan/order/${orderId}/update-status`;
+      });
+
+      // Handle Update Order Form Submission
+      const updateOrderForm = document.getElementById('updateOrderForm');
+      updateOrderForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const statusSelect = this.querySelector('select[name="status"]');
+        const action = this.action;
+
+        // Validate status selection
+        if (!statusSelect.value) {
+          alert('Please select a status');
+          return;
+        }
+
+        // Show loading state
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="icon-base ri ri-loader-4-line me-2"></i>Updating...';
+
+        // Get CSRF token from meta tag or form input
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ||
+          this.querySelector('input[name="_token"]')?.value;
+
+        fetch(action, {
+            method: 'POST',
+            headers: {
+              'X-CSRF-TOKEN': csrfToken,
+              'Accept': 'application/json',
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'status=' + encodeURIComponent(statusSelect.value) + '&_token=' + encodeURIComponent(
+              csrfToken)
+          })
+          .then(response => {
+            if (!response.ok) throw new Error('HTTP error ' + response.status);
+            return response.json();
+          })
+          .then(data => {
+            if (data.success || data.message) {
+              // Close modal
+              const modal = bootstrap.Modal.getInstance(updateOrderModal);
+              modal.hide();
+
+              // Show success message and reload
+              setTimeout(() => location.reload(), 500);
+            } else {
+              throw new Error(data.message || 'Unknown error');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to update order status: ' + error.message);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+          });
+      });
+
+      // Handle Invoice Download
+      document.querySelectorAll('.invoice-download').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const orderId = this.getAttribute('data-order-id');
+
+          // Redirect to invoice download endpoint
+          window.location.href = `/artisan/order/${orderId}/invoice`;
+        });
+      });
+
+      // Order Trend Chart
+      const orderTrendChart = new ApexCharts(document.querySelector("#orderTrendChart"), {
+        series: [{
+            name: "Completed",
+            data: {!! $completedTrendData !!}
+          },
+          {
+            name: "In Progress",
+            data: {!! $inProgressTrendData !!}
+          },
+          {
+            name: "Pending",
+            data: {!! $pendingTrendData !!}
+          }
+        ],
+        chart: {
+          type: "area",
+          height: 350,
+          sparkline: {
+            enabled: false
+          }
+        },
+        colors: ["#28a745", "#667eea", "#ffc107"],
+        stroke: {
+          curve: "smooth",
+          width: 2
+        },
+        fill: {
+          type: "gradient",
+          gradient: {
+            shadeIntensity: 1,
+            opacityFrom: 0.45,
+            opacityTo: 0.05
+          }
+        },
+        xaxis: {
+          categories: {!! $ordersLabels !!}
+        },
+        yaxis: {
+          title: {
+            text: "Orders"
+          }
+        },
+        tooltip: {
+          shared: true,
+          intersect: false
+        }
+      });
+      orderTrendChart.render();
+
+      // Status Distribution Chart
+      const statusDistributionChart = new ApexCharts(document.querySelector("#statusDistributionChart"), {
+        series: [{{ $completedOrders }}, {{ $pendingOrders }}, {{ $paidOrders }}],
+        chart: {
+          type: "donut",
+          height: 350
+        },
+        labels: ["Completed", "Pending", "Paid"],
+        colors: ["#28a745", "#ffc107", "#667eea"],
+        legend: {
+          position: "bottom"
+        }
+      });
+      statusDistributionChart.render();
     });
-    statusDistributionChart.render();
   </script>
 @endsection

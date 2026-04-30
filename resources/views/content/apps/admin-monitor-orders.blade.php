@@ -11,6 +11,31 @@
 @endsection
 
 @section('content')
+  <!-- Flash Messages -->
+  @if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+      <i class="icon-base ri ri-check-double-line me-2"></i>{{ session('success') }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  @endif
+  @if (session('error'))
+    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+      <i class="icon-base ri ri-error-warning-line me-2"></i>{{ session('error') }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  @endif
+  @if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+      <i class="icon-base ri ri-error-warning-line me-2"></i>
+      <ul class="mb-0">
+        @foreach ($errors->all() as $error)
+          <li>{{ $error }}</li>
+        @endforeach
+      </ul>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  @endif
+
   <!-- Header -->
   <div
     class="d-flex flex-column flex-sm-row align-items-center justify-content-sm-between mb-6 text-center text-sm-start gap-2">
@@ -28,7 +53,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Total Orders</p>
-              <h3 class="mb-2">8,542</h3>
+              <h3 class="mb-2">{{ number_format($totalOrders) }}</h3>
               <p class="mb-0"><span class="badge bg-label-success"><i
                     class="icon-base ri ri-arrow-up-s-line me-1"></i>+18% MTD</span></p>
             </div>
@@ -46,7 +71,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Pending Payment</p>
-              <h3 class="mb-2">156</h3>
+              <h3 class="mb-2">{{ number_format($pendingPaymentOrders) }}</h3>
               <p class="mb-0"><span class="badge bg-label-warning">Action needed</span></p>
             </div>
             <div class="avatar avatar-lg bg-label-warning">
@@ -63,7 +88,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">In Progress</p>
-              <h3 class="mb-2">324</h3>
+              <h3 class="mb-2">{{ number_format($inProgressOrders) }}</h3>
               <p class="mb-0"><span class="badge bg-label-info">Being processed</span></p>
             </div>
             <div class="avatar avatar-lg bg-label-info">
@@ -80,7 +105,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Revenue (Today)</p>
-              <h3 class="mb-2">ZWL 45.2K</h3>
+              <h3 class="mb-2">ZWL {{ number_format($todayRevenue, 2) }}</h3>
               <p class="mb-0"><span class="badge bg-label-success">+12.5%</span></p>
             </div>
             <div class="avatar avatar-lg bg-label-success">
@@ -121,7 +146,6 @@
               <option value="completed">Completed</option>
               <option value="held">On Hold</option>
               <option value="cancelled">Cancelled</option>
-              <option value="failed">Failed</option>
             </select>
           </div>
           <div class="col-md-3">
@@ -135,13 +159,11 @@
             </select>
           </div>
           <div class="col-md-3">
-            <label class="form-label">Date Range</label>
-            <select class="form-select form-select-sm" id="filterDate">
-              <option value="">All Time</option>
-              <option value="today">Today</option>
-              <option value="week">This Week</option>
-              <option value="month">This Month</option>
-              <option value="year">This Year</option>
+            <label class="form-label">Order Type</label>
+            <select class="form-select form-select-sm" id="filterType">
+              <option value="">All Types</option>
+              <option value="service">Service</option>
+              <option value="product">Product</option>
             </select>
           </div>
           <div class="col-md-3">
@@ -159,7 +181,7 @@
             <th class="py-3">Order ID</th>
             <th class="py-3">Customer</th>
             <th class="py-3">Artisan</th>
-            <th class="py-3">Service</th>
+            <th class="py-3">Type</th>
             <th class="py-3">Amount</th>
             <th class="py-3">Order Status</th>
             <th class="py-3">Payment</th>
@@ -168,302 +190,98 @@
           </tr>
         </thead>
         <tbody>
-          <!-- Order 1 -->
-          <tr>
-            <td class="py-3"><strong>#ORD-2024-001</strong></td>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/1.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <span>John Doe</span>
-              </div>
-            </td>
-            <td class="py-3">James Smith</td>
-            <td class="py-3">Plumbing Repair</td>
-            <td class="py-3"><strong>ZWL 450</strong></td>
-            <td class="py-3"><span class="badge bg-label-success">Completed</span></td>
-            <td class="py-3"><span class="badge bg-label-success">Confirmed</span></td>
-            <td class="py-3">Jan 15, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="review-payment"><i
-                        class="icon-base ri ri-bank-card-line me-2"></i>Review Payment</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item" href="#" data-action="hold"><i
-                        class="icon-base ri ri-pause-line me-2"></i>Hold Order</a></li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="cancel"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Cancel Order</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Order 2 -->
-          <tr>
-            <td class="py-3"><strong>#ORD-2024-002</strong></td>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/2.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <span>Sarah Johnson</span>
-              </div>
-            </td>
-            <td class="py-3">Maria Garcia</td>
-            <td class="py-3">Carpentry Work</td>
-            <td class="py-3"><strong>ZWL 800</strong></td>
-            <td class="py-3"><span class="badge bg-label-info">In Progress</span></td>
-            <td class="py-3"><span class="badge bg-label-success">Confirmed</span></td>
-            <td class="py-3">Jan 14, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="review-payment"><i
-                        class="icon-base ri ri-bank-card-line me-2"></i>Review Payment</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item" href="#" data-action="hold"><i
-                        class="icon-base ri ri-pause-line me-2"></i>Hold Order</a></li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="cancel"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Cancel Order</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Order 3 - Pending Payment -->
-          <tr class="table-warning">
-            <td class="py-3"><strong>#ORD-2024-003</strong></td>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/3.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <span>Mike Wilson</span>
-              </div>
-            </td>
-            <td class="py-3">Robert Brown</td>
-            <td class="py-3">Electrical Installation</td>
-            <td class="py-3"><strong>ZWL 1,200</strong></td>
-            <td class="py-3"><span class="badge bg-label-warning">Pending Payment</span></td>
-            <td class="py-3"><span class="badge bg-label-warning">Pending</span></td>
-            <td class="py-3">Jan 13, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="review-payment"><i
-                        class="icon-base ri ri-bank-card-line me-2"></i>Review Payment</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item" href="#" data-action="hold"><i
-                        class="icon-base ri ri-pause-line me-2"></i>Hold Order</a></li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="cancel"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Cancel Order</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Order 4 -->
-          <tr>
-            <td class="py-3"><strong>#ORD-2024-004</strong></td>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/4.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <span>Emma Davis</span>
-              </div>
-            </td>
-            <td class="py-3">Lisa Martinez</td>
-            <td class="py-3">Home Cleaning</td>
-            <td class="py-3"><strong>ZWL 350</strong></td>
-            <td class="py-3"><span class="badge bg-label-success">Completed</span></td>
-            <td class="py-3"><span class="badge bg-label-success">Confirmed</span></td>
-            <td class="py-3">Jan 12, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="review-payment"><i
-                        class="icon-base ri ri-bank-card-line me-2"></i>Review Payment</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item" href="#" data-action="hold"><i
-                        class="icon-base ri ri-pause-line me-2"></i>Hold Order</a></li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="cancel"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Cancel Order</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Order 5 - On Hold -->
-          <tr style="opacity: 0.7; background-color: #fef3cd;">
-            <td class="py-3"><strong>#ORD-2024-005</strong></td>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/5.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <span>David Anderson</span>
-              </div>
-            </td>
-            <td class="py-3">Christopher Lee</td>
-            <td class="py-3">Garden Design</td>
-            <td class="py-3"><strong>ZWL 950</strong></td>
-            <td class="py-3"><span class="badge bg-label-secondary">On Hold</span></td>
-            <td class="py-3"><span class="badge bg-label-warning">Pending</span></td>
-            <td class="py-3">Jan 11, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="review-payment"><i
-                        class="icon-base ri ri-bank-card-line me-2"></i>Review Payment</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="resume"><i
-                        class="icon-base ri ri-play-line me-2"></i>Resume Order</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="cancel"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Cancel Order</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Order 6 -->
-          <tr>
-            <td class="py-3"><strong>#ORD-2024-006</strong></td>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/6.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <span>Jessica White</span>
-              </div>
-            </td>
-            <td class="py-3">James Smith</td>
-            <td class="py-3">Door Installation</td>
-            <td class="py-3"><strong>ZWL 650</strong></td>
-            <td class="py-3"><span class="badge bg-label-info">In Progress</span></td>
-            <td class="py-3"><span class="badge bg-label-success">Confirmed</span></td>
-            <td class="py-3">Jan 10, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="review-payment"><i
-                        class="icon-base ri ri-bank-card-line me-2"></i>Review Payment</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item" href="#" data-action="hold"><i
-                        class="icon-base ri ri-pause-line me-2"></i>Hold Order</a></li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="cancel"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Cancel Order</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Order 7 - Cancelled -->
-          <tr style="opacity: 0.6; text-decoration: line-through;">
-            <td class="py-3"><strong>#ORD-2024-007</strong></td>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/7.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <span>Michelle Brown</span>
-              </div>
-            </td>
-            <td class="py-3">Maria Garcia</td>
-            <td class="py-3">Wall Painting</td>
-            <td class="py-3"><strong>ZWL 550</strong></td>
-            <td class="py-3"><span class="badge bg-label-danger">Cancelled</span></td>
-            <td class="py-3"><span class="badge bg-label-danger">Cancelled</span></td>
-            <td class="py-3">Jan 9, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="review-payment"><i
-                        class="icon-base ri ri-bank-card-line me-2"></i>Review Payment</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Order 8 -->
-          <tr>
-            <td class="py-3"><strong>#ORD-2024-008</strong></td>
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-2">
-                <img src="/images/avatars/8.png" alt="avatar" class="rounded-circle"
-                  style="width: 32px; height: 32px;">
-                <span>Thomas Clark</span>
-              </div>
-            </td>
-            <td class="py-3">Robert Brown</td>
-            <td class="py-3">Roof Repair</td>
-            <td class="py-3"><strong>ZWL 1,500</strong></td>
-            <td class="py-3"><span class="badge bg-label-info">In Progress</span></td>
-            <td class="py-3"><span class="badge bg-label-success">Confirmed</span></td>
-            <td class="py-3">Jan 8, 2024</td>
-            <td class="py-3">
-              <div class="dropdown">
-                <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
-                  <i class="icon-base ri ri-more-2-line"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" data-action="view"><i
-                        class="icon-base ri ri-eye-line me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item" href="#" data-action="review-payment"><i
-                        class="icon-base ri ri-bank-card-line me-2"></i>Review Payment</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item" href="#" data-action="hold"><i
-                        class="icon-base ri ri-pause-line me-2"></i>Hold Order</a></li>
-                  <li><a class="dropdown-item text-danger" href="#" data-action="cancel"><i
-                        class="icon-base ri ri-close-circle-line me-2"></i>Cancel Order</a></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
+          @forelse($orders as $order)
+            <tr @if ($order->status === 'cancelled') style="opacity: 0.6; text-decoration: line-through;" @elseif($order->status === 'held') style="opacity: 0.7; background-color: #fef3cd;" @elseif($order->status === 'pending') class="table-warning" @endif>
+              <td class="py-3">
+                <strong>#ORD-{{ $order->created_at->format('Y') }}-{{ str_pad($order->id, 3, '0', STR_PAD_LEFT) }}</strong>
+              </td>
+              <td class="py-3">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="avatar avatar-sm rounded-circle bg-label-primary">
+                    <span class="avatar-initial rounded-circle">{{ substr($order->client?->name ?? 'N', 0, 1) }}</span>
+                  </div>
+                  <span>{{ $order->client?->name ?? 'N/A' }}</span>
+                </div>
+              </td>
+              <td class="py-3">{{ $order->artisan?->user?->name ?? $order->artisan?->business_name ?? 'N/A' }}</td>
+              <td class="py-3">
+                <span class="badge {{ $order->order_type === 'service' ? 'bg-label-info' : 'bg-label-primary' }}">
+                  {{ ucfirst($order->order_type) }}
+                </span>
+              </td>
+              <td class="py-3"><strong>ZWL {{ number_format($order->total_amount ?? $order->amount, 2) }}</strong></td>
+              <td class="py-3">
+                <span
+                  class="badge {{ $order->status === 'completed' ? 'bg-label-success' : ($order->status === 'processing' ? 'bg-label-info' : ($order->status === 'pending' ? 'bg-label-warning' : ($order->status === 'held' ? 'bg-label-secondary' : ($order->status === 'paid' ? 'bg-label-success' : 'bg-label-danger')))) }}">
+                  {{ $order->status === 'held' ? 'On Hold' : ucfirst($order->status) }}
+                </span>
+              </td>
+              <td class="py-3">
+                <span
+                  class="badge {{ $order->payment_status === 'confirmed' || $order->payment_status === 'paid' ? 'bg-label-success' : ($order->payment_status === 'pending' || $order->payment_status === 'unpaid' ? 'bg-label-warning' : 'bg-label-danger') }}">
+                  {{ ucfirst($order->payment_status ?? 'Pending') }}
+                </span>
+              </td>
+              <td class="py-3">{{ $order->created_at->format('M d, Y') }}</td>
+              <td class="py-3">
+                <div class="dropdown">
+                  <button class="btn btn-icon btn-text-secondary" data-bs-toggle="dropdown">
+                    <i class="icon-base ri ri-more-2-line"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewOrderModal-{{ $order->id }}">
+                        <i class="icon-base ri ri-eye-line me-2"></i>View Details
+                      </a>
+                    </li>
+                    @if ($order->status !== 'completed' && $order->status !== 'cancelled')
+                      <li><hr class="dropdown-divider"></li>
+                      @if ($order->status === 'held')
+                        <li>
+                          <a class="dropdown-item resume-action" href="#"
+                            data-order-label="#ORD-{{ $order->created_at->format('Y') }}-{{ str_pad($order->id, 3, '0', STR_PAD_LEFT) }}"
+                            data-form-id="resumeForm-{{ $order->id }}">
+                            <i class="icon-base ri ri-play-line me-2"></i>Resume Order
+                          </a>
+                          <form id="resumeForm-{{ $order->id }}" action="{{ route('admin-order-resume', $order) }}" method="POST" class="d-none">
+                            @csrf
+                          </form>
+                        </li>
+                      @else
+                        <li>
+                          <a class="dropdown-item hold-action" href="#"
+                            data-order-label="#ORD-{{ $order->created_at->format('Y') }}-{{ str_pad($order->id, 3, '0', STR_PAD_LEFT) }}"
+                            data-form-id="holdForm-{{ $order->id }}">
+                            <i class="icon-base ri ri-pause-line me-2"></i>Hold Order
+                          </a>
+                          <form id="holdForm-{{ $order->id }}" action="{{ route('admin-order-hold', $order) }}" method="POST" class="d-none">
+                            @csrf
+                          </form>
+                        </li>
+                      @endif
+                      <li>
+                        <a class="dropdown-item text-danger cancel-action" href="#"
+                          data-order-label="#ORD-{{ $order->created_at->format('Y') }}-{{ str_pad($order->id, 3, '0', STR_PAD_LEFT) }}"
+                          data-form-id="cancelForm-{{ $order->id }}">
+                          <i class="icon-base ri ri-close-circle-line me-2"></i>Cancel Order
+                        </a>
+                        <form id="cancelForm-{{ $order->id }}" action="{{ route('admin-order-cancel', $order) }}" method="POST" class="d-none">
+                          @csrf
+                          <input type="hidden" name="reason" id="cancelReason-{{ $order->id }}">
+                        </form>
+                      </li>
+                    @endif
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          @empty
+            <tr>
+              <td colspan="9" class="text-center py-4">
+                <p class="text-muted mb-0">No orders found</p>
+              </td>
+            </tr>
+          @endforelse
         </tbody>
       </table>
     </div>
@@ -471,28 +289,194 @@
 
   <!-- Pagination -->
   <div class="d-flex justify-content-between align-items-center mt-4">
-    <small class="text-muted">Showing 1 to 8 of 8,542 orders</small>
-    <nav aria-label="Page navigation">
-      <ul class="pagination pagination-sm m-0">
-        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item"><a class="page-link" href="#">Next</a></li>
-      </ul>
-    </nav>
+    <small class="text-muted">Showing {{ $orders->firstItem() ?? 0 }} to {{ $orders->lastItem() ?? 0 }} of
+      {{ $orders->total() }} orders</small>
+    {{ $orders->links() }}
   </div>
 
+  <!-- View Order Modals -->
+  @foreach($orders as $order)
+    <div class="modal fade" id="viewOrderModal-{{ $order->id }}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header border-0 pb-0">
+            <div>
+              <h5 class="modal-title mb-1">Order #ORD-{{ $order->created_at->format('Y') }}-{{ str_pad($order->id, 3, '0', STR_PAD_LEFT) }}</h5>
+              <div class="d-flex gap-2">
+                <span class="badge {{ $order->status === 'completed' ? 'bg-label-success' : ($order->status === 'processing' ? 'bg-label-info' : ($order->status === 'pending' ? 'bg-label-warning' : ($order->status === 'held' ? 'bg-label-secondary' : ($order->status === 'paid' ? 'bg-label-success' : 'bg-label-danger')))) }}">
+                  {{ $order->status === 'held' ? 'On Hold' : ucfirst($order->status) }}
+                </span>
+                <span class="badge {{ $order->payment_status === 'confirmed' || $order->payment_status === 'paid' ? 'bg-label-success' : ($order->payment_status === 'pending' || $order->payment_status === 'unpaid' ? 'bg-label-warning' : 'bg-label-danger') }}">
+                  Payment: {{ ucfirst($order->payment_status ?? 'Pending') }}
+                </span>
+                <span class="badge {{ $order->order_type === 'service' ? 'bg-label-info' : 'bg-label-primary' }}">
+                  {{ ucfirst($order->order_type) }}
+                </span>
+              </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-4">
+              <!-- Customer Info -->
+              <div class="col-md-6">
+                <div class="card bg-light border-0">
+                  <div class="card-body">
+                    <h6 class="text-uppercase text-muted small mb-3">
+                      <i class="icon-base ri ri-user-line me-1"></i>Customer
+                    </h6>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                      <div class="avatar avatar-md rounded-circle bg-label-primary">
+                        <span class="avatar-initial rounded-circle">{{ substr($order->client?->name ?? 'N', 0, 1) }}</span>
+                      </div>
+                      <div>
+                        <h6 class="mb-0">{{ $order->client?->name ?? 'N/A' }}</h6>
+                        <small class="text-muted">{{ $order->client?->email ?? 'N/A' }}</small>
+                      </div>
+                    </div>
+                    @if ($order->shipping_address)
+                      <div class="mb-0">
+                        <small class="text-muted d-block">Shipping Address</small>
+                        <span class="small">{{ $order->shipping_address }}</span>
+                      </div>
+                    @endif
+                  </div>
+                </div>
+              </div>
+
+              <!-- Artisan Info -->
+              <div class="col-md-6">
+                <div class="card bg-light border-0">
+                  <div class="card-body">
+                    <h6 class="text-uppercase text-muted small mb-3">
+                      <i class="icon-base ri ri-hammer-line me-1"></i>Artisan
+                    </h6>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                      <div class="avatar avatar-md rounded-circle bg-label-warning">
+                        <span class="avatar-initial rounded-circle">{{ substr($order->artisan?->user?->name ?? $order->artisan?->business_name ?? 'N', 0, 1) }}</span>
+                      </div>
+                      <div>
+                        <h6 class="mb-0">{{ $order->artisan?->user?->name ?? 'N/A' }}</h6>
+                        <small class="text-muted">{{ $order->artisan?->business_name ?? 'N/A' }}</small>
+                      </div>
+                    </div>
+                    @if ($order->artisan?->location)
+                      <div class="mb-0">
+                        <small class="text-muted d-block">Location</small>
+                        <span class="small">{{ $order->artisan->location }}</span>
+                      </div>
+                    @endif
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Order Items -->
+            @if ($order->items->count() > 0)
+              <div class="card bg-light border-0 mt-4">
+                <div class="card-body">
+                  <h6 class="text-uppercase text-muted small mb-3">
+                    <i class="icon-base ri ri-file-list-3-line me-1"></i>Order Items
+                  </h6>
+                  <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                      <thead>
+                        <tr>
+                          <th>Item</th>
+                          <th>Type</th>
+                          <th class="text-center">Qty</th>
+                          <th class="text-end">Price</th>
+                          <th class="text-end">Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach($order->items as $item)
+                          <tr>
+                            <td>{{ $item->artisanService?->service_name ?? 'Item #' . $item->item_id }}</td>
+                            <td><span class="badge bg-label-secondary">{{ ucfirst($item->item_type) }}</span></td>
+                            <td class="text-center">{{ $item->quantity }}</td>
+                            <td class="text-end">ZWL {{ number_format($item->price, 2) }}</td>
+                            <td class="text-end">ZWL {{ number_format($item->price * $item->quantity, 2) }}</td>
+                          </tr>
+                        @endforeach
+                      </tbody>
+                      <tfoot class="border-top">
+                        <tr>
+                          <td colspan="4" class="text-end fw-semibold">Total</td>
+                          <td class="text-end fw-bold">ZWL {{ number_format($order->total_amount ?? $order->amount, 2) }}</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            @endif
+
+            <!-- Payment & Order Details -->
+            <div class="row g-4 mt-0">
+              <div class="col-md-6">
+                <div class="card bg-light border-0">
+                  <div class="card-body">
+                    <h6 class="text-uppercase text-muted small mb-3">
+                      <i class="icon-base ri ri-bank-card-line me-1"></i>Payment Details
+                    </h6>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span class="text-muted">Amount</span>
+                      <span class="fw-semibold">ZWL {{ number_format($order->total_amount ?? $order->amount, 2) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span class="text-muted">Method</span>
+                      <span>{{ ucfirst($order->payment_method ?? 'N/A') }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <span class="text-muted">Status</span>
+                      <span class="badge {{ $order->payment_status === 'confirmed' || $order->payment_status === 'paid' ? 'bg-success' : ($order->payment_status === 'pending' || $order->payment_status === 'unpaid' ? 'bg-warning' : 'bg-danger') }}">
+                        {{ ucfirst($order->payment_status ?? 'Pending') }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card bg-light border-0">
+                  <div class="card-body">
+                    <h6 class="text-uppercase text-muted small mb-3">
+                      <i class="icon-base ri ri-calendar-line me-1"></i>Timeline
+                    </h6>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span class="text-muted">Order Placed</span>
+                      <span>{{ $order->created_at->format('M d, Y h:i A') }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span class="text-muted">Last Updated</span>
+                      <span>{{ $order->updated_at->format('M d, Y h:i A') }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <span class="text-muted">Order Type</span>
+                      <span class="badge {{ $order->order_type === 'service' ? 'bg-label-info' : 'bg-label-primary' }}">{{ ucfirst($order->order_type) }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  @endforeach
 @endsection
 
 @section('page-script')
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Order search functionality
+      // Order search
       document.getElementById('orderSearch').addEventListener('keyup', function(e) {
-        const searchTerm = e.target.value.toLowerCase();
-        document.querySelectorAll('tbody tr').forEach(row => {
-          const text = row.textContent.toLowerCase();
+        var searchTerm = e.target.value.toLowerCase();
+        document.querySelectorAll('tbody tr').forEach(function(row) {
+          var text = row.textContent.toLowerCase();
           row.style.display = text.includes(searchTerm) ? '' : 'none';
         });
       });
@@ -501,188 +485,92 @@
       document.getElementById('resetFilters').addEventListener('click', function() {
         document.getElementById('filterStatus').value = '';
         document.getElementById('filterPayment').value = '';
-        document.getElementById('filterDate').value = '';
-        document.querySelectorAll('tbody tr').forEach(row => row.style.display = '');
+        document.getElementById('filterType').value = '';
+        document.querySelectorAll('tbody tr').forEach(function(row) { row.style.display = ''; });
       });
 
-      // Action handlers
-      document.querySelectorAll('[data-action]').forEach(link => {
+      // Hold order confirmation
+      document.querySelectorAll('.hold-action').forEach(function(link) {
         link.addEventListener('click', function(e) {
           e.preventDefault();
-          const action = this.getAttribute('data-action');
-          const row = this.closest('tr');
-          const orderId = row.querySelector('strong').textContent;
-          const customer = row.querySelector('td:nth-child(2)').textContent.trim();
-          const amount = row.querySelector('td:nth-child(5)').textContent.trim();
+          var orderLabel = this.getAttribute('data-order-label');
+          var formId = this.getAttribute('data-form-id');
+          Swal.fire({
+            title: 'Hold Order?',
+            text: 'Put ' + orderLabel + ' on hold? The customer will be notified.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Hold Order',
+            confirmButtonColor: '#ffb64d',
+            cancelButtonText: 'Cancel'
+          }).then(function(result) {
+            if (result.isConfirmed) {
+              document.getElementById(formId).submit();
+            }
+          });
+        });
+      });
 
-          switch (action) {
-            case 'hold':
-              Swal.fire({
-                title: 'Hold Order?',
-                text: `Put ${orderId} on hold? The customer will be notified.`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Hold Order',
-                confirmButtonColor: '#ffb64d',
-                cancelButtonText: 'Cancel'
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  const statusCell = row.querySelector('td:nth-child(6)');
-                  statusCell.innerHTML = '<span class="badge bg-label-secondary">On Hold</span>';
-                  row.style.opacity = '0.7';
-                  row.style.backgroundColor = '#fef3cd';
-                  Swal.fire('Held!', `${orderId} has been placed on hold.`, 'success');
-                }
-              });
-              break;
+      // Resume order confirmation
+      document.querySelectorAll('.resume-action').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          var orderLabel = this.getAttribute('data-order-label');
+          var formId = this.getAttribute('data-form-id');
+          Swal.fire({
+            title: 'Resume Order?',
+            text: 'Resume processing ' + orderLabel + '? The artisan will be notified.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Resume',
+            confirmButtonColor: '#71dd5a',
+            cancelButtonText: 'Cancel'
+          }).then(function(result) {
+            if (result.isConfirmed) {
+              document.getElementById(formId).submit();
+            }
+          });
+        });
+      });
 
-            case 'resume':
+      // Cancel order with reason
+      document.querySelectorAll('.cancel-action').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          var orderLabel = this.getAttribute('data-order-label');
+          var formId = this.getAttribute('data-form-id');
+          var orderId = formId.replace('cancelForm-', '');
+          Swal.fire({
+            title: 'Cancel Order?',
+            text: 'Are you sure you want to cancel ' + orderLabel + '? This action cannot be undone.',
+            icon: 'error',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Cancel Order',
+            confirmButtonColor: '#dc3545',
+            cancelButtonText: 'Keep Order'
+          }).then(function(result) {
+            if (result.isConfirmed) {
               Swal.fire({
-                title: 'Resume Order?',
-                text: `Resume processing ${orderId}? The artisan will be notified.`,
-                icon: 'success',
+                title: 'Cancellation Reason',
+                input: 'textarea',
+                inputPlaceholder: 'Please provide a reason for cancellation (min 5 characters)...',
                 showCancelButton: true,
-                confirmButtonText: 'Yes, Resume',
-                confirmButtonColor: '#71dd5a',
-                cancelButtonText: 'Cancel'
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  const statusCell = row.querySelector('td:nth-child(6)');
-                  statusCell.innerHTML = '<span class="badge bg-label-info">In Progress</span>';
-                  row.style.opacity = '1';
-                  row.style.backgroundColor = 'transparent';
-                  Swal.fire('Resumed!', `${orderId} has been resumed.`, 'success');
-                }
-              });
-              break;
-
-            case 'cancel':
-              Swal.fire({
-                title: 'Cancel Order?',
-                text: `Are you sure you want to cancel ${orderId}? This action cannot be undone.`,
-                icon: 'error',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Cancel Order',
+                confirmButtonText: 'Confirm Cancellation',
                 confirmButtonColor: '#dc3545',
-                cancelButtonText: 'Keep Order'
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  Swal.fire({
-                    title: 'Cancellation Reason',
-                    input: 'textarea',
-                    inputPlaceholder: 'Please provide a reason for cancellation...',
-                    showCancelButton: true,
-                    confirmButtonText: 'Confirm Cancellation',
-                    confirmButtonColor: '#dc3545',
-                    cancelButtonText: 'Cancel'
-                  }).then((reasonResult) => {
-                    if (reasonResult.isConfirmed) {
-                      const statusCell = row.querySelector('td:nth-child(6)');
-                      statusCell.innerHTML = '<span class="badge bg-label-danger">Cancelled</span>';
-                      const paymentCell = row.querySelector('td:nth-child(7)');
-                      paymentCell.innerHTML = '<span class="badge bg-label-danger">Cancelled</span>';
-                      row.style.opacity = '0.6';
-                      row.style.textDecoration = 'line-through';
-                      Swal.fire('Cancelled!',
-                        `${orderId} has been cancelled.\nReason: ${reasonResult.value}`, 'success');
-                    }
-                  });
+                cancelButtonText: 'Go Back',
+                inputValidator: function(value) {
+                  if (!value || value.length < 5) {
+                    return 'Please provide a reason (at least 5 characters).';
+                  }
+                }
+              }).then(function(reasonResult) {
+                if (reasonResult.isConfirmed) {
+                  document.getElementById('cancelReason-' + orderId).value = reasonResult.value;
+                  document.getElementById(formId).submit();
                 }
               });
-              break;
-
-            case 'review-payment':
-              Swal.fire({
-                title: 'Payment Review - ' + orderId,
-                html: `
-                <div class="text-start">
-                  <div class="mb-3">
-                    <label class="form-label"><strong>Customer:</strong></label>
-                    <p>${customer}</p>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label"><strong>Amount:</strong></label>
-                    <p>${amount}</p>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label"><strong>Payment Method:</strong></label>
-                    <select class="form-select form-select-sm" id="paymentMethod">
-                      <option selected>Paynow Transfer</option>
-                      <option>Cash Payment</option>
-                      <option>Ecocash</option>
-                      <option>Other</option>
-                    </select>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label"><strong>Status:</strong></label>
-                    <select class="form-select form-select-sm" id="paymentStatus">
-                      <option>Pending</option>
-                      <option selected>Confirmed</option>
-                      <option>Failed</option>
-                      <option>Refunded</option>
-                    </select>
-                  </div>
-                  <div class="mb-0">
-                    <label class="form-label"><strong>Reference:</strong></label>
-                    <input type="text" class="form-control form-control-sm" value="TXN-2024-001548" readonly>
-                  </div>
-                </div>
-              `,
-                showCancelButton: true,
-                confirmButtonText: 'Update Payment',
-                cancelButtonText: 'Close'
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  const paymentStatus = document.getElementById('paymentStatus').value;
-                  const paymentCell = row.querySelector('td:nth-child(7)');
-
-                  let badgeColor = 'bg-label-success';
-                  if (paymentStatus === 'Failed') badgeColor = 'bg-label-danger';
-                  else if (paymentStatus === 'Pending') badgeColor = 'bg-label-warning';
-                  else if (paymentStatus === 'Refunded') badgeColor = 'bg-label-secondary';
-
-                  paymentCell.innerHTML = `<span class="badge ${badgeColor}">${paymentStatus}</span>`;
-                  Swal.fire('Updated!', 'Payment information has been updated.', 'success');
-                }
-              });
-              break;
-
-            case 'view':
-              Swal.fire({
-                title: 'Order Details - ' + orderId,
-                html: `
-                <div class="text-start" style="max-height: 400px; overflow-y: auto;">
-                  <div class="row mb-3">
-                    <div class="col-6"><strong>Order ID:</strong> ${orderId}</div>
-                    <div class="col-6"><strong>Date:</strong> ${row.querySelector('td:nth-child(8)').textContent}</div>
-                  </div>
-                  <div class="row mb-3">
-                    <div class="col-6"><strong>Customer:</strong> ${customer}</div>
-                    <div class="col-6"><strong>Artisan:</strong> ${row.querySelector('td:nth-child(3)').textContent}</div>
-                  </div>
-                  <div class="row mb-3">
-                    <div class="col-6"><strong>Service:</strong> ${row.querySelector('td:nth-child(4)').textContent}</div>
-                    <div class="col-6"><strong>Amount:</strong> ${amount}</div>
-                  </div>
-                  <div class="row mb-3">
-                    <div class="col-6"><strong>Order Status:</strong> ${row.querySelector('td:nth-child(6)').textContent}</div>
-                    <div class="col-6"><strong>Payment:</strong> ${row.querySelector('td:nth-child(7)').textContent}</div>
-                  </div>
-                  <div class="alert alert-info mt-3 mb-0">
-                    <strong>Timeline:</strong>
-                    <ul class="mb-0 mt-2">
-                      <li>Order Placed: Jan 15, 2024 10:30 AM</li>
-                      <li>Artisan Accepted: Jan 15, 2024 10:45 AM</li>
-                      <li>Work In Progress: Jan 15, 2024 02:00 PM</li>
-                      <li>Pending Payment: Jan 16, 2024 04:30 PM</li>
-                    </ul>
-                  </div>
-                </div>
-              `,
-                confirmButtonText: 'Close'
-              });
-              break;
-          }
+            }
+          });
         });
       });
     });
