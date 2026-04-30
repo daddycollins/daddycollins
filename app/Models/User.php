@@ -78,4 +78,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(SystemLog::class);
     }
+    public function requirements()
+    {
+        return $this->hasMany(Requirement::class);
+    }
+
+    public function bids()
+    {
+        return $this->hasMany(Bid::class, 'artisan_id');
+    }
 }

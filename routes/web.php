@@ -8,6 +8,7 @@ use App\Http\Controllers\maps\Leaflet;
 use App\Http\Controllers\admin\Reports;
 use App\Http\Controllers\apps\Calendar;
 use App\Http\Controllers\apps\UserList;
+use App\Http\Controllers\BidController;
 use App\Http\Controllers\dashboard\Crm;
 use App\Http\Controllers\icons\RiIcons;
 use App\Http\Controllers\layouts\Blank;
@@ -68,6 +69,7 @@ use App\Http\Controllers\layouts\ContentNavbar;
 use App\Http\Controllers\layouts\WithoutNavbar;
 use App\Http\Controllers\pages\MiscServerError;
 use App\Http\Controllers\pages\UserConnections;
+use App\Http\Controllers\RequirementController;
 use App\Http\Controllers\tables\DatatableBasic;
 use App\Http\Controllers\user_interface\Alerts;
 use App\Http\Controllers\user_interface\Badges;
@@ -107,6 +109,7 @@ use App\Http\Controllers\user_interface\TabsPills;
 use App\Http\Controllers\apps\AcademyCourseDetails;
 use App\Http\Controllers\apps\EcommerceCustomerAll;
 use App\Http\Controllers\apps\EcommerceProductList;
+use App\Http\Controllers\artisan\BiddingController;
 use App\Http\Controllers\extended_ui\TimelineBasic;
 use App\Http\Controllers\form_elements\InputGroups;
 use App\Http\Controllers\form_layouts\VerticalForm;
@@ -165,6 +168,7 @@ use App\Http\Controllers\wizard_example\Checkout as WizardCheckout;
 use App\Http\Controllers\form_wizard\Numbered as FormWizardNumbered;
 use App\Http\Controllers\admin\UserManagement as AdminUserManagement;
 use App\Http\Controllers\apps\EcommerceCustomerDetailsNotifications;
+
 
 // Main Page Route - Redirect to login if not authenticated
 Route::get('/', function () {
@@ -479,7 +483,22 @@ Route::middleware(['auth', 'role:artisan'])->group(function () {
   Route::post('/artisan/profile/password', [ArtisanController::class, 'changePassword'])->name('artisan-profile-password');
 });
 
+Route::middleware(['auth'])->group(function () {
+  Route::resource('requirements', RequirementController::class);
+  Route::post('requirements/{requirement}/bids', [BidController::class, 'store'])->name('bids.store');
+  Route::post('bids/{bid}/accept', [BidController::class, 'accept'])->name('bids.accept');
+});
+
+// Artisan Bidding Pages
+Route::middleware(['auth'])->group(function () {
+  Route::get('artisan/my-bids', [BiddingController::class, 'myBids'])->name('artisan.my-bids');
+  Route::get('artisan/open-requirements', [
+    BiddingController::class,
+    'openRequirements'
+  ])->name('artisan.open-requirements');
+});
+
 // Paynow webhook (public endpoint - outside middleware groups)
 Route::post('/paynow/webhook', [App\Http\Controllers\PaynowWebhookController::class, 'handle'])
-    ->name('paynow.webhook')
-    ->middleware('verify.paynow.webhook');
+  ->name('paynow.webhook')
+  ->middleware('verify.paynow.webhook');

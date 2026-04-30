@@ -15,33 +15,39 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Create Admin User
-        User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@artisanconnect.com',
-            'password' => Hash::make('password123'),
-            'role' => 'admin',
-            'status' => 'active',
-            'email_verified_at' => now(),
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@artisanconnect.com'],
+            [
+                'name' => 'Admin User',
+                'password' => Hash::make('password123'),
+                'role' => 'admin',
+                'status' => 'active',
+                'email_verified_at' => now(),
+            ]
+        );
 
         // Create Artisan User
-        User::create([
-            'name' => 'John Artisan',
-            'email' => 'artisan@artisanconnect.com',
-            'password' => Hash::make('password123'),
-            'role' => 'artisan',
-            'status' => 'active',
-            'email_verified_at' => now(),
-        ]);
+        User::updateOrCreate(
+            ['email' => 'artisan@artisanconnect.com'],
+            [
+                'name' => 'John Artisan',
+                'password' => Hash::make('password123'),
+                'role' => 'artisan',
+                'status' => 'active',
+                'email_verified_at' => now(),
+            ]
+        );
 
         // Create Client User
-        User::create([
-            'name' => 'Jane Client',
-            'email' => 'client@artisanconnect.com',
-            'password' => Hash::make('password123'),
-            'role' => 'client',
-            'status' => 'active',
-            'email_verified_at' => now(),
-        ]);
+        User::updateOrCreate(
+            ['email' => 'client@artisanconnect.com'],
+            [
+                'name' => 'Jane Client',
+                'password' => Hash::make('password123'),
+                'role' => 'client',
+                'status' => 'active',
+                'email_verified_at' => now(),
+            ]
+        );
     }
 }

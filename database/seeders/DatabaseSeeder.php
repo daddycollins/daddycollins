@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             ArtisanServiceSeeder::class,
             OrderSeeder::class,
             ReviewSeeder::class,
+            RequirementSeeder::class,
+            BidSeeder::class,
         ]);
     }
 }

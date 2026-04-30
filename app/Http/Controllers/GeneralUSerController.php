@@ -14,7 +14,7 @@ class GeneralUSerController extends Controller
     //
     public function index()
     {
-        $user = Auth::user();
+        $user = Auth::user()->load('requirements');
 
         // Fetch statistical data
         $totalOrders = Order::where('client_id', $user->id)->count();
@@ -61,14 +61,39 @@ class GeneralUSerController extends Controller
             $completedPercent = $inProgressPercent = $pendingPercent = $cancelledPercent = 0;
         }
 
-        // Fetch top 4 recommended artisans (verified, excluding already hired)
-        $hiredArtisanIds = Order::where('client_id', $user->id)
-            ->distinct()
-            ->pluck('artisan_id')
-            ->toArray();
+        // --- Custom Recommendation Logic ---
+        // 1. Categories from client's requirements
+        $requirementCategories = $user->requirements()->pluck('category')->filter()->unique()->toArray();
 
-        $recommendedArtisans = ArtisanProfile::where('verified', true)
-            ->whereNotIn('id', $hiredArtisanIds)
+        // 2. Categories from client's previous orders (via artisan profile)
+        $orderArtisanIds = Order::where('client_id', $user->id)->pluck('artisan_id')->unique()->toArray();
+        $orderCategories = [];
+        if (!empty($orderArtisanIds)) {
+            $orderCategories = \App\Models\ArtisanProfile::whereIn('id', $orderArtisanIds)
+                ->pluck('category')->filter()->unique()->toArray();
+        }
+
+        // 3. Artisans who have bid on client's requirements
+        $requirementIds = $user->requirements()->pluck('id')->toArray();
+        $bidderUserIds = [];
+        if (!empty($requirementIds)) {
+            $bidderUserIds = \App\Models\Bid::whereIn('requirement_id', $requirementIds)
+                ->pluck('artisan_id')->unique()->toArray();
+        }
+
+        // Merge all categories
+        $allCategories = array_unique(array_merge($requirementCategories, $orderCategories));
+
+        // Build the recommended artisans query
+        $recommendedArtisans = \App\Models\ArtisanProfile::where('verified', true)
+            ->where(function ($query) use ($allCategories, $bidderUserIds) {
+                if (!empty($allCategories)) {
+                    $query->whereIn('category', $allCategories);
+                }
+                if (!empty($bidderUserIds)) {
+                    $query->orWhereIn('user_id', $bidderUserIds);
+                }
+            })
             ->with([
                 'user',
                 'reviews' => function ($query) {
@@ -470,7 +495,7 @@ class GeneralUSerController extends Controller
         return view('content.apps.my-orders', compact(
             'orders',
             'completedCount',
-            'inProgressCount', 
+            'inProgressCount',
             'pendingPaymentCount',
             'totalOrders',
             'totalSpent',

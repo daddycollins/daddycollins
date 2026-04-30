@@ -139,6 +139,30 @@
       ]
     },
     {
+      "menuHeader": "Bidding",
+      "roles": [
+        "artisan"
+      ]
+    },
+    {
+      "name": "My Bids",
+      "icon": "menu-icon icon-base ri ri-auction-line",
+      "slug": "artisan-my-bids",
+      "url": "artisan/my-bids",
+      "roles": [
+        "artisan"
+      ]
+    },
+    {
+      "name": "Open Requirements",
+      "icon": "menu-icon icon-base ri ri-briefcase-line",
+      "slug": "artisan-open-requirements",
+      "url": "artisan/open-requirements",
+      "roles": [
+        "artisan"
+      ]
+    },
+    {
       "menuHeader": "Customer Panel",
       "roles": [
         "client"
@@ -194,6 +218,30 @@
       "icon": "menu-icon icon-base ri ri-user-line",
       "slug": "user-profile",
       "url": "user/profile",
+      "roles": [
+        "client"
+      ]
+    },
+    {
+      "menuHeader": "Bidding",
+      "roles": [
+        "client"
+      ]
+    },
+    {
+      "name": "My Requirements",
+      "icon": "menu-icon icon-base ri ri-briefcase-line",
+      "slug": "client-my-requirements",
+      "url": "requirements",
+      "roles": [
+        "client"
+      ]
+    },
+    {
+      "name": "Bids on My Requirements",
+      "icon": "menu-icon icon-base ri ri-auction-line",
+      "slug": "client-bids-on-requirements",
+      "url": "requirements",
       "roles": [
         "client"
       ]

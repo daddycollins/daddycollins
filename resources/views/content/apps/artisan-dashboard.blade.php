@@ -1,3 +1,101 @@
+<!-- My Bids Section -->
+{{-- @if (auth()->user() && auth()->user()->role === 'artisan')
+  <div class="row mb-6">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">My Bids</h5>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered mb-0">
+            <thead>
+              <tr>
+                <th>Requirement</th>
+                <th>Amount</th>
+                <th>Proposal</th>
+                <th>Status</th>
+                <th>Client</th>
+                <th>Requirement Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach (\App\Models\Bid::where('artisan_id', auth()->id())->latest()->with('requirement.user')->get() as $bid)
+                <tr>
+                  <td>{{ $bid->requirement->title ?? '-' }}</td>
+                  <td>{{ $bid->amount }}</td>
+                  <td>{{ $bid->proposal }}</td>
+                  <td>
+                    @if ($bid->status === 'accepted')
+                      <span class="badge bg-label-success">Accepted</span>
+                    @elseif($bid->status === 'rejected')
+                      <span class="badge bg-label-danger">Rejected</span>
+                    @else
+                      <span class="badge bg-label-warning">Pending</span>
+                    @endif
+                  </td>
+                  <td>{{ $bid->requirement->user->name ?? '-' }}</td>
+                  <td>{{ ucfirst($bid->requirement->status ?? '-') }}</td>
+                  <td>
+                    <a href="{{ route('requirements.show', $bid->requirement) }}" class="btn btn-info btn-sm">View</a>
+                  </td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+@endif --}}
+
+<!-- Open Requirements for Bidding -->
+{{-- @if (auth()->user() && auth()->user()->role === 'artisan')
+  <div class="row mb-6">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Open Client Requirements</h5>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered mb-0">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Budget</th>
+                <th>Deadline</th>
+                <th>Client</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach (\App\Models\Requirement::where('status', 'open')->latest()->get() as $requirement)
+                <tr>
+                  <td>{{ $requirement->title }}</td>
+                  <td>{{ $requirement->category }}</td>
+                  <td>{{ $requirement->budget }}</td>
+                  <td>
+                    {{ $requirement->deadline ? \Carbon\Carbon::parse($requirement->deadline)->format('Y-m-d') : '-' }}
+                  </td>
+                  <td>{{ $requirement->user->name ?? '-' }}</td>
+                  <td>
+                    @php $alreadyBid = $requirement->bids->where('artisan_id', auth()->id())->count() > 0; @endphp
+                    @if (!$alreadyBid)
+                      <a href="{{ route('requirements.show', $requirement) }}" class="btn btn-primary btn-sm">Bid</a>
+                    @else
+                      <span class="badge bg-label-success">Bid Submitted</span>
+                    @endif
+                  </td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+@endif --}}
 @extends('layouts/layoutMaster')
 
 @section('title', 'Artisan Dashboard - ArtisanConnect')
@@ -315,9 +413,13 @@
                 <select name="category" class="form-select @error('category') is-invalid @enderror">
                   <option value="">Select Category</option>
                   <option value="plumbing" {{ old('category') == 'plumbing' ? 'selected' : '' }}>Plumbing</option>
-                  <option value="electrical" {{ old('category') == 'electrical' ? 'selected' : '' }}>Electrical</option>
-                  <option value="carpentry" {{ old('category') == 'carpentry' ? 'selected' : '' }}>Carpentry</option>
-                  <option value="tailoring" {{ old('category') == 'tailoring' ? 'selected' : '' }}>Tailoring & Fashion</option>
+                  <option value="electrical" {{ old('category') == 'electrical' ? 'selected' : '' }}>Electrical
+                  </option>
+                  <option value="carpentry" {{ old('category') == 'carpentry' ? 'selected' : '' }}>Carpentry
+                  </option>
+                  <option value="tailoring" {{ old('category') == 'tailoring' ? 'selected' : '' }}>Tailoring &
+                    Fashion
+                  </option>
                   <option value="other" {{ old('category') == 'other' ? 'selected' : '' }}>Other</option>
                 </select>
                 @error('category')

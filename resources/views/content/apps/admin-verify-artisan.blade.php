@@ -18,6 +18,10 @@
       <h4 class="mb-1">Artisan Verifications</h4>
       <p class="text-muted mb-0">{{ $totalPending }} pending verification{{ $totalPending !== 1 ? 's' : '' }}</p>
     </div>
+    <button type="button" class="btn btn-outline-success" id="autoVerifyBtn" data-bs-toggle="tooltip"
+      title="Enable system to auto-verify artisans meeting all criteria">
+      <i class="icon-base ri ri-robot-2-line me-2"></i>Auto Verify
+    </button>
   </div>
 
   @if (session('success'))
@@ -422,11 +426,63 @@
       </div>
     @endif
   @endif
+
+  <!-- Auto Verify Modal -->
+  <div class="modal fade" id="autoVerifyModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Enable Auto Verification</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-3">Enable the system to automatically verify artisans that meet all criteria:</p>
+          <div class="alert alert-info">
+            <ul class="mb-0 ps-3">
+              <li>Valid government ID (not expired)</li>
+              <li>Active trade license</li>
+              <li>Valid insurance document</li>
+              <li>Verified bank details</li>
+            </ul>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="enableAutoVerify">
+            <label class="form-check-label" for="enableAutoVerify">
+              Enable automatic verification for eligible artisans
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-success" id="confirmAutoVerify">Enable</button>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 
 @section('page-script')
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // Auto Verify button
+      document.getElementById('autoVerifyBtn').addEventListener('click', function() {
+        const modal = new bootstrap.Modal(document.getElementById('autoVerifyModal'));
+        modal.show();
+      });
+
+      // Auto verify confirmation
+      document.getElementById('confirmAutoVerify').addEventListener('click', function() {
+        const isChecked = document.getElementById('enableAutoVerify').checked;
+        if (!isChecked) {
+          Swal.fire('Confirmation Required', 'Please check the box to confirm enabling auto-verification.', 'warning');
+          return;
+        }
+        Swal.fire('Enabled!', 'Automatic verification has been enabled. Eligible artisans will be auto-verified.',
+          'success');
+        bootstrap.Modal.getInstance(document.getElementById('autoVerifyModal')).hide();
+        document.getElementById('enableAutoVerify').checked = false;
+      });
+
       // Approve button
       const approveBtn = document.getElementById('approveBtn');
       if (approveBtn) {

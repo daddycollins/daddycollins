@@ -76,6 +76,12 @@ class ArtisanProfile extends Model
         return $this->hasMany(Review::class, 'artisan_id');
     }
 
+    // Direct access to bids by this artisan (via user_id)
+    public function bids()
+    {
+        return $this->hasMany(Bid::class, 'artisan_id', 'user_id');
+    }
+
     public function verification()
     {
         return $this->hasOne(ArtisanVerification::class, 'artisan_id');

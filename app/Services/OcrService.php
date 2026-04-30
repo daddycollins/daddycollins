@@ -15,10 +15,34 @@ class OcrService
      */
     public function extractText(string $imagePath): string
     {
-        $ocr = new TesseractOCR($imagePath);
-        $ocr->lang('eng');
+        // Normalize path to fix mixed slashes on Windows
+        $normalizedPath = realpath($imagePath) ?: $imagePath;
 
-        return $ocr->run();
+        $ocr = new TesseractOCR($normalizedPath);
+        $ocr->lang('eng');
+        $ocr->psm(6);   // Assume a single uniform block of text (better for ID documents)
+        $ocr->dpi(300); // Force 300 DPI since images often lack metadata (Tesseract guesses 184)
+
+        // Debug: log the command and output
+        $command = $ocr->executable('tesseract')->getFullCommand();
+        $output = '';
+        $error = '';
+        try {
+            $output = $ocr->run();
+            if (empty(trim($output))) {
+                throw new \Exception("Tesseract returned no output.\nCommand: $command");
+            }
+            return $output;
+        } catch (\Exception $e) {
+            // Optionally log to storage/logs/laravel.log
+            \Log::error('Tesseract OCR error', [
+                'command' => $command,
+                'image' => $normalizedPath,
+                'output' => $output,
+                'error' => $e->getMessage(),
+            ]);
+            throw new \Exception("OCR processing failed: " . $e->getMessage() . "\nCommand: $command");
+        }
     }
 
     /**
@@ -79,7 +103,8 @@ class OcrService
             $longestName = '';
             foreach ($nameMatches[0] as $candidate) {
                 // Skip if it looks like an ID number or header text
-                if (preg_match('/\d/', $candidate)) continue;
+                if (preg_match('/\d/', $candidate))
+                    continue;
                 if (strlen($candidate) > strlen($longestName)) {
                     $longestName = $candidate;
                 }
@@ -140,7 +165,11 @@ class OcrService
      */
     public function shouldAutoVerify(float $confidence, ?string $expiryDate): bool
     {
-        if ($confidence < $this->autoVerifyThreshold) {
+        // Use system-wide toggle and threshold
+        $autoVerifyEnabled = config('custom.custom.auto_verify_artisan', false);
+        $threshold = $autoVerifyEnabled ? 20.0 : $this->autoVerifyThreshold;
+
+        if ($confidence < $threshold) {
             return false;
         }
 
@@ -166,9 +195,15 @@ class OcrService
     protected function parseDate(string $dateStr): ?Carbon
     {
         $formats = [
-            'd/m/Y', 'd-m-Y', 'd.m.Y',
-            'Y-m-d', 'Y/m/d', 'Y.m.d',
-            'd/m/y', 'd-m-y', 'd.m.y',
+            'd/m/Y',
+            'd-m-Y',
+            'd.m.Y',
+            'Y-m-d',
+            'Y/m/d',
+            'Y.m.d',
+            'd/m/y',
+            'd-m-y',
+            'd.m.y',
         ];
 
         foreach ($formats as $format) {

@@ -1,0 +1,30 @@
+{
+  "menu": [
+    // ...existing menu items...
+    {
+      "menuHeader": "Bidding",
+      "roles": [
+        "artisan"
+      ]
+    },
+    {
+      "name": "My Bids",
+      "icon": "menu-icon icon-base ri ri-auction-line",
+      "slug": "artisan-my-bids",
+      "url": "artisan/my-bids",
+      "roles": [
+        "artisan"
+      ]
+    },
+    {
+      "name": "Open Requirements",
+      "icon": "menu-icon icon-base ri ri-briefcase-line",
+      "slug": "artisan-open-requirements",
+      "url": "artisan/open-requirements",
+      "roles": [
+        "artisan"
+      ]
+    }
+    // ...rest of menu items...
+  ]
+}

@@ -19,14 +19,68 @@
 @endsection
 
 @section('content')
-  <!-- Page Title -->
+
+  <!-- Page Title and Post Requirement Button -->
   <div class="row mb-6">
-    <div class="col-12">
+    <div class="col-12 d-flex justify-content-between align-items-center">
       <div class="d-flex align-items-center gap-2">
         <h4 class="mb-0">Dashboard</h4>
       </div>
+      @if (auth()->user() && auth()->user()->role === 'client')
+        <a href="{{ route('requirements.create') }}" class="btn btn-primary">Post Requirement</a>
+      @endif
     </div>
   </div>
+
+  {{-- <!-- Client Requirements Table -->
+  @if (auth()->user() && auth()->user()->role === 'client')
+    <div class="row mb-6">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">My Requirements</h5>
+            <a href="{{ route('requirements.create') }}" class="btn btn-sm btn-outline-primary">New Requirement</a>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-bordered mb-0">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th>Budget</th>
+                  <th>Status</th>
+                  <th>Deadline</th>
+                  <th>Bids</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @forelse(auth()->user()->requirements as $requirement)
+                  <tr>
+                    <td>{{ $requirement->title }}</td>
+                    <td>{{ $requirement->category }}</td>
+                    <td>{{ $requirement->budget }}</td>
+                    <td>{{ ucfirst($requirement->status) }}</td>
+                    <td>
+                      {{ $requirement->deadline ? \Carbon\Carbon::parse($requirement->deadline)->format('Y-m-d') : '-' }}
+                    </td>
+                    <td>{{ $requirement->bids->count() }}</td>
+                    <td>
+                      <a href="{{ route('requirements.show', $requirement) }}" class="btn btn-info btn-sm">View</a>
+                    </td>
+                  </tr>
+                @empty
+                  <tr>
+                    <td colspan="7" class="text-center">No requirements posted yet.</td>
+                  </tr>
+                @endforelse
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  @endif --}}
 
   <!-- Statistical Cards -->
   <div class="row g-6 mb-6">
@@ -213,7 +267,8 @@
               <div class="progress" style="height: 8px;">
                 <div class="progress-bar bg-info" style="width: {{ $inProgressPercent }}%"></div>
               </div>
-              <small class="text-muted">{{ $inProgressCount }} {{ $inProgressCount === 1 ? 'order' : 'orders' }}</small>
+              <small class="text-muted">{{ $inProgressCount }}
+                {{ $inProgressCount === 1 ? 'order' : 'orders' }}</small>
             </div>
 
             <div class="mb-4">

@@ -27,9 +27,9 @@ class RegisterCover extends Controller
       'role' => 'required|in:artisan,client',
       'terms' => 'accepted',
       // Artisan-specific fields
-      'business_name' => 'required_if:role,artisan|string|max:255',
-      'category' => 'required_if:role,artisan|string|max:255',
-      'location' => 'required_if:role,artisan|string|max:255',
+      'business_name' => 'required_if:role,artisan|nullable|string|max:255',
+      'category' => 'required_if:role,artisan|nullable|string|max:255',
+      'location' => 'required_if:role,artisan|nullable|string|max:255',
       'bio' => 'nullable|string|max:1000',
     ], [
       'business_name.required_if' => 'Business name is required for artisans',
