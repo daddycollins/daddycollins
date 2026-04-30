@@ -7,8 +7,8 @@
 
 return [
     'custom' => [
-            // Enable/disable auto-verification for artisans (OCR confidence > 20%)
-            'auto_verify_artisan' => env('AUTO_VERIFY_ARTISAN', false),
+        // Enable/disable auto-verification for artisans (OCR confidence > 20%)
+        'auto_verify_artisan' => env('AUTO_VERIFY_ARTISAN', false),
         'myLayout' => 'vertical', // Layout type: 'vertical' (default), 'horizontal'
         // 'primaryColor' => '#FF4646', // Set the primary color
         'myTheme' => 'light', // Theme options: 'light' (default), 'dark', 'system'

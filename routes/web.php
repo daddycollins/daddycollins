@@ -453,9 +453,13 @@ Route::middleware(['auth', 'role:artisan'])->group(function () {
   Route::put('/artisan/paynow/{paynowAccount}/update', [ArtisanController::class, 'updatePaynowAccount'])->name('artisan-paynow-update');
   Route::delete('/artisan/paynow/{paynowAccount}', [ArtisanController::class, 'deletePaynowAccount'])->name('artisan-paynow-delete');
   Route::post('/artisan/payout/request', [ArtisanController::class, 'requestPayout'])->name('artisan-payout-request');
+
   Route::get('/artisan/verification', [ArtisanController::class, 'verification'])->name('artisan-verification');
   Route::post('/artisan/document/upload', [ArtisanController::class, 'uploadNationalDocument'])->name('artisan-document-upload');
   Route::put('/artisan/document/update', [ArtisanController::class, 'updateDocumentInfo'])->name('artisan-document-update');
+
+  // AJAX route for toggling auto-verify
+  Route::post('/artisan/auto-verify-toggle', [ArtisanController::class, 'toggleAutoVerify'])->name('artisan-auto-verify-toggle');
 
   // Store routes for services and products
   Route::post('/artisan/services/store', [ArtisanController::class, 'storeService'])->name('artisan-service-store');

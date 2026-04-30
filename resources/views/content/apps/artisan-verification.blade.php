@@ -20,6 +20,60 @@
 
 @section('content')
   <div class="row g-6">
+    <!-- Auto-Verify Toggle -->
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body d-flex align-items-center justify-content-between py-3">
+          <div>
+            <h6 class="mb-1">Auto-Verification (OCR)</h6>
+            <small class="text-muted">Automatically verify if OCR confidence is high enough (admin setting).</small>
+          </div>
+          <div>
+            <input type="checkbox" id="autoVerifyToggle" {{ config('custom.custom.auto_verify_artisan') ? 'checked' : '' }}
+              data-url="{{ route('artisan-auto-verify-toggle') }}" />
+          </div>
+        </div>
+      </div>
+    </div>
+    @push('scripts')
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const toggle = document.getElementById('autoVerifyToggle');
+          if (toggle) {
+            toggle.addEventListener('change', function() {
+              toggle.disabled = true;
+              fetch(toggle.dataset.url, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    enabled: toggle.checked
+                  })
+                })
+                .then(res => res.json())
+                .then(data => {
+                  if (data.success) {
+                    alert('Auto-verify setting updated!');
+                  } else {
+                    alert('Failed to update setting.');
+                    toggle.checked = !toggle.checked;
+                  }
+                })
+                .catch(() => {
+                  alert('Error updating setting.');
+                  toggle.checked = !toggle.checked;
+                })
+                .finally(() => {
+                  toggle.disabled = false;
+                });
+            });
+          }
+        });
+      </script>
+    @endpush
     <!-- Navigation -->
     <div class="col-12 col-lg-4">
       <div class="card bg-gradient border-0 shadow-sm"
@@ -48,9 +102,12 @@
                 aria-valuemax="100"></div>
             </div>
           </div>
-          <div class="alert {{ $isVerified ? 'alert-success' : ($verification && $verification->status === 'rejected' ? 'alert-danger' : 'alert-warning') }} mb-0" role="alert">
+          <div
+            class="alert {{ $isVerified ? 'alert-success' : ($verification && $verification->status === 'rejected' ? 'alert-danger' : 'alert-warning') }} mb-0"
+            role="alert">
             <div class="d-flex align-items-center">
-              <i class="icon-base ri {{ $isVerified ? 'ri-check-circle-fill' : ($verification && $verification->status === 'rejected' ? 'ri-close-circle-fill' : 'ri-alert-circle-fill') }} me-2"></i>
+              <i
+                class="icon-base ri {{ $isVerified ? 'ri-check-circle-fill' : ($verification && $verification->status === 'rejected' ? 'ri-close-circle-fill' : 'ri-alert-circle-fill') }} me-2"></i>
               <span class="small fw-medium">
                 @if ($isVerified)
                   Verified and approved
@@ -326,7 +383,8 @@
                         </div>
                         <div class="mb-0">
                           <p class="mb-1 small text-muted">Status</p>
-                          <span class="badge bg-label-{{ $isVerified ? 'success' : ($verification && $verification->status === 'rejected' ? 'danger' : 'warning') }}">
+                          <span
+                            class="badge bg-label-{{ $isVerified ? 'success' : ($verification && $verification->status === 'rejected' ? 'danger' : 'warning') }}">
                             {{ $isVerified ? 'Verified' : ($verification && $verification->status === 'rejected' ? 'Rejected' : 'Pending Review') }}
                           </span>
                         </div>
@@ -377,7 +435,8 @@
                 </div>
 
                 @if ($verification && $verification->remarks)
-                  <div class="alert alert-{{ $verification->status === 'approved' ? 'success' : ($verification->status === 'rejected' ? 'danger' : 'info') }} mb-4">
+                  <div
+                    class="alert alert-{{ $verification->status === 'approved' ? 'success' : ($verification->status === 'rejected' ? 'danger' : 'info') }} mb-4">
                     <div class="d-flex align-items-start">
                       <i class="icon-base ri ri-information-line me-2" style="font-size: 1.1rem;"></i>
                       <div>
@@ -568,3 +627,5 @@
     }
   </script>
 @endsection
+
+@stack('scripts')
