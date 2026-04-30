@@ -29,7 +29,7 @@
     <!-- Logo -->
     <a href="{{ url('/') }}" class="auth-cover-brand d-flex align-items-center gap-2">
       <span class="app-brand-logo demo">@include('_partials.macros')</span>
-      <span class="app-brand-text demo text-heading fw-semibold">{{ config('variables.templateName') }}</span>
+      <span class="app-brand-text demo text-heading fw-semibold">Verified Artisan Connect</span>
     </a>
     <!-- /Logo -->
     <div class="authentication-inner row m-0">
@@ -51,7 +51,7 @@
       <div
         class="d-flex col-12 col-lg-5 col-xl-4 align-items-center authentication-bg position-relative py-sm-12 px-12 py-6">
         <div class="w-px-400 mx-auto pt-12 pt-lg-0">
-          <h4 class="mb-1">Welcome to {{ config('variables.templateName') }}! 👋</h4>
+          <h4 class="mb-1">Welcome to Verified Artisan Connect Platform 👋</h4>
           <p class="mb-5">Please sign-in to your account and start the adventure</p>
 
           <form id="formAuthentication" class="mb-5" action="{{ route('auth-login-cover') }}" method="POST">
