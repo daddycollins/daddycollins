@@ -19,8 +19,9 @@
       <p class="text-muted mb-0">{{ $totalPending }} pending verification{{ $totalPending !== 1 ? 's' : '' }}</p>
     </div>
     <button type="button" class="btn btn-outline-success" id="autoVerifyBtn" data-bs-toggle="tooltip"
+      data-auto-verify-enabled="{{ $autoVerifyEnabled ? 'true' : 'false' }}"
       title="Enable system to auto-verify artisans meeting all criteria">
-      <i class="icon-base ri ri-robot-2-line me-2"></i>Auto Verify
+      <i class="icon-base ri ri-robot-2-line me-2"></i>Auto Verify {{ $autoVerifyEnabled ? '(On)' : '(Off)' }}
     </button>
   </div>
 
@@ -265,7 +266,11 @@
                       @if (!empty($ocrData['id_number']) && $selectedVerification->nationalDocument->id_number)
                         @php
                           $ocrIdClean = preg_replace('/[\s\-]/', '', $ocrData['id_number']);
-                          $userIdClean = preg_replace('/[\s\-]/', '', $selectedVerification->nationalDocument->id_number);
+                          $userIdClean = preg_replace(
+                              '/[\s\-]/',
+                              '',
+                              $selectedVerification->nationalDocument->id_number,
+                          );
                         @endphp
                         @if ($ocrIdClean === $userIdClean)
                           <i class="icon-base ri ri-checkbox-circle-fill text-success ms-1"></i>
@@ -311,9 +316,7 @@
                     <i class="icon-base ri ri-code-line me-1"></i>View Raw OCR Text
                   </button>
                   <div class="collapse mt-2" id="ocrRawText">
-                    <pre
-                      class="bg-light p-3 rounded-3 small"
-                      style="max-height: 200px; overflow-y: auto;">{{ $selectedVerification->nationalDocument->ocr_raw_text }}</pre>
+                    <pre class="bg-light p-3 rounded-3 small" style="max-height: 200px; overflow-y: auto;">{{ $selectedVerification->nationalDocument->ocr_raw_text }}</pre>
                   </div>
                 </div>
               @endif
@@ -445,12 +448,6 @@
               <li>Verified bank details</li>
             </ul>
           </div>
-          <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="enableAutoVerify">
-            <label class="form-check-label" for="enableAutoVerify">
-              Enable automatic verification for eligible artisans
-            </label>
-          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -466,21 +463,80 @@
     document.addEventListener('DOMContentLoaded', function() {
       // Auto Verify button
       document.getElementById('autoVerifyBtn').addEventListener('click', function() {
-        const modal = new bootstrap.Modal(document.getElementById('autoVerifyModal'));
-        modal.show();
+        const isCurrentlyEnabled = this.getAttribute('data-auto-verify-enabled') === 'true';
+        const modal = document.getElementById('autoVerifyModal');
+        const modalTitle = modal.querySelector('.modal-title');
+        const confirmBtn = modal.querySelector('#confirmAutoVerify');
+
+        // Update modal content based on current state
+        if (isCurrentlyEnabled) {
+          modalTitle.textContent = 'Disable Auto Verification';
+          confirmBtn.textContent = 'Disable';
+          confirmBtn.classList.remove('btn-success');
+          confirmBtn.classList.add('btn-danger');
+        } else {
+          modalTitle.textContent = 'Enable Auto Verification';
+          confirmBtn.textContent = 'Enable';
+          confirmBtn.classList.remove('btn-danger');
+          confirmBtn.classList.add('btn-success');
+        }
+
+        const bootstrapModal = new bootstrap.Modal(modal);
+        bootstrapModal.show();
       });
 
       // Auto verify confirmation
       document.getElementById('confirmAutoVerify').addEventListener('click', function() {
-        const isChecked = document.getElementById('enableAutoVerify').checked;
-        if (!isChecked) {
-          Swal.fire('Confirmation Required', 'Please check the box to confirm enabling auto-verification.', 'warning');
-          return;
-        }
-        Swal.fire('Enabled!', 'Automatic verification has been enabled. Eligible artisans will be auto-verified.',
-          'success');
-        bootstrap.Modal.getInstance(document.getElementById('autoVerifyModal')).hide();
-        document.getElementById('enableAutoVerify').checked = false;
+        const autoVerifyBtn = document.getElementById('autoVerifyBtn');
+        const isCurrentlyEnabled = autoVerifyBtn.getAttribute('data-auto-verify-enabled') === 'true';
+        const newEnabledState = !isCurrentlyEnabled;
+
+        // Make AJAX request to save the state
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        fetch('{{ route('artisan-auto-verify-toggle') }}', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': token
+            },
+            body: JSON.stringify({
+              enabled: newEnabledState
+            })
+          })
+          .then(response => {
+            if (!response.ok) {
+              return response.text().then(text => {
+                console.error('Error response:', response.status, text);
+                throw new Error('HTTP ' + response.status + ': ' + text);
+              });
+            }
+            return response.json();
+          })
+          .then(data => {
+            if (data.success) {
+              const message = newEnabledState ?
+                'Automatic verification has been enabled. Eligible artisans will be auto-verified.' :
+                'Automatic verification has been disabled.';
+
+              Swal.fire('Enabled!', message, 'success');
+              bootstrap.Modal.getInstance(document.getElementById('autoVerifyModal')).hide();
+
+              // Update button state (keep data attribute for reference)
+              autoVerifyBtn.setAttribute('data-auto-verify-enabled', newEnabledState ? 'true' : 'false');
+
+              // Update button text to show the new state
+              autoVerifyBtn.innerHTML = '<i class="icon-base ri ri-robot-2-line me-2"></i>Auto Verify ' + (
+                newEnabledState ? '(On)' : '(Off)');
+            } else {
+              Swal.fire('Error', 'Failed to update auto-verification setting.', 'error');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            Swal.fire('Error', 'An error occurred while updating auto-verification. Check console for details.',
+              'error');
+          });
       });
 
       // Approve button

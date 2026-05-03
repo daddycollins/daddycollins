@@ -25,6 +25,7 @@ class ArtsnVerification extends Controller
             'pendingVerifications' => $pendingVerifications,
             'selectedVerification' => $selectedVerification,
             'totalPending' => $pendingVerifications->count(),
+            'autoVerifyEnabled' => config('custom.custom.auto_verify_artisan', false),
         ]);
     }
 

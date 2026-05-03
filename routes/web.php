@@ -189,8 +189,8 @@ Route::get('/lang/{locale}', [LanguageController::class, 'swap']);
 Route::get('/layouts/collapsed-menu', [CollapsedMenu::class, 'index'])->name('layouts-collapsed-menu');
 Route::get('/layouts/content-navbar', [ContentNavbar::class, 'index'])->name('layouts-content-navbar');
 Route::get('/layouts/content-nav-sidebar', [ContentNavSidebar::class, 'index'])->name('layouts-content-nav-sidebar');
-Route::get('/layouts/horizontal', [Horizontal::class, 'index'])->name('dashboard-analytics');
-Route::get('/layouts/vertical', [Vertical::class, 'index'])->name('dashboard-analytics');
+Route::get('/layouts/horizontal', [Horizontal::class, 'index'])->name('layouts-horizontal');
+Route::get('/layouts/vertical', [Vertical::class, 'index'])->name('layouts-vertical');
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');
 Route::get('/layouts/without-navbar', [WithoutNavbar::class, 'index'])->name('layouts-without-navbar');
 Route::get('/layouts/fluid', [Fluid::class, 'index'])->name('layouts-fluid');
@@ -380,6 +380,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
   Route::post('/admin/verification/{verification}/approve', [ArtsnVerification::class, 'approve'])->name('admin-verification-approve');
   Route::post('/admin/verification/{verification}/reject', [ArtsnVerification::class, 'reject'])->name('admin-verification-reject');
   Route::post('/admin/verification/{verification}/request-changes', [ArtsnVerification::class, 'requestChanges'])->name('admin-verification-request-changes');
+  Route::post('/admin/auto-verify-toggle', [ArtisanController::class, 'toggleAutoVerify'])->name('artisan-auto-verify-toggle');
   Route::get('/admin/user-management', [AdminUserManagement::class, 'index'])->name('admin-user-management');
   Route::put('/admin/user-management/{user}', [AdminUserManagement::class, 'update'])->name('admin-user-update');
   Route::post('/admin/user-management/{user}/suspend', [AdminUserManagement::class, 'suspend'])->name('admin-user-suspend');
@@ -395,6 +396,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
   Route::post('/admin/reviews/{review}/restore', [ReviewsMonitor::class, 'restore'])->name('admin-review-restore');
   Route::get('/admin/reports', [Reports::class, 'index'])->name('admin-reports');
   Route::post('/admin/reports/generate', [Reports::class, 'generateReport'])->name('reports.generate');
+
+  // Dynamic Report Endpoints
+  Route::get('/admin/reports/revenue-trends', [Reports::class, 'revenueTrends'])->name('reports.revenue-trends');
+  Route::get('/admin/reports/payment-status', [Reports::class, 'paymentStatusReport'])->name('reports.payment-status');
+  Route::get('/admin/reports/artisan-performance', [Reports::class, 'artisanPerformance'])->name('reports.artisan-performance');
+  Route::get('/admin/reports/user-growth', [Reports::class, 'userGrowthReport'])->name('reports.user-growth');
+  Route::get('/admin/reports/artisan-verification', [Reports::class, 'artisanVerificationStatus'])->name('reports.artisan-verification');
+  Route::get('/admin/reports/inactive-users', [Reports::class, 'inactiveUsersReport'])->name('reports.inactive-users');
+  Route::get('/admin/reports/order-status', [Reports::class, 'orderStatusReport'])->name('reports.order-status');
+  Route::get('/admin/reports/top-services', [Reports::class, 'topServicesReport'])->name('reports.top-services');
+  Route::get('/admin/reports/cancelled-orders', [Reports::class, 'cancelledOrdersAnalysis'])->name('reports.cancelled-orders');
+  Route::get('/admin/reports/artisan-quality', [Reports::class, 'artisanQualityReport'])->name('reports.artisan-quality');
 });
 
 // client/general user routes
@@ -457,9 +470,6 @@ Route::middleware(['auth', 'role:artisan'])->group(function () {
   Route::get('/artisan/verification', [ArtisanController::class, 'verification'])->name('artisan-verification');
   Route::post('/artisan/document/upload', [ArtisanController::class, 'uploadNationalDocument'])->name('artisan-document-upload');
   Route::put('/artisan/document/update', [ArtisanController::class, 'updateDocumentInfo'])->name('artisan-document-update');
-
-  // AJAX route for toggling auto-verify
-  Route::post('/artisan/auto-verify-toggle', [ArtisanController::class, 'toggleAutoVerify'])->name('artisan-auto-verify-toggle');
 
   // Store routes for services and products
   Route::post('/artisan/services/store', [ArtisanController::class, 'storeService'])->name('artisan-service-store');
