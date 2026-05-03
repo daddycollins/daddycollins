@@ -44,7 +44,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Total Earnings</p>
-              <h3 class="mb-2">ZWL {{ number_format($totalEarnings, 0) }}</h3>
+              <h3 class="mb-2">USD {{ number_format($totalEarnings, 0) }}</h3>
               <p class="mb-0"><span class="badge bg-label-success"><i
                     class="icon-base ri ri-arrow-up-s-line me-1"></i>From completed orders</span></p>
             </div>
@@ -168,9 +168,9 @@
                   </div>
                 </td>
                 <td><span class="badge bg-label-primary">{{ $service->category ?? 'General' }}</span></td>
-                <td><strong>ZWL {{ number_format($service->price_estimate, 2) }}</strong></td>
+                <td><strong>USD {{ number_format($service->price_estimate, 2) }}</strong></td>
                 <td><span class="fw-medium text-primary">0</span></td>
-                <td><span class="fw-medium text-success">ZWL 0</span></td>
+                <td><span class="fw-medium text-success">USD 0</span></td>
                 <td>
                   <div class="d-flex align-items-center">
                     <i class="icon-base ri ri-star-fill" style="color: #ffc107;"></i>
@@ -228,8 +228,7 @@
           <h5 class="modal-title"><i class="icon-base ri ri-add-circle-line me-2 text-primary"></i>Add New Service</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form method="POST" action="{{ route('artisan-service-store') }}" enctype="multipart/form-data"
-          id="addServiceForm">
+        <form method="POST" action="{{ route('artisan-service-store') }}" id="addServiceForm">
           @csrf
           <div class="modal-body">
             <div class="row g-4">
@@ -257,19 +256,11 @@
                 @enderror
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-medium">Hourly Rate (ZWL) *</label>
+                <label class="form-label fw-medium">Hourly Rate (USD) *</label>
                 <input type="number" name="price_estimate"
                   class="form-control @error('price_estimate') is-invalid @enderror" placeholder="e.g., 250"
                   step="0.01" required />
                 @error('price_estimate')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-medium">Service Image</label>
-                <input type="file" name="image_path" class="form-control @error('image_path') is-invalid @enderror"
-                  accept="image/*" />
-                @error('image_path')
                   <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
               </div>
@@ -312,7 +303,7 @@
           <h5 class="modal-title"><i class="icon-base ri ri-edit-line me-2 text-primary"></i>Edit Service</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form method="POST" action="" enctype="multipart/form-data" id="editServiceForm">
+        <form method="POST" action="" id="editServiceForm">
           @csrf
           @method('PUT')
           <div class="modal-body">
@@ -333,13 +324,9 @@
                 </select>
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-medium">Hourly Rate (ZWL) *</label>
+                <label class="form-label fw-medium">Hourly Rate (USD) *</label>
                 <input type="number" name="price_estimate" id="editPrice" class="form-control" step="0.01"
                   required />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-medium">Service Image</label>
-                <input type="file" name="image_path" class="form-control" accept="image/*" />
               </div>
               <div class="col-12">
                 <label class="form-label fw-medium">Service Description *</label>

@@ -128,9 +128,6 @@
           <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal">
             <i class="icon-base ri ri-add-line me-1"></i>Add Service
           </button>
-          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProductModal">
-            <i class="icon-base ri ri-add-line me-1"></i>Add Product
-          </button>
         </div>
       </div>
     </div>
@@ -223,7 +220,7 @@
           <div class="d-flex align-items-center justify-content-between mb-4">
             <div>
               <h6 class="text-muted mb-1">Total Earnings</h6>
-              <h4 class="mb-0">ZWL {{ number_format($totalEarnings, 2) }}</h4>
+              <h4 class="mb-0">USD {{ number_format($totalEarnings, 2) }}</h4>
             </div>
             <div class="avatar bg-label-success">
               <div class="avatar-initial rounded">
@@ -318,7 +315,7 @@
                       <span>{{ $service->service_name }}</span>
                     </div>
                   </td>
-                  <td>ZWL {{ number_format($service->price_estimate, 2) }}</td>
+                  <td>USD {{ number_format($service->price_estimate, 2) }}</td>
                   <td><span class="badge bg-label-primary">{{ $service->orders_count ?? 0 }}</span></td>
                   <td><span class="badge bg-label-success">Active</span></td>
                 </tr>
@@ -364,7 +361,7 @@
                       <span>{{ $order->client->name ?? 'Unknown' }}</span>
                     </div>
                   </td>
-                  <td>ZWL {{ number_format($order->total_amount, 2) }}</td>
+                  <td>USD {{ number_format($order->total_amount, 2) }}</td>
                   <td>
                     <span
                       class="badge bg-label-{{ $order->status === 'completed' ? 'success' : ($order->status === 'paid' ? 'info' : ($order->status === 'pending' ? 'warning' : 'danger')) }}">
@@ -392,7 +389,7 @@
           <h5 class="modal-title">Add New Service</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form action="{{ route('artisan-service-store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('artisan-service-store') }}" method="POST">
           @csrf
           <div class="modal-body">
             <div class="row g-4">
@@ -420,7 +417,6 @@
                   <option value="tailoring" {{ old('category') == 'tailoring' ? 'selected' : '' }}>Tailoring &
                     Fashion
                   </option>
-                  <option value="other" {{ old('category') == 'other' ? 'selected' : '' }}>Other</option>
                 </select>
                 @error('category')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -429,9 +425,9 @@
 
               <!-- Price Estimate -->
               <div class="col-md-6">
-                <label class="form-label">Price Estimate (ZWL)</label>
+                <label class="form-label">Hourly Rate (USD) *</label>
                 <input type="number" name="price_estimate" step="0.01" value="{{ old('price_estimate') }}"
-                  class="form-control @error('price_estimate') is-invalid @enderror" placeholder="250" required />
+                  class="form-control @error('price_estimate') is-invalid @enderror" placeholder="e.g., 250 per hour" required />
                 @error('price_estimate')
                   <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -443,17 +439,6 @@
                 <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="4"
                   placeholder="Describe your service in detail...">{{ old('description') }}</textarea>
                 @error('description')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-
-              <!-- Service Image -->
-              <div class="col-12">
-                <label class="form-label">Service Image</label>
-                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror"
-                  accept="image/*" />
-                <small class="text-muted">Max file size: 2MB (JPG, PNG, GIF)</small>
-                @error('image')
                   <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
               </div>
@@ -483,122 +468,27 @@
     </div>
   </div>
 
-  <!-- Add Product Modal -->
-  <div class="modal fade" id="addProductModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Add New Product</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form action="{{ route('artisan-product-store') }}" method="POST" enctype="multipart/form-data">
-          @csrf
-          <div class="modal-body">
-            <div class="row g-4">
-              <!-- Product Name -->
-              <div class="col-12">
-                <label class="form-label">Product Name</label>
-                <input type="text" name="product_name"
-                  class="form-control @error('product_name') is-invalid @enderror" placeholder="e.g., Copper Pipes"
-                  required />
-                @error('product_name')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-
-              <!-- Category -->
-              <div class="col-md-6">
-                <label class="form-label">Category</label>
-                <select name="category" class="form-select @error('category') is-invalid @enderror">
-                  <option value="">Select Category</option>
-                  <option value="plumbing">Plumbing Supplies</option>
-                  <option value="electrical">Electrical Supplies</option>
-                  <option value="building">Building Materials</option>
-                  <option value="tools">Tools & Equipment</option>
-                  <option value="other">Other</option>
-                </select>
-                @error('category')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-
-              <!-- Price -->
-              <div class="col-md-6">
-                <label class="form-label">Price (ZWL)</label>
-                <input type="number" name="price" step="0.01"
-                  class="form-control @error('price') is-invalid @enderror" placeholder="100" required />
-                @error('price')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-
-              <!-- Quantity -->
-              <div class="col-md-6">
-                <label class="form-label">Quantity Available</label>
-                <input type="number" name="stock_quantity"
-                  class="form-control @error('stock_quantity') is-invalid @enderror" placeholder="10" required />
-                @error('stock_quantity')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-
-              <!-- Unit -->
-              <div class="col-md-6">
-                <label class="form-label">Unit (e.g., pieces, meters, kg)</label>
-                <input type="text" name="unit" class="form-control @error('unit') is-invalid @enderror"
-                  placeholder="pieces" />
-                @error('unit')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-
-              <!-- Description -->
-              <div class="col-12">
-                <label class="form-label">Description</label>
-                <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="4"
-                  placeholder="Describe your product in detail..."></textarea>
-                @error('description')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-
-              <!-- Product Image -->
-              <div class="col-12">
-                <label class="form-label">Product Image</label>
-                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror"
-                  accept="image/*" />
-                <small class="text-muted">Max file size: 2MB (JPG, PNG, GIF)</small>
-                @error('image')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-
-              <!-- Availability -->
-              <div class="col-12">
-                <label class="form-label">Availability Status</label>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="availability" id="productAvailable"
-                    value="available" checked />
-                  <label class="form-check-label" for="productAvailable">Available</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="availability" id="productUnavailable"
-                    value="unavailable" />
-                  <label class="form-check-label" for="productUnavailable">Unavailable</label>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Add Product</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
 @endsection
 
+@section('page-script')
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Orders Trend Chart
+      const ordersTrendOptions = {
+        series: [{
+          name: 'Orders',
+          data: {!! $ordersTrendData !!}
+        }],
+        chart: {
+          type: 'area',
+          stacked: false,
+          height: 300,
+          toolbar: {
+            show: false
+          }
+        },
+        colors: ['#696cff'],
+        xaxis: {
 @section('page-script')
   <script>
     document.addEventListener('DOMContentLoaded', function() {

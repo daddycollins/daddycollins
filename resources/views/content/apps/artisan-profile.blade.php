@@ -57,7 +57,7 @@
             <small class="text-muted">Orders Completed</small>
           </div>
           <div class="text-center">
-            <h5 class="mb-1">ZWL {{ number_format($totalEarnings, 2) }}</h5>
+            <h5 class="mb-1">USD {{ number_format($totalEarnings, 2) }}</h5>
             <small class="text-muted">Total Earnings</small>
           </div>
         </div>

@@ -160,6 +160,43 @@ class ArtisanController extends Controller
         ]);
     }
 
+    public function artisanProfile()
+    {
+        $user = Auth::user();
+
+        $artisanProfile = ArtisanProfile::firstOrCreate(
+            ['user_id' => $user->id],
+            [
+                'business_name' => $user->name,
+                'category' => 'General',
+                'location' => 'Not specified',
+                'verified' => false,
+            ]
+        );
+
+        $totalReviews = Review::where('artisan_id', $artisanProfile->id)->count();
+        $completedOrders = Order::where('artisan_id', $artisanProfile->id)
+            ->where('status', 'completed')
+            ->count();
+        $totalOrders = Order::where('artisan_id', $artisanProfile->id)->count();
+        $completionRate = $totalOrders > 0 ? ($completedOrders / $totalOrders) * 100 : 0;
+        $averageRating = Review::where('artisan_id', $artisanProfile->id)->avg('rating') ?? 0;
+        $totalEarnings = Order::where('artisan_id', $artisanProfile->id)
+            ->where('status', 'completed')
+            ->sum('total_amount');
+
+        return view('content.apps.artisan-profile', [
+            'user' => $user,
+            'artisanProfile' => $artisanProfile,
+            'isVerified' => $artisanProfile->verified,
+            'averageRating' => round($averageRating, 1),
+            'completionRate' => round($completionRate, 1),
+            'totalReviews' => $totalReviews,
+            'completedOrders' => $completedOrders,
+            'totalEarnings' => round($totalEarnings, 2),
+        ]);
+    }
+
     public function artisanOrders()
     {
         $user = Auth::user();
@@ -266,52 +303,17 @@ class ArtisanController extends Controller
         ));
     }
 
+    private function productFeatureDisabled()
+    {
+        return redirect()->route('artisan-dashboard')
+            ->with('info', 'Product management has been disabled. Please manage services only.');
+    }
+
     public function artisanProducts()
     {
-        $user = Auth::user();
-        $artisanProfile = ArtisanProfile::where('user_id', $user->id)->first();
-
-        if (!$artisanProfile) {
-            return redirect()->route('artisan-dashboard')->with('warning', 'Please complete your artisan profile first.');
-        }
-
-        // Get all products for this artisan
-        $products = ArtisanGood::where('artisan_id', $artisanProfile->id)->get();
-
-        // Calculate statistics
-        $totalProducts = $products->count();
-        $availableProducts = $products->where('availability', true)->count();
-        $totalStockValue = $products->sum(function ($product) {
-            return $product->price * $product->stock_quantity;
-        });
-
-        // Calculate earnings from completed orders with these products
-        $totalEarnings = Order::where('artisan_id', $artisanProfile->id)
-            ->where('order_type', 'product')
-            ->where('status', 'completed')
-            ->sum('total_amount');
-
-        // Average rating from reviews
-        $avgRating = Review::whereHas('order', function ($query) use ($artisanProfile) {
-            $query->where('artisan_id', $artisanProfile->id)
-                ->where('order_type', 'product');
-        })->avg('rating') ?? 0;
-
-        $reviewCount = Review::whereHas('order', function ($query) use ($artisanProfile) {
-            $query->where('artisan_id', $artisanProfile->id)
-                ->where('order_type', 'product');
-        })->count();
-
-        return view('content.apps.artisan-products', compact(
-            'products',
-            'totalProducts',
-            'availableProducts',
-            'totalStockValue',
-            'totalEarnings',
-            'avgRating',
-            'reviewCount'
-        ));
+        return $this->productFeatureDisabled();
     }
+
     public function myReviews(Request $request)
     {
         $user = Auth::user();
@@ -843,47 +845,22 @@ class ArtisanController extends Controller
 
     public function storeProduct(Request $request)
     {
-        try {
-            $validated = $request->validate([
-                'product_name' => 'required|string|max:255',
-                'category' => 'nullable|string|max:255',
-                'description' => 'nullable|string',
-                'price' => 'required|numeric|min:0',
-                'stock_quantity' => 'required|integer|min:0',
-                'unit' => 'nullable|string|max:50',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-                'availability' => 'nullable|in:available,unavailable',
-            ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
-        }
+        return $this->productFeatureDisabled();
+    }
 
-        $user = Auth::user();
-        $artisanProfile = ArtisanProfile::where('user_id', $user->id)->first();
+    public function updateProduct(ArtisanGood $product, Request $request)
+    {
+        return $this->productFeatureDisabled();
+    }
 
-        if (!$artisanProfile) {
-            return redirect()->back()->with('error', 'Please complete your profile first.');
-        }
+    public function updateStock(ArtisanGood $product, Request $request)
+    {
+        return $this->productFeatureDisabled();
+    }
 
-        $validated['artisan_id'] = $artisanProfile->id;
-
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
-            $validated['image_path'] = $imagePath;
-        }
-
-        // Remove the image field since it doesn't exist in the database
-        unset($validated['image']);
-
-        // Set default availability
-        if (!isset($validated['availability'])) {
-            $validated['availability'] = 'available';
-        }
-
-        ArtisanGood::create($validated);
-
-        return redirect()->back()->with('success', 'Product added successfully!');
+    public function deleteProduct(ArtisanGood $product)
+    {
+        return $this->productFeatureDisabled();
     }
 
     public function updateService(ArtisanService $service, Request $request)
@@ -937,87 +914,6 @@ class ArtisanController extends Controller
         $service->delete();
 
         return redirect()->back()->with('success', 'Service deleted successfully!');
-    }
-
-    public function updateProduct(ArtisanGood $product, Request $request)
-    {
-        $user = Auth::user();
-        $artisanProfile = ArtisanProfile::where('user_id', $user->id)->first();
-
-        // Check authorization
-        if ($product->artisan_id !== $artisanProfile->id) {
-            return redirect()->back()->with('error', 'Unauthorized action.');
-        }
-
-        $validated = $request->validate([
-            'product_name' => 'required|string|max:255',
-            'category' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'stock_quantity' => 'required|integer|min:0',
-            'unit' => 'nullable|string|max:50',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'availability' => 'nullable|in:available,unavailable,1,0',
-        ]);
-
-        // Handle image upload if provided
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($product->image_path && Storage::disk('public')->exists($product->image_path)) {
-                Storage::disk('public')->delete($product->image_path);
-            }
-            $validated['image_path'] = $request->file('image')->store('products', 'public');
-        }
-        unset($validated['image']);
-
-        $product->update($validated);
-
-        return redirect()->back()->with('success', 'Product updated successfully!');
-    }
-
-    public function updateStock(ArtisanGood $product, Request $request)
-    {
-        $user = Auth::user();
-        $artisanProfile = ArtisanProfile::where('user_id', $user->id)->first();
-
-        if ($product->artisan_id !== $artisanProfile->id) {
-            return redirect()->back()->with('error', 'Unauthorized action.');
-        }
-
-        $validated = $request->validate([
-            'action' => 'required|in:add,reduce',
-            'quantity' => 'required|integer|min:1',
-        ]);
-
-        if ($validated['action'] === 'add') {
-            $product->stock_quantity += $validated['quantity'];
-        } else {
-            $product->stock_quantity = max(0, $product->stock_quantity - $validated['quantity']);
-        }
-
-        $product->save();
-
-        return redirect()->back()->with('success', 'Stock updated successfully! New stock: ' . $product->stock_quantity);
-    }
-
-    public function deleteProduct(ArtisanGood $product)
-    {
-        $user = Auth::user();
-        $artisanProfile = ArtisanProfile::where('user_id', $user->id)->first();
-
-        // Check authorization
-        if ($product->artisan_id !== $artisanProfile->id) {
-            return redirect()->back()->with('error', 'Unauthorized action.');
-        }
-
-        // Delete image if exists
-        if ($product->image_path && Storage::disk('public')->exists($product->image_path)) {
-            Storage::disk('public')->delete($product->image_path);
-        }
-
-        $product->delete();
-
-        return redirect()->back()->with('success', 'Product deleted successfully!');
     }
 
     // Profile Edit Methods

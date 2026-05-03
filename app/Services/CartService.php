@@ -36,6 +36,10 @@ class CartService
                 'artisan_id' => $artisanId
             ]);
 
+            if ($itemType !== 'service') {
+            throw new \Exception('Product orders are no longer supported. Please book a service only.');
+        }
+
             // Get item details and validate
             $item = $this->getItem($itemType, $itemId);
             if (!$item) {

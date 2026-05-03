@@ -452,7 +452,6 @@ Route::middleware(['auth', 'role:client'])->group(function () {
 
 // artisan routes
 Route::middleware(['auth', 'role:artisan'])->group(function () {
-  Route::get('/artisan/profile', [ArtisanController::class, 'artisanProfile'])->name('artisan-profile');
   Route::get('/artisan/dashboard', [ArtisanController::class, 'artisanDashboard'])->name('artisan-dashboard');
   Route::get('/artisan/my-orders', [ArtisanController::class, 'artisanOrders'])->name('artisan-my-orders');
   Route::get('/artisan/order-details', [ArtisanController::class, 'orderDetails'])->name('artisan-order-details');
@@ -476,6 +475,7 @@ Route::middleware(['auth', 'role:artisan'])->group(function () {
   Route::put('/artisan/services/{service}/update', [ArtisanController::class, 'updateService'])->name('artisan-service-update');
   Route::delete('/artisan/services/{service}', [ArtisanController::class, 'deleteService'])->name('artisan-service-delete');
 
+  // Product routes remain defined for compatibility, but product management is disabled in controller.
   Route::post('/artisan/products/store', [ArtisanController::class, 'storeProduct'])->name('artisan-product-store');
   Route::put('/artisan/products/{product}/update', [ArtisanController::class, 'updateProduct'])->name('artisan-product-update');
   Route::put('/artisan/products/{product}/stock', [ArtisanController::class, 'updateStock'])->name('artisan-product-stock');

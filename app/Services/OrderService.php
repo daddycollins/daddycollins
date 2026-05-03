@@ -27,6 +27,11 @@ class OrderService
             $serviceFee = round($subtotal * 0.10, 2);
             $total = $subtotal + $serviceFee;
 
+            // Prevent product orders
+            if ($cart->items->contains('item_type', 'product')) {
+                throw new \Exception('Product orders are no longer supported. Please remove product items from the cart and try again.');
+            }
+
             // Determine order type
             $itemTypes = $cart->items->pluck('item_type')->unique();
             $orderType = $itemTypes->count() === 1 ? $itemTypes->first() : 'service';

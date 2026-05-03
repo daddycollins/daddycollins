@@ -26,7 +26,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Total Earnings</p>
-              <h3 class="mb-2">ZWL {{ number_format($totalEarnings, 2) }}</h3>
+              <h3 class="mb-2">USD {{ number_format($totalEarnings, 2) }}</h3>
               <p class="mb-0"><span class="badge bg-label-success"><i
                     class="icon-base ri ri-arrow-up-s-line me-1"></i>{{ $completedOrdersCount }} completed orders</span>
               </p>
@@ -45,13 +45,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Available Balance</p>
-              <h3 class="mb-2">ZWL {{ number_format($availableBalance, 2) }}</h3>
-              <p class="mb-0"><span class="badge {{ $availableBalance > 0 ? 'bg-label-info' : 'bg-label-warning' }}"><i
-                    class="icon-base ri ri-bank-card-line me-1"></i>{{ $availableBalance > 0 ? 'Ready to withdraw' : 'No balance' }}</span>
-              </p>
-            </div>
-            <div class="avatar avatar-lg bg-label-info">
-              <div class="avatar-initial"><i class="icon-base ri ri-money-pound-circle-line"></i></div>
+              <h3 class="mb-2">USD {{ number_format($availableBalance, 2) }}</h3>
             </div>
           </div>
         </div>
@@ -64,7 +58,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Pending Payouts</p>
-              <h3 class="mb-2">ZWL {{ number_format($pendingPayouts, 2) }}</h3>
+              <h3 class="mb-2">USD {{ number_format($pendingPayouts, 2) }}</h3>
               <p class="mb-0"><span class="badge {{ $pendingPayouts > 0 ? 'bg-label-warning' : 'bg-label-success' }}"><i
                     class="icon-base ri ri-time-line me-1"></i>{{ $pendingPayouts > 0 ? 'Processing' : 'None' }}</span>
               </p>
@@ -85,7 +79,7 @@
               <p class="text-muted small mb-1">Last Payment</p>
               <h3 class="mb-2">{{ $lastPayout ? $lastPayout->processed_at->format('d M Y') : 'No payment yet' }}</h3>
               <p class="mb-0"><span
-                  class="badge bg-label-primary">{{ $lastPayout ? 'ZWL ' . number_format($lastPayout->amount, 2) : 'N/A' }}</span>
+                  class="badge bg-label-primary">{{ $lastPayout ? 'USD ' . number_format($lastPayout->amount, 2) : 'N/A' }}</span>
               </p>
             </div>
             <div class="avatar avatar-lg bg-label-primary">
@@ -233,7 +227,7 @@
                     class="badge bg-label-primary">{{ $transaction->items->first()?->service_name ?? 'Service/Product' }}</span>
                 </td>
                 <td>{{ $transaction->client->name }}</td>
-                <td><strong>ZWL {{ number_format($transaction->total_amount ?? 0, 2) }}</strong></td>
+                <td><strong>USD {{ number_format($transaction->total_amount ?? 0, 2) }}</strong></td>
                 <td><span
                     class="badge {{ $transaction->status === 'completed' ? 'bg-label-success' : ($transaction->status === 'pending' ? 'bg-label-warning' : 'bg-label-info') }}">{{ ucfirst($transaction->status) }}</span>
                 </td>
@@ -349,16 +343,16 @@
           <form id="payoutForm" method="POST" action="{{ route('artisan-payout-request') }}">
             @csrf
             <div class="alert alert-info" role="alert">
-              <small><strong>Available Balance:</strong> ZWL {{ number_format($availableBalance, 2) }}</small>
+              <small><strong>Available Balance:</strong> USD {{ number_format($availableBalance, 2) }}</small>
             </div>
             <div class="mb-4">
               <label class="form-label fw-medium">Amount to Withdraw *</label>
               <div class="input-group">
-                <span class="input-group-text">ZWL</span>
+                <span class="input-group-text">USD</span>
                 <input type="number" class="form-control" name="amount" placeholder="Enter amount" min="1000"
                   max="{{ $availableBalance }}" required />
               </div>
-              <small class="text-muted">Minimum: ZWL 1,000 | Maximum: ZWL
+              <small class="text-muted">Minimum: USD 1,000 | Maximum: USD
                 {{ number_format($availableBalance, 2) }}</small>
             </div>
             <div class="mb-4">
@@ -449,7 +443,7 @@
         },
         yaxis: {
           title: {
-            text: "Earnings (ZWL)"
+            text: "Earnings (USD)"
           }
         },
         tooltip: {

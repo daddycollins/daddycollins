@@ -44,7 +44,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Total Earnings</p>
-              <h3 class="mb-2">ZWL {{ number_format($totalEarnings, 0) }}</h3>
+              <h3 class="mb-2">USD {{ number_format($totalEarnings, 0) }}</h3>
               <p class="mb-0"><span class="badge bg-label-success"><i
                     class="icon-base ri ri-arrow-up-s-line me-1"></i>From sales</span></p>
             </div>
@@ -62,7 +62,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Stock Value</p>
-              <h3 class="mb-2">ZWL {{ number_format($totalStockValue, 0) }}</h3>
+              <h3 class="mb-2">USD {{ number_format($totalStockValue, 0) }}</h3>
               <p class="mb-0"><span class="badge bg-label-info"><i
                     class="icon-base ri ri-inbox-line me-1"></i>Inventory</span></p>
             </div>
@@ -173,7 +173,7 @@
                 <td><span
                     class="badge bg-label-{{ $product->category ? 'primary' : 'secondary' }}">{{ $product->category ?? 'General' }}</span>
                 </td>
-                <td><strong>ZWL {{ number_format($product->price, 2) }}</strong></td>
+                <td><strong>USD {{ number_format($product->price, 2) }}</strong></td>
                 <td>
                   <div class="d-flex align-items-center gap-2">
                     <span class="fw-medium">{{ $product->stock_quantity }}</span>
@@ -276,14 +276,13 @@
                   <option value="Textiles" {{ old('category') == 'Textiles' ? 'selected' : '' }}>Textiles</option>
                   <option value="Building Materials" {{ old('category') == 'Building Materials' ? 'selected' : '' }}>Building Materials</option>
                   <option value="Tools & Equipment" {{ old('category') == 'Tools & Equipment' ? 'selected' : '' }}>Tools & Equipment</option>
-                  <option value="Other" {{ old('category') == 'Other' ? 'selected' : '' }}>Other</option>
                 </select>
                 @error('category')
                   <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-medium">Price (ZWL) *</label>
+                <label class="form-label fw-medium">Price (USD) *</label>
                 <input type="number" name="price" step="0.01" class="form-control @error('price') is-invalid @enderror"
                   value="{{ old('price') }}" placeholder="e.g., 2450" required />
                 @error('price')
@@ -369,11 +368,10 @@
                   <option value="Textiles">Textiles</option>
                   <option value="Building Materials">Building Materials</option>
                   <option value="Tools & Equipment">Tools & Equipment</option>
-                  <option value="Other">Other</option>
                 </select>
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-medium">Price (ZWL) *</label>
+                <label class="form-label fw-medium">Price (USD) *</label>
                 <input type="number" name="price" id="editProductPrice" class="form-control" step="0.01" required />
               </div>
               <div class="col-md-6">
@@ -566,7 +564,7 @@
         },
         yaxis: {
           title: {
-            text: "Sales (ZWL)"
+            text: "Sales (USD)"
           }
         },
         tooltip: {

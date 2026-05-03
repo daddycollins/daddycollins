@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use thiagoalessio\TesseractOCR\TesseractOCR;
 
@@ -19,12 +20,14 @@ class OcrService
         $normalizedPath = realpath($imagePath) ?: $imagePath;
 
         $ocr = new TesseractOCR($normalizedPath);
+        // Set the explicit path to tesseract executable on Windows
+        $ocr->executable('C:\\Program Files\\Tesseract-OCR\\tesseract.exe');
         $ocr->lang('eng');
         $ocr->psm(6);   // Assume a single uniform block of text (better for ID documents)
         $ocr->dpi(300); // Force 300 DPI since images often lack metadata (Tesseract guesses 184)
 
         // Debug: log the command and output
-        $command = $ocr->executable('tesseract')->getFullCommand();
+        $command = $ocr->executable('C:\\Program Files\\Tesseract-OCR\\tesseract.exe')->getFullCommand();
         $output = '';
         $error = '';
         try {
@@ -35,7 +38,7 @@ class OcrService
             return $output;
         } catch (\Exception $e) {
             // Optionally log to storage/logs/laravel.log
-            \Log::error('Tesseract OCR error', [
+            Log::error('Tesseract OCR error', [
                 'command' => $command,
                 'image' => $normalizedPath,
                 'output' => $output,
@@ -63,54 +66,76 @@ class OcrService
         $lines = array_map('trim', explode("\n", $rawText));
         $text = implode(' ', $lines);
 
-        // Extract Zimbabwe National ID number (format: XX-XXXXXXX XX X or XX-XXXXXXXX X XX)
-        if (preg_match('/(\d{2}-\d{6,8}\s*[A-Z]\s*\d{2})/', $text, $matches)) {
-            $extracted['id_number'] = preg_replace('/\s+/', ' ', trim($matches[1]));
-        }
+        $surname = null;
+        $firstName = null;
 
-        // Extract dates (common formats: DD/MM/YYYY, DD-MM-YYYY, DD.MM.YYYY, YYYY-MM-DD)
-        $datePattern = '/(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}|\d{4}[\/\-\.]\d{1,2}[\/\-\.]\d{1,2})/';
-        preg_match_all($datePattern, $text, $dateMatches);
-
-        $dates = [];
-        foreach ($dateMatches[0] as $dateStr) {
-            $parsed = $this->parseDate($dateStr);
-            if ($parsed) {
-                $dates[] = $parsed;
+        foreach ($lines as $line) {
+            if (preg_match('/\bID\s*NUMBER[:\s]+(.+)/i', $line, $match)) {
+                $extracted['id_number'] = preg_replace('/[\s\-]+/', ' ', trim($match[1]));
+                continue;
             }
-        }
 
-        // Sort dates: earliest is likely DOB, middle is issue, latest is expiry
-        usort($dates, function ($a, $b) {
-            return $a->timestamp - $b->timestamp;
-        });
+            if (preg_match('/\bSURNAME[:\s]+(.+)/i', $line, $match)) {
+                $surname = trim($match[1]);
+                continue;
+            }
 
-        if (count($dates) >= 1) {
-            $extracted['date_of_birth'] = $dates[0]->format('Y-m-d');
-        }
-        if (count($dates) >= 2) {
-            $extracted['issue_date'] = $dates[1]->format('Y-m-d');
-        }
-        if (count($dates) >= 3) {
-            $extracted['expiry_date'] = $dates[2]->format('Y-m-d');
-        }
+            if (preg_match('/\bFIRST\s+NAME[:\s]+(.+)/i', $line, $match)) {
+                $firstName = trim($match[1]);
+                continue;
+            }
 
-        // Extract name - look for text near "Name", "Surname", or multi-word uppercase sequences
-        if (preg_match('/(?:name|surname|nom)[:\s]+([A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)*)/i', $text, $nameMatch)) {
-            $extracted['full_name'] = trim($nameMatch[1]);
-        } elseif (preg_match_all('/\b([A-Z]{2,}(?:\s+[A-Z]{2,})+)\b/', $text, $nameMatches)) {
-            // Pick the longest uppercase sequence as likely the full name
-            $longestName = '';
-            foreach ($nameMatches[0] as $candidate) {
-                // Skip if it looks like an ID number or header text
-                if (preg_match('/\d/', $candidate))
-                    continue;
-                if (strlen($candidate) > strlen($longestName)) {
-                    $longestName = $candidate;
+            if (preg_match('/\bDATE\s+OF\s+BIRTH[:\s]+(.+)/i', $line, $match)) {
+                $date = $this->parseDate(trim($match[1]));
+                if ($date) {
+                    $extracted['date_of_birth'] = $date->format('Y-m-d');
                 }
+                continue;
             }
-            if ($longestName) {
-                $extracted['full_name'] = Str::title($longestName);
+
+            if (preg_match('/\bDATE\s+OF\s+ISSUE[:\s]+(.+)/i', $line, $match)) {
+                $date = $this->parseDate(trim($match[1]));
+                if ($date) {
+                    $extracted['issue_date'] = $date->format('Y-m-d');
+                }
+                continue;
+            }
+
+            if (preg_match('/\bDATE\s+OF\s+EXPIRY|\bEXPIRY\s+DATE[:\s]+(.+)/i', $line, $match)) {
+                $date = $this->parseDate(trim($match[1]));
+                if ($date) {
+                    $extracted['expiry_date'] = $date->format('Y-m-d');
+                }
+                continue;
+            }
+        }
+
+        if ($surname && $firstName) {
+            $extracted['full_name'] = Str::title($surname . ' ' . $firstName);
+        }
+
+        // Fallback extraction for ID number if the label-based parse failed
+        if (empty($extracted['id_number']) && preg_match('/\b\d{2}[-\s]?\d{6,8}[-\s]?[A-Z]?[-\s]?\d{2}\b/i', $text, $matches)) {
+            $extracted['id_number'] = preg_replace('/[\s\-]+/', ' ', trim($matches[0]));
+        }
+
+        // Fallback name parsing from any recognized name label or uppercase sequence
+        if (empty($extracted['full_name'])) {
+            if (preg_match('/(?:name|surname|nom)[:\s]+([A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)*)/i', $text, $nameMatch)) {
+                $extracted['full_name'] = trim($nameMatch[1]);
+            } elseif (preg_match_all('/\b([A-Z]{2,}(?:\s+[A-Z]{2,})+)\b/', $text, $nameMatches)) {
+                $longestName = '';
+                foreach ($nameMatches[0] as $candidate) {
+                    if (preg_match('/\d/', $candidate)) {
+                        continue;
+                    }
+                    if (strlen($candidate) > strlen($longestName)) {
+                        $longestName = $candidate;
+                    }
+                }
+                if ($longestName) {
+                    $extracted['full_name'] = Str::title($longestName);
+                }
             }
         }
 

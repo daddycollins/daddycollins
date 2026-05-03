@@ -94,15 +94,6 @@
       ]
     },
     {
-      "name": "My Products",
-      "icon": "menu-icon icon-base ri ri-shopping-cart-line",
-      "slug": "artisan-my-products",
-      "url": "artisan/my-products",
-      "roles": [
-        "artisan"
-      ]
-    },
-    {
       "name": "My Services",
       "icon": "menu-icon icon-base ri ri-service-line",
       "slug": "artisan-my-services",
