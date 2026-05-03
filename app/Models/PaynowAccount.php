@@ -13,7 +13,18 @@ class PaynowAccount extends Model
         'artisan_id',
         'paynow_integration_id',
         'paynow_integration_key',
-        'credentials_encrypted'
+        'credentials_encrypted',
+        'account_holder',
+        'account_type',
+        'account_number',
+        'phone_number',
+        'bank_name',
+        'branch',
+        'swift_code',
+        'iban',
+        'status',
+        'is_primary',
+        'notes'
     ];
 
     protected $casts = [

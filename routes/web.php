@@ -82,6 +82,10 @@ use App\Http\Controllers\form_elements\Switches;
 use App\Http\Controllers\front_pages\HelpCenter;
 use App\Http\Controllers\user_interface\Buttons;
 use App\Http\Controllers\admin\ArtsnVerification;
+use App\Http\Controllers\admin\ServiceManagement;
+use App\Http\Controllers\admin\PayoutManagement;
+use App\Http\Controllers\admin\ProductManagement;
+use App\Http\Controllers\admin\PaynowAccountManagement;
 use App\Http\Controllers\apps\EcommerceDashboard;
 use App\Http\Controllers\apps\EcommerceOrderList;
 use App\Http\Controllers\apps\EcommerceReferrals;
@@ -408,6 +412,55 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
   Route::get('/admin/reports/top-services', [Reports::class, 'topServicesReport'])->name('reports.top-services');
   Route::get('/admin/reports/cancelled-orders', [Reports::class, 'cancelledOrdersAnalysis'])->name('reports.cancelled-orders');
   Route::get('/admin/reports/artisan-quality', [Reports::class, 'artisanQualityReport'])->name('reports.artisan-quality');
+
+  // Service Management Routes
+  Route::prefix('admin/services')->name('admin.services.')->group(function () {
+    Route::get('/', [ServiceManagement::class, 'index'])->name('index');
+    Route::get('/create', [ServiceManagement::class, 'create'])->name('create');
+    Route::post('/', [ServiceManagement::class, 'store'])->name('store');
+    Route::get('/{service}/edit', [ServiceManagement::class, 'edit'])->name('edit');
+    Route::put('/{service}', [ServiceManagement::class, 'update'])->name('update');
+    Route::delete('/{service}', [ServiceManagement::class, 'destroy'])->name('destroy');
+    Route::get('/api/data', [ServiceManagement::class, 'getServicesData'])->name('api.data');
+  });
+
+  // Payout Management Routes
+  Route::prefix('admin/payouts')->name('admin.payouts.')->group(function () {
+    Route::get('/', [PayoutManagement::class, 'index'])->name('index');
+    Route::get('/create', [PayoutManagement::class, 'create'])->name('create');
+    Route::post('/', [PayoutManagement::class, 'store'])->name('store');
+    Route::post('/{payout}/approve', [PayoutManagement::class, 'approve'])->name('approve');
+    Route::post('/{payout}/failed', [PayoutManagement::class, 'markFailed'])->name('failed');
+    Route::delete('/{payout}', [PayoutManagement::class, 'destroy'])->name('destroy');
+    Route::get('/summary', [PayoutManagement::class, 'summary'])->name('summary');
+    Route::get('/api/data', [PayoutManagement::class, 'getPayoutsData'])->name('api.data');
+  });
+
+  // Product/Goods Management Routes
+  Route::prefix('admin/products')->name('admin.products.')->group(function () {
+    Route::get('/', [ProductManagement::class, 'index'])->name('index');
+    Route::get('/create', [ProductManagement::class, 'create'])->name('create');
+    Route::post('/', [ProductManagement::class, 'store'])->name('store');
+    Route::get('/{product}/edit', [ProductManagement::class, 'edit'])->name('edit');
+    Route::put('/{product}', [ProductManagement::class, 'update'])->name('update');
+    Route::delete('/{product}', [ProductManagement::class, 'destroy'])->name('destroy');
+    Route::post('/{product}/adjust-stock', [ProductManagement::class, 'adjustStock'])->name('adjust-stock');
+    Route::post('/bulk-update-stock', [ProductManagement::class, 'bulkUpdateStock'])->name('bulk-update-stock');
+    Route::get('/api/data', [ProductManagement::class, 'getProductsData'])->name('api.data');
+  });
+
+  // Payment Account Management Routes
+  Route::prefix('admin/payment-accounts')->name('admin.payment-accounts.')->group(function () {
+    Route::get('/', [PaynowAccountManagement::class, 'index'])->name('index');
+    Route::get('/create', [PaynowAccountManagement::class, 'create'])->name('create');
+    Route::post('/', [PaynowAccountManagement::class, 'store'])->name('store');
+    Route::get('/{account}/edit', [PaynowAccountManagement::class, 'edit'])->name('edit');
+    Route::put('/{account}', [PaynowAccountManagement::class, 'update'])->name('update');
+    Route::post('/{account}/toggle-status', [PaynowAccountManagement::class, 'toggleStatus'])->name('toggle-status');
+    Route::post('/{account}/set-primary', [PaynowAccountManagement::class, 'setPrimary'])->name('set-primary');
+    Route::delete('/{account}', [PaynowAccountManagement::class, 'destroy'])->name('destroy');
+    Route::get('/api/data', [PaynowAccountManagement::class, 'getAccountsData'])->name('api.data');
+  });
 });
 
 // client/general user routes
@@ -455,7 +508,7 @@ Route::middleware(['auth', 'role:artisan'])->group(function () {
   Route::get('/artisan/profile', [ArtisanController::class, 'artisanProfile'])->name('artisan-profile');
   Route::get('/artisan/dashboard', [ArtisanController::class, 'artisanDashboard'])->name('artisan-dashboard');
   Route::get('/artisan/my-orders', [ArtisanController::class, 'artisanOrders'])->name('artisan-my-orders');
-  Route::get('/artisan/order-details', [ArtisanController::class, 'orderDetails'])->name('artisan-order-details');
+  Route::get('/artisan/order-details', [ArtisanController::class, 'orderDetails'])->name('artisan-order-details-list');
   Route::get('/artisan/my-services', [ArtisanController::class, 'artisanServices'])->name('artisan-my-services');
   Route::get('/artisan/my-products', [ArtisanController::class, 'artisanProducts'])->name('artisan-my-products');
   Route::get('/artisan/order-products', [ArtisanController::class, 'orderDetails'])->name('artisan-order-products');

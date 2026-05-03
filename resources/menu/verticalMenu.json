@@ -61,6 +61,42 @@
       ]
     },
     {
+      "name": "Service Management",
+      "icon": "menu-icon icon-base ri ri-briefcase-line",
+      "slug": "admin.services",
+      "url": "admin/services",
+      "roles": [
+        "admin"
+      ]
+    },
+    {
+      "name": "Product Management",
+      "icon": "menu-icon icon-base ri ri-shopping-bag-line",
+      "slug": "admin.products",
+      "url": "admin/products",
+      "roles": [
+        "admin"
+      ]
+    },
+    {
+      "name": "Payout Management",
+      "icon": "menu-icon icon-base ri ri-bank-card-line",
+      "slug": "admin.payouts",
+      "url": "admin/payouts",
+      "roles": [
+        "admin"
+      ]
+    },
+    {
+      "name": "Payment Accounts",
+      "icon": "menu-icon icon-base ri ri-wallet-3-line",
+      "slug": "admin.payment-accounts",
+      "url": "admin/payment-accounts",
+      "roles": [
+        "admin"
+      ]
+    },
+    {
       "menuHeader": "Artisan Panel",
       "roles": [
         "artisan"
