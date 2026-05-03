@@ -180,7 +180,7 @@
           <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
             <h5 class="card-title m-0"><i class="icon-base ri ri-shopping-cart-2-line me-2 text-primary"></i>Recent
               Orders</h5>
-            <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+            <a href="{{ route('admin-orders') }}" class="btn btn-sm btn-outline-primary">View All</a>
           </div>
           <div class="card-body p-0">
             <div class="table-responsive">

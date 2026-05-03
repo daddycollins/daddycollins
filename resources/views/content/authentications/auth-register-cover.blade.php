@@ -25,33 +25,50 @@
 @endsection
 
 @section('content')
-  <div class="authentication-wrapper authentication-cover">
+
+  <div class="authentication-wrapper authentication-cover"
+    style="background: linear-gradient(120deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh;">
     <!-- Logo -->
-    <a href="{{ url('/') }}" class="auth-cover-brand d-flex align-items-center gap-2">
+    <a href="{{ url('/') }}" class="auth-cover-brand d-flex align-items-center gap-2 mb-4">
       <span class="app-brand-logo demo">@include('_partials.macros')</span>
       <span class="app-brand-text demo text-heading fw-semibold">{{ config('variables.templateName') }}</span>
     </a>
     <!-- /Logo -->
-    <div class="authentication-inner row m-0">
-      <!-- /Left Text -->
-      <div class="d-none d-lg-flex col-lg-7 col-xl-8 align-items-center justify-content-center p-12 pb-2">
-        <img src="{{ asset('assets/img/illustrations/auth-register-illustration-' . $configData['theme'] . '.png') }}"
-          class="auth-cover-illustration w-100" alt="auth-illustration"
-          data-app-light-img="illustrations/auth-register-illustration-light.png"
-          data-app-dark-img="illustrations/auth-register-illustration-dark.png" />
-        <img src="{{ asset('assets/img/illustrations/auth-cover-register-mask-' . $configData['theme'] . '.png') }}"
-          class="authentication-image" alt="mask"
-          data-app-light-img="illustrations/auth-cover-register-mask-light.png"
-          data-app-dark-img="illustrations/auth-cover-register-mask-dark.png" />
+    <div class="authentication-inner row m-0 justify-content-center align-items-center" style="min-height: 80vh;">
+      <!-- Hero/Illustration -->
+      <div class="d-none d-lg-flex col-lg-7 col-xl-7 align-items-center justify-content-center p-12 pb-2">
+        <div class="text-center w-100">
+          <img src="{{ asset('assets/img/products/woodenchair.png') }}" alt="Marketplace"
+            style="max-width: 340px; border-radius: 1.5rem; box-shadow: 0 8px 32px rgba(60,60,90,0.10); margin-bottom: 2rem;" />
+          <h2 class="fw-bold mb-3" style="color: #4b3f72;">Join the Marketplace – Connect & Grow</h2>
+          <p class="lead mb-4" style="color: #5a5a5a;">Find trusted artisans or offer your skills to clients. Sign up to
+            get started!</p>
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+              <div class="card border-0 shadow-sm mb-0" style="background: #fff8ee; border-radius: 1rem;">
+                <div class="card-body py-4 px-4">
+                  <h5 class="mb-3 fw-semibold" style="color: #7c5dfa;">Why join ArtisanConnect?</h5>
+                  <ul class="list-unstyled mb-0 text-start">
+                    <li class="mb-2"><i class="ri ri-user-star-line text-primary me-2"></i> Find local, vetted service
+                      providers</li>
+                    <li class="mb-2"><i class="ri ri-hand-coin-line text-success me-2"></i> Grow your business and reach
+                      new clients</li>
+                    <li><i class="ri ri-shield-check-line text-info me-2"></i> Safe, secure payments and reviews</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <!-- /Left Text -->
+      <!-- /Hero/Illustration -->
 
-      <!-- Register -->
+      <!-- Register Card -->
       <div
         class="d-flex col-12 col-lg-5 col-xl-4 align-items-center authentication-bg position-relative py-sm-12 px-12 py-6">
         <div class="w-px-400 mx-auto pt-12 pt-lg-0">
-          <h4 class="mb-1">Adventure starts here 🚀</h4>
-          <p class="mb-5">Create your ArtisanConnect account</p>
+          <h4 class="mb-1 fw-bold" style="color: #4b3f72;">Create your free account</h4>
+          <p class="mb-4" style="color: #5a5a5a;">Sign up as a client or artisan to start connecting today.</p>
 
           @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -212,27 +229,16 @@
             </a>
           </p>
 
-          <div class="divider my-5">
-            <div class="divider-text">or</div>
-          </div>
-
-          <div class="d-flex justify-content-center gap-2">
-            <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-facebook">
-              <i class="icon-base ri ri-facebook-fill icon-18px"></i>
-            </a>
-
-            <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-twitter">
-              <i class="icon-base ri ri-twitter-fill icon-18px"></i>
-            </a>
-
-            <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-github">
-              <i class="icon-base ri ri-github-fill icon-18px"></i>
-            </a>
-
-            <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-google-plus">
-              <i class="icon-base ri ri-google-fill icon-18px"></i>
-            </a>
-          </div>
+          <!-- Social sign up (optional, can be enabled later) -->
+          <!--
+            <div class="divider my-5">
+              <div class="divider-text">or</div>
+            </div>
+            <div class="d-flex justify-content-center gap-2">
+              <a href="#" class="btn btn-outline-primary w-100 mb-2"><i class="ri ri-facebook-fill me-2"></i>Continue with Facebook</a>
+              <a href="#" class="btn btn-outline-danger w-100"><i class="ri ri-google-fill me-2"></i>Continue with Google</a>
+            </div>
+            -->
         </div>
       </div>
       <!-- /Register -->
