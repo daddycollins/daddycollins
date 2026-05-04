@@ -565,6 +565,19 @@ Route::middleware(['auth'])->group(function () {
   ])->name('artisan.open-requirements');
 });
 
+// Direct Payment Routes
+Route::prefix('payment')->name('payment.')->group(function () {
+  Route::get('checkout', [App\Http\Controllers\PaymentController::class, 'showCheckout'])->name('checkout');
+
+  // Protected payment processing routes (require authentication)
+  Route::middleware('auth')->group(function () {
+    Route::post('checkout', [App\Http\Controllers\PaymentController::class, 'processCheckout'])->name('process');
+    Route::get('{order}/status', [App\Http\Controllers\PaymentController::class, 'paymentStatus'])->name('status');
+    Route::get('api/status/{order}', [App\Http\Controllers\PaymentController::class, 'checkPaymentStatus'])->name('check-status');
+    Route::get('{order}/success', [App\Http\Controllers\PaymentController::class, 'paymentSuccess'])->name('success');
+  });
+});
+
 // Paynow webhook (public endpoint - outside middleware groups)
 Route::post('/paynow/webhook', [App\Http\Controllers\PaynowWebhookController::class, 'handle'])
   ->name('paynow.webhook')

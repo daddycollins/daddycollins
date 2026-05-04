@@ -160,6 +160,37 @@ class ArtisanController extends Controller
         ]);
     }
 
+    /**
+     * Show artisan's profile page
+     */
+    public function artisanProfile()
+    {
+        $user = Auth::user();
+
+        // Get or create artisan profile
+        $artisanProfile = ArtisanProfile::where('user_id', $user->id)->first();
+
+        if (!$artisanProfile) {
+            $artisanProfile = ArtisanProfile::create([
+                'user_id' => $user->id,
+                'business_name' => $user->name,
+                'category' => 'General',
+                'location' => 'Not specified',
+                'verified' => false,
+            ]);
+        }
+
+        // Get verification status
+        $verification = ArtisanVerification::where('artisan_id', $artisanProfile->id)->first();
+        $isVerified = $verification && $verification->status === 'approved';
+
+        return view('content.apps.artisan-profile', [
+            'user' => $user,
+            'artisanProfile' => $artisanProfile,
+            'isVerified' => $isVerified,
+        ]);
+    }
+
     public function artisanOrders()
     {
         $user = Auth::user();
@@ -809,6 +840,7 @@ class ArtisanController extends Controller
             'category' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'price_estimate' => 'required|numeric|min:0',
+            'rate_type' => 'required|in:per_minute,per_hour,per_day,per_week,per_month,per_project,fixed',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'availability' => 'nullable|in:available,unavailable',
         ]);
@@ -901,6 +933,7 @@ class ArtisanController extends Controller
             'category' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'price_estimate' => 'required|numeric|min:0',
+            'rate_type' => 'required|in:per_minute,per_hour,per_day,per_week,per_month,per_project,fixed',
             'availability' => 'boolean',
         ]);
 

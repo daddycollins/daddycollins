@@ -429,7 +429,7 @@
           </div>
         @endif
 
-        <div class="input-group mb-3 @error('email') has-validation @enderror">
+        <div class="input-group mb-3 form-control-validation @error('email') has-validation @enderror">
           <span class="input-group-text auth-field-icon">
             <i class="ri ri-mail-line icon-18px"></i>
           </span>
@@ -442,7 +442,7 @@
 
         <div class="mb-4">
           <div class="form-password-toggle">
-            <div class="input-group @error('password') has-validation @enderror">
+            <div class="input-group form-control-validation @error('password') has-validation @enderror">
               <span class="input-group-text auth-field-icon">
                 <i class="ri ri-lock-line icon-18px"></i>
               </span>

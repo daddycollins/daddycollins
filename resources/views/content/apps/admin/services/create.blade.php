@@ -97,6 +97,25 @@
                 </div>
 
                 <div class="col-md-6">
+                  <label class="form-label fw-bold">Rate Type <span class="text-danger">*</span></label>
+                  <select name="rate_type" class="form-select @error('rate_type') is-invalid @enderror" required>
+                    <option value="">Select Rate Type</option>
+                    <option value="per_minute" @if (old('rate_type') == 'per_minute') selected @endif>Per Minute</option>
+                    <option value="per_hour" @if (old('rate_type') == 'per_hour') selected @endif>Per Hour</option>
+                    <option value="per_day" @if (old('rate_type') == 'per_day') selected @endif>Per Day</option>
+                    <option value="per_week" @if (old('rate_type') == 'per_week') selected @endif>Per Week</option>
+                    <option value="per_month" @if (old('rate_type') == 'per_month') selected @endif>Per Month</option>
+                    <option value="per_project" @if (old('rate_type') == 'per_project') selected @endif>Per Project</option>
+                    <option value="fixed" @if (old('rate_type') == 'fixed') selected @endif>Fixed Rate</option>
+                  </select>
+                  @error('rate_type')
+                    <span class="invalid-feedback">{{ $message }}</span>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="row mb-4">
+                <div class="col-md-6">
                   <label class="form-label fw-bold">Service Image</label>
                   <input type="file" name="image_path" class="form-control @error('image_path') is-invalid @enderror"
                     accept="image/*">
@@ -127,7 +146,8 @@
           <div class="card-body">
             <h6 class="card-title mb-3"><i class="ri-information-line me-2 text-info"></i>Service Creation Tips</h6>
             <ul class="list-unstyled small text-muted">
-              <li class="mb-2"><i class="ri-check-line text-success me-2"></i>Use clear, descriptive service names</li>
+              <li class="mb-2"><i class="ri-check-line text-success me-2"></i>Use clear, descriptive service names
+              </li>
               <li class="mb-2"><i class="ri-check-line text-success me-2"></i>Set realistic price estimates</li>
               <li class="mb-2"><i class="ri-check-line text-success me-2"></i>Add detailed descriptions to attract
                 clients</li>
