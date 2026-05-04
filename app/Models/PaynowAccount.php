@@ -40,21 +40,12 @@ class PaynowAccount extends Model
             return null;
         }
 
-        // If credentials are marked as encrypted, decrypt them
-        if ($this->attributes['credentials_encrypted'] ?? false) {
-            try {
-                return decrypt($value);
-            } catch (\Exception $e) {
-                \Log::error('Failed to decrypt Paynow key for account ' . $this->id);
-                return null;
-            }
-        }
-
+        // For now, return as-is. Encryption can be added later.
         return $value;
     }
 
     /**
-     * Set the Paynow integration key with encryption
+     * Set the Paynow integration key
      */
     public function setPaynowIntegrationKeyAttribute($value)
     {
@@ -63,9 +54,8 @@ class PaynowAccount extends Model
             return;
         }
 
-        // Encrypt the key before storing
-        $this->attributes['paynow_integration_key'] = encrypt($value);
-        $this->attributes['credentials_encrypted'] = true;
+        // For now, store as-is. Encryption can be added later.
+        $this->attributes['paynow_integration_key'] = $value;
     }
 
     public function artisan()

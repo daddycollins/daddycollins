@@ -36,7 +36,7 @@
         @endif
 
         <!-- Check Authentication -->
-        @if (!Auth::check())
+        @if (!auth()->check())
           <div class="alert alert-warning alert-dismissible fade show" role="alert">
             <i class="ri-alert-line me-2"></i>Please <a href="{{ route('login') }}" class="alert-link">log in</a>
             to proceed with checkout.
@@ -197,7 +197,7 @@
       console.log('✓ Checkout page loaded successfully');
       console.log('Form ID: checkoutForm');
       console.log('Action URL: {{ route('payment.process') }}');
-      console.log('Auth User: {{ Auth::check() ? Auth::user()->name : 'Not authenticated' }}');
+      console.log('Auth User: {{ auth()->check() ? auth()->user()->name : 'Not authenticated' }}');
     });
   </script>
 @endsection

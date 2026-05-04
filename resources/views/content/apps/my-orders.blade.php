@@ -348,7 +348,11 @@
                     @elseif($order->payment_status === 'unpaid')
                       <a class="dropdown-item" href="{{ route('user-pay-now', $order->id) }}">
                         <i class="icon-base ri ri-bank-card-line me-2"></i>Pay Now
-                      </a>
+                      </a> <button class=\"dropdown-item\" type=\"button\" data-action=\"refresh-payment\"
+                        onclick=\"refreshPaymentStatus({{ $order->id }}, this.closest('tr'))\" style=\"border: none;
+                        background: none; text-align: left; width: 100%;\">
+                        <i class=\"icon-base ri ri-refresh-line me-2\"></i>Check Payment Status
+                      </button>
                     @endif
                   </div>
                 </div>
@@ -370,4 +374,111 @@
       </table>
     </div>
   </div>
+
+  <script>
+    /**
+     * Refresh payment status for a specific order
+     */
+    function refreshPaymentStatus(orderId, rowElement) {
+      const btn = rowElement.querySelector('[data-action="refresh-payment"]');
+      const originalContent = btn.innerHTML;
+
+      // Show loading state
+      btn.disabled = true;
+      btn.innerHTML = '<i class="icon-base ri ri-loader-4-line me-1 animate-spin"></i>Checking...';
+
+      fetch(`{{ route('payment.refresh-status', '') }}/${orderId}`, {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+          },
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            if (data.updated) {
+              // Update badge if status changed
+              const paymentStatusCell = rowElement.querySelector('[data-field="payment_status"]');
+              if (paymentStatusCell) {
+                paymentStatusCell.innerHTML = '<span class="badge bg-label-success">Paid</span>';
+              }
+              showNotification('Payment confirmed!', 'success');
+            } else {
+              showNotification('Status: ' + data.status, 'info');
+            }
+          } else {
+            showNotification(data.message || 'Failed to refresh status', 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showNotification('Error checking payment status', 'error');
+        })
+        .finally(() => {
+          // Restore button state
+          btn.disabled = false;
+          btn.innerHTML = originalContent;
+        });
+    }
+
+    /**
+     * Show notification toast
+     */
+    function showNotification(message, type = 'info') {
+      // Create toast element if it doesn't exist
+      const toastContainer = document.getElementById('notificationContainer');
+      if (!toastContainer) {
+        const container = document.createElement('div');
+        container.id = 'notificationContainer';
+        container.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999;';
+        document.body.appendChild(container);
+      }
+
+      const toastId = 'toast-' + Date.now();
+      const bgColor = type === 'success' ? 'bg-success' : (type === 'error' ? 'bg-danger' : 'bg-info');
+      const toast = document.createElement('div');
+      toast.id = toastId;
+      toast.className = `alert ${bgColor} text-white`;
+      toast.style.cssText =
+        'margin-bottom: 10px; border-radius: 4px; padding: 12px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); animation: slideIn 0.3s ease-out;';
+      toast.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center">
+          <span>${message}</span>
+          <button type="button" class="btn-close btn-close-white" onclick="document.getElementById('${toastId}').remove()"></button>
+        </div>
+      `;
+
+      document.getElementById('notificationContainer').appendChild(toast);
+
+      // Auto-remove after 4 seconds
+      setTimeout(() => {
+        const el = document.getElementById(toastId);
+        if (el) el.remove();
+      }, 4000);
+    }
+
+    // Add slide-in animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      .animate-spin {
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
 @endsection
