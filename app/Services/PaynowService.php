@@ -43,6 +43,54 @@ class PaynowService
     }
 
     /**
+     * Validate if a provider can accept payments
+     */
+    public function validateProviderPayment($artisanId): array
+    {
+        try {
+            $artisan = \App\Models\ArtisanProfile::with('paynow')->find($artisanId);
+
+            if (!$artisan) {
+                return [
+                    'valid' => false,
+                    'message' => 'Provider not found',
+                ];
+            }
+
+            if (!$artisan->paynow) {
+                return [
+                    'valid' => false,
+                    'message' => 'Provider has not configured payment methods',
+                ];
+            }
+
+            if ($artisan->paynow->status !== 'active') {
+                return [
+                    'valid' => false,
+                    'message' => 'Provider\'s payment account is not active',
+                ];
+            }
+
+            if (!$artisan->verified) {
+                return [
+                    'valid' => false,
+                    'message' => 'Provider account is not verified for payments',
+                ];
+            }
+
+            return [
+                'valid' => true,
+                'message' => 'Provider is ready to accept payments',
+            ];
+        } catch (\Exception $e) {
+            return [
+                'valid' => false,
+                'message' => 'Validation error: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
      * Initiate a payment for an order
      */
     public function initiatePayment(Order $order, string $phone): array

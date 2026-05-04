@@ -55,6 +55,7 @@ class ServiceManagement extends Controller
       'category' => 'required|string|max:100',
       'description' => 'nullable|string',
       'price_estimate' => 'required|numeric|min:0',
+      'rate_type' => 'required|in:per_minute,per_hour,per_day,per_week,per_month,per_project,fixed',
       'availability' => 'required|in:available,unavailable',
       'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
     ]);
@@ -85,6 +86,7 @@ class ServiceManagement extends Controller
       'category' => 'required|string|max:100',
       'description' => 'nullable|string',
       'price_estimate' => 'required|numeric|min:0',
+      'rate_type' => 'required|in:per_minute,per_hour,per_day,per_week,per_month,per_project,fixed',
       'availability' => 'required|in:available,unavailable',
       'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
     ]);

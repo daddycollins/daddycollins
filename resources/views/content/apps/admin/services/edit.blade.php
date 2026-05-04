@@ -61,6 +61,28 @@
                 </div>
 
                 <div class="col-md-6">
+                  <label class="form-label fw-bold">Rate Type <span class="text-danger">*</span></label>
+                  <select name="rate_type" class="form-select @error('rate_type') is-invalid @enderror" required>
+                    <option value="">Select Rate Type</option>
+                    <option value="per_minute" @if (old('rate_type', $service->rate_type) == 'per_minute') selected @endif>Per Minute</option>
+                    <option value="per_hour" @if (old('rate_type', $service->rate_type) == 'per_hour') selected @endif>Per Hour</option>
+                    <option value="per_day" @if (old('rate_type', $service->rate_type) == 'per_day') selected @endif>Per Day</option>
+                    <option value="per_week" @if (old('rate_type', $service->rate_type) == 'per_week') selected @endif>Per Week</option>
+                    <option value="per_month" @if (old('rate_type', $service->rate_type) == 'per_month') selected @endif>Per Month</option>
+                    <option value="per_project" @if (old('rate_type', $service->rate_type) == 'per_project') selected @endif>Per Project</option>
+                    <option value="fixed" @if (old('rate_type', $service->rate_type) == 'fixed') selected @endif>Fixed Rate</option>
+                  </select>
+                  @error('rate_type')
+                    <span class="invalid-feedback">{{ $message }}</span>
+                  @enderror
+                </div>
+              </div>
+
+              <div class="row mb-4">
+                <div class="col-md-6">
+                </div>
+
+                <div class="col-md-6">
                   <label class="form-label fw-bold">Service Status <span class="text-danger">*</span></label>
                   <select name="availability" class="form-select @error('availability') is-invalid @enderror" required>
                     <option value="">Select Status</option>

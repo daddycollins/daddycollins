@@ -156,7 +156,8 @@
                   <div class="d-flex align-items-center">
                     <div class="avatar avatar-md me-3 bg-label-primary">
                       @if ($service->image_path)
-                        <img src="{{ asset('storage/' . $service->image_path) }}" alt="{{ $service->service_name }}" class="rounded" />
+                        <img src="{{ asset('storage/' . $service->image_path) }}" alt="{{ $service->service_name }}"
+                          class="rounded" />
                       @else
                         <div class="avatar-initial"><i class="icon-base ri ri-hammer-line"></i></div>
                       @endif
@@ -256,10 +257,31 @@
                 @enderror
               </div>
               <div class="col-md-6">
+<<<<<<< HEAD
                 <label class="form-label fw-medium">Hourly Rate (USD) *</label>
+=======
+                <label class="form-label fw-medium">Rate Type *</label>
+                <select name="rate_type" class="form-select @error('rate_type') is-invalid @enderror" required>
+                  <option value="">Select rate type</option>
+                  <option value="per_minute">Per Minute</option>
+                  <option value="per_hour" selected>Per Hour</option>
+                  <option value="per_day">Per Day</option>
+                  <option value="per_week">Per Week</option>
+                  <option value="per_month">Per Month</option>
+                  <option value="per_project">Per Project</option>
+                  <option value="fixed">Fixed Rate</option>
+                </select>
+                @error('rate_type')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium">Rate Amount (ZWL) *</label>
+>>>>>>> 3c90243aa3f1f31a55ff1fa7fa351363f47cb5af
                 <input type="number" name="price_estimate"
                   class="form-control @error('price_estimate') is-invalid @enderror" placeholder="e.g., 250"
                   step="0.01" required />
+                <small class="text-muted d-block mt-1">Enter the cost per <span id="rateTypeLabel">hour</span></small>
                 @error('price_estimate')
                   <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -324,9 +346,28 @@
                 </select>
               </div>
               <div class="col-md-6">
+<<<<<<< HEAD
                 <label class="form-label fw-medium">Hourly Rate (USD) *</label>
+=======
+                <label class="form-label fw-medium">Rate Type *</label>
+                <select name="rate_type" id="editRateType" class="form-select" required>
+                  <option value="">Select rate type</option>
+                  <option value="per_minute">Per Minute</option>
+                  <option value="per_hour">Per Hour</option>
+                  <option value="per_day">Per Day</option>
+                  <option value="per_week">Per Week</option>
+                  <option value="per_month">Per Month</option>
+                  <option value="per_project">Per Project</option>
+                  <option value="fixed">Fixed Rate</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium">Rate Amount (ZWL) *</label>
+>>>>>>> 3c90243aa3f1f31a55ff1fa7fa351363f47cb5af
                 <input type="number" name="price_estimate" id="editPrice" class="form-control" step="0.01"
                   required />
+                <small class="text-muted d-block mt-1">Enter the cost per <span
+                    id="editRateTypeLabel">hour</span></small>
               </div>
               <div class="col-12">
                 <label class="form-label fw-medium">Service Description *</label>
@@ -489,5 +530,63 @@
       });
       topServicesChart.render();
     });
+
+    // Rate type label updater
+    const rateTypeMap = {
+      'per_minute': 'minute',
+      'per_hour': 'hour',
+      'per_day': 'day',
+      'per_week': 'week',
+      'per_month': 'month',
+      'per_project': 'project',
+      'fixed': 'rate'
+    };
+
+    // Update label when rate type changes in add modal
+    const rateTypeSelect = document.querySelector('select[name="rate_type"]');
+    const rateTypeLabel = document.getElementById('rateTypeLabel');
+    if (rateTypeSelect) {
+      rateTypeSelect.addEventListener('change', function() {
+        rateTypeLabel.textContent = rateTypeMap[this.value] || 'unit';
+      });
+    }
+
+    // Update label when rate type changes in edit modal
+    const editRateTypeSelect = document.getElementById('editRateType');
+    const editRateTypeLabel = document.getElementById('editRateTypeLabel');
+    if (editRateTypeSelect) {
+      editRateTypeSelect.addEventListener('change', function() {
+        editRateTypeLabel.textContent = rateTypeMap[this.value] || 'unit';
+      });
+    }
+
+    // Populate edit modal when opening
+    const editServiceModal = document.getElementById('editServiceModal');
+    if (editServiceModal) {
+      editServiceModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const serviceId = button.getAttribute('data-id');
+
+        // Get service data and populate form
+        const serviceName = button.getAttribute('data-name');
+        const category = button.getAttribute('data-category');
+        const price = button.getAttribute('data-price');
+        const rateType = button.getAttribute('data-rate-type') || 'per_hour';
+        const description = button.getAttribute('data-description');
+        const availability = button.getAttribute('data-availability');
+
+        document.getElementById('editServiceName').value = serviceName;
+        document.getElementById('editCategory').value = category;
+        document.getElementById('editPrice').value = price;
+        document.getElementById('editRateType').value = rateType;
+        document.getElementById('editDescription').value = description;
+        document.getElementById('editAvailability').value = availability;
+        document.getElementById('editRateTypeLabel').textContent = rateTypeMap[rateType] || 'unit';
+
+        // Update form action
+        const form = document.getElementById('editServiceForm');
+        form.action = `/artisan/services/${serviceId}/update`;
+      });
+    }
   </script>
 @endsection

@@ -189,17 +189,28 @@
                         </p>
                       </div>
                       <div class="col-md-3 text-end">
-                        <h5 class="mb-2 text-primary">${{ number_format($service->price_estimate, 2) }}</h5>
-                        <form action="{{ route('cart.add') }}" method="POST">
-                          @csrf
-                          <input type="hidden" name="artisan_id" value="{{ $artisan->id }}">
-                          <input type="hidden" name="item_type" value="service">
-                          <input type="hidden" name="item_id" value="{{ $service->id }}">
-                          <input type="hidden" name="quantity" value="1">
-                          <button type="submit" class="btn btn-sm btn-primary w-100">
-                            <i class="ri-shopping-cart-line me-1"></i>Add to Cart
-                          </button>
-                        </form>
+                        <div class="mb-2">
+                          <h5 class="mb-1 text-primary">${{ number_format($service->price_estimate, 2) }}</h5>
+                          <small class="text-muted">{{ $service->getRateTypeLabel() }}</small>
+                        </div>
+                        <div class="d-grid gap-2">
+                          <!-- Pay Now Button -->
+                          <a href="{{ route('payment.checkout', ['type' => 'service', 'item_id' => $service->id, 'artisan_id' => $artisan->id, 'quantity' => 1]) }}"
+                            class="btn btn-sm btn-success">
+                            <i class="ri-paypal-line me-1"></i>Pay Now
+                          </a>
+                          <!-- Add to Cart Button -->
+                          <form action="{{ route('cart.add') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="artisan_id" value="{{ $artisan->id }}">
+                            <input type="hidden" name="item_type" value="service">
+                            <input type="hidden" name="item_id" value="{{ $service->id }}">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-sm btn-primary w-100">
+                              <i class="ri-shopping-cart-line me-1"></i>Add to Cart
+                            </button>
+                          </form>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -242,19 +253,27 @@
                           <h5 class="mb-0 text-success">${{ number_format($product->price, 2) }}</h5>
                           <span class="badge bg-label-info">{{ $product->stock_quantity }} in stock</span>
                         </div>
-                        <form action="{{ route('cart.add') }}" method="POST">
-                          @csrf
-                          <input type="hidden" name="artisan_id" value="{{ $artisan->id }}">
-                          <input type="hidden" name="item_type" value="product">
-                          <input type="hidden" name="item_id" value="{{ $product->id }}">
-                          <div class="input-group mb-2">
-                            <input type="number" name="quantity" class="form-control" value="1" min="1"
-                              max="{{ $product->stock_quantity }}">
-                            <button type="submit" class="btn btn-primary">
+                        <div class="input-group mb-2 gap-2">
+                          <input type="number" id="qty-{{ $product->id }}" class="form-control" value="1"
+                            min="1" max="{{ $product->stock_quantity }}">
+                          <!-- Pay Now Button -->
+                          <a href="javascript:void(0)" onclick="payNow('{{ $product->id }}', '{{ $artisan->id }}')"
+                            class="btn btn-success">
+                            <i class="ri-paypal-line"></i>
+                          </a>
+                          <!-- Add to Cart Form -->
+                          <form action="{{ route('cart.add') }}" method="POST" class="flex-grow-1">
+                            @csrf
+                            <input type="hidden" name="artisan_id" value="{{ $artisan->id }}">
+                            <input type="hidden" name="item_type" value="product">
+                            <input type="hidden" name="item_id" value="{{ $product->id }}">
+                            <input type="hidden" name="quantity" id="qty-form-{{ $product->id }}" value="1">
+                            <button type="button" class="btn btn-primary w-100"
+                              onclick="addToCart({{ $product->id }})">
                               <i class="ri-shopping-cart-line"></i>
                             </button>
-                          </div>
-                        </form>
+                          </form>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -451,4 +470,43 @@
       </div>
     </div>
   </div>
+@endsection
+
+@section('page-script')
+  <script>
+    function payNow(productId, artisanId) {
+      const quantity = document.getElementById('qty-' + productId).value;
+      if (!quantity || quantity < 1) {
+        alert('Please select a valid quantity');
+        return;
+      }
+
+      // Verify user is logged in
+      @if (!auth()->check())
+        alert('Please log in to purchase');
+        window.location.href = '{{ route('login') }}';
+        return;
+      @endif
+
+      window.location.href =
+        `/payment/checkout?type=product&item_id=${productId}&artisan_id=${artisanId}&quantity=${quantity}`;
+    }
+
+    function addToCart(productId) {
+      const quantity = document.getElementById('qty-' + productId).value;
+      if (!quantity || quantity < 1) {
+        alert('Please select a valid quantity');
+        return;
+      }
+
+      // Update hidden form field and submit
+      document.getElementById('qty-form-' + productId).value = quantity;
+
+      // Find and submit the form
+      const form = document.querySelector(`input[value="${productId}"]`).closest('form');
+      if (form) {
+        form.submit();
+      }
+    }
+  </script>
 @endsection

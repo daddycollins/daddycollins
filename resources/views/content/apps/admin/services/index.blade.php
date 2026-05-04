@@ -74,6 +74,7 @@
               <th><i class="ri-briefcase-line"></i> Service</th>
               <th><i class="ri-tag-line"></i> Category</th>
               <th><i class="ri-money-dollar-circle-line"></i> Price</th>
+              <th><i class="ri-time-line"></i> Rate Type</th>
               <th><i class="ri-checkbox-circle-line"></i> Availability</th>
               <th><i class="ri-calendar-line"></i> Created</th>
               <th class="text-center"><i class="ri-tools-line"></i> Actions</th>
@@ -94,6 +95,13 @@
                 <td><strong>{{ $service->service_name }}</strong></td>
                 <td><span class="badge bg-label-secondary">{{ $service->category }}</span></td>
                 <td><strong class="text-success">ZWL {{ number_format($service->price_estimate, 2) }}</strong></td>
+                <td>
+                  @if ($service->rate_type)
+                    <span class="badge bg-label-info">{{ ucfirst(str_replace('_', ' ', $service->rate_type)) }}</span>
+                  @else
+                    <span class="badge bg-label-secondary">Not Set</span>
+                  @endif
+                </td>
                 <td>
                   @if ($service->availability)
                     <span class="badge bg-label-success"><i
@@ -129,7 +137,7 @@
               </tr>
             @empty
               <tr>
-                <td colspan="8" class="text-center text-muted py-4">
+                <td colspan="9" class="text-center text-muted py-4">
                   <i class="ri-inbox-line" style="font-size: 2rem;"></i><br>
                   No services found
                 </td>

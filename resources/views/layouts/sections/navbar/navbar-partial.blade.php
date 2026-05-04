@@ -80,7 +80,7 @@
           <div class="dropdown-header d-flex align-items-center py-2">
             <h6 class="mb-0 me-auto">Notification</h6>
             <div class="d-flex align-items-center h6 mb-0">
-              <span class="badge rounded-pill bg-label-primary fs-xsmall me-2">8 New</span>
+              <span class="badge rounded-pill bg-label-primary fs-xsmall me-2">0 New</span>
               <a href="javascript:void(0)" class="dropdown-notifications-all p-2" data-bs-toggle="tooltip"
                 data-bs-placement="top" title="Mark all as read"><i
                   class="icon-base ri ri-mail-open-line text-heading"></i> </a>
@@ -89,192 +89,8 @@
         </li>
         <li class="dropdown-notifications-list scrollable-container">
           <ul class="list-group list-group-flush">
-            <li class="list-group-item list-group-item-action dropdown-notifications-item">
-              <div class="d-flex">
-                <div class="flex-shrink-0 me-3">
-                  <div class="avatar">
-                    <img src="{{ asset('assets/img/avatars/1.png') }}" alt="avatar" class="rounded-circle" />
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="small mb-1">Congratulation Lettie 🎉</h6>
-                  <small class="mb-1 d-block text-body">Won the monthly best seller gold
-                    badge</small>
-                  <small class="text-body-secondary">1h ago</small>
-                </div>
-                <div class="flex-shrink-0 dropdown-notifications-actions">
-                  <a href="javascript:void(0)" class="dropdown-notifications-read"><span
-                      class="badge badge-dot"></span></a>
-                  <a href="javascript:void(0)" class="dropdown-notifications-archive"><span
-                      class="icon-base ri ri-close-line"></span></a>
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item list-group-item-action dropdown-notifications-item">
-              <div class="d-flex">
-                <div class="flex-shrink-0 me-3">
-                  <div class="avatar">
-                    <span class="avatar-initial rounded-circle bg-label-danger">CF</span>
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="small mb-1">Charles Franklin</h6>
-                  <small class="mb-1 d-block text-body">Accepted your connection</small>
-                  <small class="text-body-secondary">12hr ago</small>
-                </div>
-                <div class="flex-shrink-0 dropdown-notifications-actions">
-                  <a href="javascript:void(0)" class="dropdown-notifications-read"><span
-                      class="badge badge-dot"></span></a>
-                  <a href="javascript:void(0)" class="dropdown-notifications-archive"><span
-                      class="icon-base ri ri-close-line"></span></a>
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
-              <div class="d-flex">
-                <div class="flex-shrink-0 me-3">
-                  <div class="avatar">
-                    <img src="{{ asset('assets/img/avatars/2.png') }}" alt="avatar" class="rounded-circle" />
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="small mb-1">New Message ✉️</h6>
-                  <small class="mb-1 d-block text-body">You have new message from Natalie</small>
-                  <small class="text-body-secondary">1h ago</small>
-                </div>
-                <div class="flex-shrink-0 dropdown-notifications-actions">
-                  <a href="javascript:void(0)" class="dropdown-notifications-read"><span
-                      class="badge badge-dot"></span></a>
-                  <a href="javascript:void(0)" class="dropdown-notifications-archive"><span
-                      class="icon-base ri ri-close-line"></span></a>
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item list-group-item-action dropdown-notifications-item">
-              <div class="d-flex">
-                <div class="flex-shrink-0 me-3">
-                  <div class="avatar">
-                    <span class="avatar-initial rounded-circle bg-label-success"><i
-                        class="icon-base ri ri-shopping-cart-2-line icon-18px"></i> </span>
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="small mb-1">Whoo! You have new order 🛒</h6>
-                  <small class="mb-1 d-block text-body">ACME Inc. made new order $1,154</small>
-                  <small class="text-body-secondary">1 day ago</small>
-                </div>
-                <div class="flex-shrink-0 dropdown-notifications-actions">
-                  <a href="javascript:void(0)" class="dropdown-notifications-read"><span
-                      class="badge badge-dot"></span></a>
-                  <a href="javascript:void(0)" class="dropdown-notifications-archive"><span
-                      class="icon-base ri ri-close-line"></span></a>
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
-              <div class="d-flex">
-                <div class="flex-shrink-0 me-3">
-                  <div class="avatar">
-                    <img src="{{ asset('assets/img/avatars/9.png') }}" alt="avatar" class="rounded-circle" />
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="small mb-1">Application has been approved 🚀</h6>
-                  <small class="mb-1 d-block text-body">Your ABC project application has been
-                    approved.</small>
-                  <small class="text-body-secondary">2 days ago</small>
-                </div>
-                <div class="flex-shrink-0 dropdown-notifications-actions">
-                  <a href="javascript:void(0)" class="dropdown-notifications-read"><span
-                      class="badge badge-dot"></span></a>
-                  <a href="javascript:void(0)" class="dropdown-notifications-archive"><span
-                      class="icon-base ri ri-close-line"></span></a>
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
-              <div class="d-flex">
-                <div class="flex-shrink-0 me-3">
-                  <div class="avatar">
-                    <span class="avatar-initial rounded-circle bg-label-success"><i
-                        class="icon-base ri ri-pie-chart-2-line icon-18px"></i> </span>
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="small mb-1">Monthly report is generated</h6>
-                  <small class="mb-1 d-block text-body">July monthly financial report is generated
-                  </small>
-                  <small class="text-body-secondary">3 days ago</small>
-                </div>
-                <div class="flex-shrink-0 dropdown-notifications-actions">
-                  <a href="javascript:void(0)" class="dropdown-notifications-read"><span
-                      class="badge badge-dot"></span></a>
-                  <a href="javascript:void(0)" class="dropdown-notifications-archive"><span
-                      class="icon-base ri ri-close-line"></span></a>
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
-              <div class="d-flex">
-                <div class="flex-shrink-0 me-3">
-                  <div class="avatar">
-                    <img src="{{ asset('assets/img/avatars/5.png') }}" alt="avatar" class="rounded-circle" />
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="small mb-1">Send connection request</h6>
-                  <small class="mb-1 d-block text-body">Peter sent you connection request</small>
-                  <small class="text-body-secondary">4 days ago</small>
-                </div>
-                <div class="flex-shrink-0 dropdown-notifications-actions">
-                  <a href="javascript:void(0)" class="dropdown-notifications-read"><span
-                      class="badge badge-dot"></span></a>
-                  <a href="javascript:void(0)" class="dropdown-notifications-archive"><span
-                      class="icon-base ri ri-close-line"></span></a>
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item list-group-item-action dropdown-notifications-item">
-              <div class="d-flex">
-                <div class="flex-shrink-0 me-3">
-                  <div class="avatar">
-                    <img src="{{ asset('assets/img/avatars/6.png') }}" alt="avatar" class="rounded-circle" />
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="small mb-1">New message from Jane</h6>
-                  <small class="mb-1 d-block text-body">Your have new message from Jane</small>
-                  <small class="text-body-secondary">5 days ago</small>
-                </div>
-                <div class="flex-shrink-0 dropdown-notifications-actions">
-                  <a href="javascript:void(0)" class="dropdown-notifications-read"><span
-                      class="badge badge-dot"></span></a>
-                  <a href="javascript:void(0)" class="dropdown-notifications-archive"><span
-                      class="icon-base ri ri-close-line"></span></a>
-                </div>
-              </div>
-            </li>
-            <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
-              <div class="d-flex">
-                <div class="flex-shrink-0 me-3">
-                  <div class="avatar">
-                    <span class="avatar-initial rounded-circle bg-label-warning"><i
-                        class="icon-base ri ri-error-warning-line icon-18px"></i> </span>
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="small mb-1">CPU is running high</h6>
-                  <small class="mb-1 d-block text-body">CPU Utilization Percent is currently at
-                    88.63%,</small>
-                  <small class="text-body-secondary">5 days ago</small>
-                </div>
-                <div class="flex-shrink-0 dropdown-notifications-actions">
-                  <a href="javascript:void(0)" class="dropdown-notifications-read"><span
-                      class="badge badge-dot"></span></a>
-                  <a href="javascript:void(0)" class="dropdown-notifications-archive"><span
-                      class="icon-base ri ri-close-line"></span></a>
-                </div>
-              </div>
+            <li class="list-group-item text-center py-4">
+              <small class="text-body-secondary">No notifications yet</small>
             </li>
           </ul>
         </li>
@@ -291,13 +107,12 @@
 
     <!-- Shopping Cart (Only for client users) -->
     @auth
-      @if(auth()->user()->role === 'client')
+      @if (auth()->user()->role === 'client')
         <li class="nav-item me-4 me-xl-1">
           <a class="nav-link btn btn-icon btn-text-secondary rounded-pill position-relative"
-             href="{{ route('cart.index') }}"
-             title="My Cart">
+            href="{{ route('cart.index') }}" title="My Cart">
             <i class="icon-base ri ri-shopping-cart-2-line icon-22px"></i>
-            @if(isset($cartCount) && $cartCount > 0)
+            @if (isset($cartCount) && $cartCount > 0)
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                 {{ $cartCount }}
               </span>
@@ -312,19 +127,36 @@
     <li class="nav-item navbar-dropdown dropdown-user dropdown">
       <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
         <div class="avatar avatar-online">
-          <img src="{{ Auth::user() ? Auth::user()->profile_photo_url : asset('assets/img/avatars/1.png') }}"
-            alt="avatar" class="rounded-circle" />
+          @if (Auth::check() && Auth::user()->profile_photo_url)
+            <img src="{{ Auth::user()->profile_photo_url }}" alt="avatar" class="rounded-circle" />
+          @elseif (Auth::check())
+            <span class="avatar-initial rounded-circle bg-label-primary">
+              {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}{{ strtoupper(substr(explode(' ', Auth::user()->name)[1] ?? '', 0, 1)) }}
+            </span>
+          @else
+            <img src="{{ asset('assets/img/avatars/1.png') }}" alt="avatar" class="rounded-circle" />
+          @endif
         </div>
       </a>
       <ul class="dropdown-menu dropdown-menu-end mt-3 py-2">
         <li>
           <a class="dropdown-item"
-            href="{{ Route::has('profile.show') ? route('profile.show') : url('pages/profile-user') }}">
+            href="{{ auth()->check() ? (auth()->user()->role === 'artisan' ? route('artisan-profile') : route('user-profile')) : url('pages/profile-user') }}">
             <div class="d-flex align-items-center">
               <div class="flex-shrink-0 me-2">
                 <div class="avatar avatar-online">
-                  <img src="{{ Auth::user() ? Auth::user()->profile_photo_url : asset('assets/img/avatars/1.png') }}"
-                    alt="alt" class="w-px-40 h-auto rounded-circle" />
+                  @if (Auth::check() && Auth::user()->profile_photo_url)
+                    <img src="{{ Auth::user()->profile_photo_url }}" alt="alt"
+                      class="w-px-40 h-auto rounded-circle" />
+                  @elseif (Auth::check())
+                    <span
+                      class="avatar-initial rounded-circle bg-label-primary w-px-40 h-px-40 d-flex align-items-center justify-content-center">
+                      {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}{{ strtoupper(substr(explode(' ', Auth::user()->name)[1] ?? '', 0, 1)) }}
+                    </span>
+                  @else
+                    <img src="{{ asset('assets/img/avatars/1.png') }}" alt="alt"
+                      class="w-px-40 h-auto rounded-circle" />
+                  @endif
                 </div>
               </div>
               <div class="flex-grow-1">
@@ -335,7 +167,7 @@
                     John Doe
                   @endif
                 </h6>
-                <small class="text-body-secondary">Admin</small>
+                <small class="text-body-secondary">{{ ucfirst(auth()->user()->role ?? 'User') }}</small>
               </div>
             </div>
           </a>
@@ -345,20 +177,10 @@
         </li>
         <li>
           <a class="dropdown-item"
-            href="{{ Route::has('profile.show') ? route('profile.show') : url('pages/profile-user') }}">
-            <i class="icon-base ri ri-user-3-line icon-22px me-2"></i> <span class="align-middle">My
-              Profile</span> </a>
-        </li>
-        <li>
-          <a class="dropdown-item" href="{{ url('pages/account-settings-billing') }}">
-            <span class="d-flex align-items-center align-middle">
-              <i class="flex-shrink-0 icon-base ri ri-file-text-line icon-22px me-3"></i>
-              <span class="flex-grow-1 align-middle">Billing Plan</span>
-              <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger">4</span>
-            </span>
+            href="{{ auth()->check() ? (auth()->user()->role === 'artisan' ? route('artisan-profile') : route('user-profile')) : url('pages/profile-user') }}">
+            <i class="icon-base ri ri-user-3-line icon-22px me-2"></i> <span class="align-middle">My Profile</span>
           </a>
         </li>
-
         <li>
           <div class="dropdown-divider my-1"></div>
         </li>

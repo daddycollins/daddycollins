@@ -160,17 +160,33 @@ class ArtisanController extends Controller
         ]);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Show artisan's profile page
+     */
+>>>>>>> 3c90243aa3f1f31a55ff1fa7fa351363f47cb5af
     public function artisanProfile()
     {
         $user = Auth::user();
 
+<<<<<<< HEAD
         $artisanProfile = ArtisanProfile::firstOrCreate(
             ['user_id' => $user->id],
             [
+=======
+        // Get or create artisan profile
+        $artisanProfile = ArtisanProfile::where('user_id', $user->id)->first();
+
+        if (!$artisanProfile) {
+            $artisanProfile = ArtisanProfile::create([
+                'user_id' => $user->id,
+>>>>>>> 3c90243aa3f1f31a55ff1fa7fa351363f47cb5af
                 'business_name' => $user->name,
                 'category' => 'General',
                 'location' => 'Not specified',
                 'verified' => false,
+<<<<<<< HEAD
             ]
         );
 
@@ -184,16 +200,28 @@ class ArtisanController extends Controller
         $totalEarnings = Order::where('artisan_id', $artisanProfile->id)
             ->where('status', 'completed')
             ->sum('total_amount');
+=======
+            ]);
+        }
+
+        // Get verification status
+        $verification = ArtisanVerification::where('artisan_id', $artisanProfile->id)->first();
+        $isVerified = $verification && $verification->status === 'approved';
+>>>>>>> 3c90243aa3f1f31a55ff1fa7fa351363f47cb5af
 
         return view('content.apps.artisan-profile', [
             'user' => $user,
             'artisanProfile' => $artisanProfile,
+<<<<<<< HEAD
             'isVerified' => $artisanProfile->verified,
             'averageRating' => round($averageRating, 1),
             'completionRate' => round($completionRate, 1),
             'totalReviews' => $totalReviews,
             'completedOrders' => $completedOrders,
             'totalEarnings' => round($totalEarnings, 2),
+=======
+            'isVerified' => $isVerified,
+>>>>>>> 3c90243aa3f1f31a55ff1fa7fa351363f47cb5af
         ]);
     }
 
@@ -811,6 +839,7 @@ class ArtisanController extends Controller
             'category' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'price_estimate' => 'required|numeric|min:0',
+            'rate_type' => 'required|in:per_minute,per_hour,per_day,per_week,per_month,per_project,fixed',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'availability' => 'nullable|in:available,unavailable',
         ]);
@@ -878,6 +907,7 @@ class ArtisanController extends Controller
             'category' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'price_estimate' => 'required|numeric|min:0',
+            'rate_type' => 'required|in:per_minute,per_hour,per_day,per_week,per_month,per_project,fixed',
             'availability' => 'boolean',
         ]);
 
