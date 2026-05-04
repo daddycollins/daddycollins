@@ -160,54 +160,29 @@ class ArtisanController extends Controller
         ]);
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Show artisan's profile page
      */
->>>>>>> 3c90243aa3f1f31a55ff1fa7fa351363f47cb5af
     public function artisanProfile()
     {
         $user = Auth::user();
 
-<<<<<<< HEAD
-        $artisanProfile = ArtisanProfile::firstOrCreate(
-            ['user_id' => $user->id],
-            [
-=======
         // Get or create artisan profile
         $artisanProfile = ArtisanProfile::where('user_id', $user->id)->first();
 
         if (!$artisanProfile) {
             $artisanProfile = ArtisanProfile::create([
                 'user_id' => $user->id,
->>>>>>> 3c90243aa3f1f31a55ff1fa7fa351363f47cb5af
                 'business_name' => $user->name,
                 'category' => 'General',
                 'location' => 'Not specified',
                 'verified' => false,
-<<<<<<< HEAD
-            ]
-        );
-
-        $totalReviews = Review::where('artisan_id', $artisanProfile->id)->count();
-        $completedOrders = Order::where('artisan_id', $artisanProfile->id)
-            ->where('status', 'completed')
-            ->count();
-        $totalOrders = Order::where('artisan_id', $artisanProfile->id)->count();
-        $completionRate = $totalOrders > 0 ? ($completedOrders / $totalOrders) * 100 : 0;
-        $averageRating = Review::where('artisan_id', $artisanProfile->id)->avg('rating') ?? 0;
-        $totalEarnings = Order::where('artisan_id', $artisanProfile->id)
-            ->where('status', 'completed')
-            ->sum('total_amount');
-=======
             ]);
         }
 
         // Get verification status
         $verification = ArtisanVerification::where('artisan_id', $artisanProfile->id)->first();
         $isVerified = $verification && $verification->status === 'approved';
->>>>>>> 3c90243aa3f1f31a55ff1fa7fa351363f47cb5af
 
         return view('content.apps.artisan-profile', [
             'user' => $user,
@@ -218,16 +193,7 @@ class ArtisanController extends Controller
             'completionRate' => round($completionRate, 1),
             'totalReviews' => $totalReviews,
             'completedOrders' => $completedOrders,
-            'totalEarnings' => round($totalEarnings, 2),
-=======
-            'isVerified' => $isVerified,
->>>>>>> 3c90243aa3f1f31a55ff1fa7fa351363f47cb5af
-        ]);
-    }
-
-    public function artisanOrders()
     {
-        $user = Auth::user();
         $artisanProfile = ArtisanProfile::where('user_id', $user->id)->first();
 
         if (!$artisanProfile) {
