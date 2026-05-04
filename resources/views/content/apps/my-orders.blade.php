@@ -387,7 +387,7 @@
       btn.disabled = true;
       btn.innerHTML = '<i class="icon-base ri ri-loader-4-line me-1 animate-spin"></i>Checking...';
 
-      fetch(`{{ route('payment.refresh-status', '') }}/${orderId}`, {
+      fetch(`/payment/${orderId}/refresh-status`, {
           method: 'POST',
           headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
