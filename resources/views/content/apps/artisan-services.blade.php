@@ -276,7 +276,7 @@
                 @enderror
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-medium">Rate Amount (ZWL) *</label>
+                <label class="form-label fw-medium">Rate Amount (US$) *</label>
 >>>>>>> 3c90243aa3f1f31a55ff1fa7fa351363f47cb5af
                 <input type="number" name="price_estimate"
                   class="form-control @error('price_estimate') is-invalid @enderror" placeholder="e.g., 250"
@@ -362,7 +362,7 @@
                 </select>
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-medium">Rate Amount (ZWL) *</label>
+                <label class="form-label fw-medium">Rate Amount (US$) *</label>
 >>>>>>> 3c90243aa3f1f31a55ff1fa7fa351363f47cb5af
                 <input type="number" name="price_estimate" id="editPrice" class="form-control" step="0.01"
                   required />

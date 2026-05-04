@@ -45,7 +45,7 @@
 
               <div class="row mb-4">
                 <div class="col-md-6">
-                  <label class="form-label fw-bold">Amount (ZWL) <span class="text-danger">*</span></label>
+                  <label class="form-label fw-bold">Amount (US$) <span class="text-danger">*</span></label>
                   <input type="number" name="amount" class="form-control @error('amount') is-invalid @enderror" required
                     step="0.01" min="0.01" placeholder="0.00" value="{{ old('amount') }}">
                   @error('amount')

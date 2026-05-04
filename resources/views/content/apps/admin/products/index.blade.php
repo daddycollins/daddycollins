@@ -48,7 +48,7 @@
             <div class="d-flex justify-content-between align-items-center">
               <div>
                 <p class="text-muted small mb-1">Stock Value</p>
-                <h4>ZWL {{ number_format($stats['total_stock_value'] ?? 0, 2) }}</h4>
+                <h4>US$ {{ number_format($stats['total_stock_value'] ?? 0, 2) }}</h4>
               </div>
               <i class="ri-money-dollar-circle-line" style="font-size: 2rem; color: #28a745;"></i>
             </div>
@@ -128,7 +128,7 @@
               <th><i class="ri-user-line"></i> Artisan</th>
               <th><i class="ri-shopping-bag-line"></i> Product</th>
               <th><i class="ri-tag-line"></i> Category</th>
-              <th><i class="ri-money-dollar-circle-line"></i> Price (ZWL)</th>
+              <th><i class="ri-money-dollar-circle-line"></i> Price (US$)</th>
               <th><i class="ri-archive-line"></i> Stock</th>
               <th><i class="ri-ruler-line"></i> Unit</th>
               <th class="text-center"><i class="ri-tools-line"></i> Actions</th>

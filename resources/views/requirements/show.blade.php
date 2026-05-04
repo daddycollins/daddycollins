@@ -58,7 +58,7 @@
                     <strong>Avg. Rating:</strong> {{ $avgRating }}
                   </div>
                 </td>
-                <td>{{ $bid->amount }}</td>
+                <td>${{ $bid->amount }}</td>
                 <td>{{ $bid->proposal }}</td>
                 <td>{{ ucfirst($bid->status) }}</td>
                 <td>

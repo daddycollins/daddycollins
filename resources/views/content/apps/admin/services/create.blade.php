@@ -87,7 +87,7 @@
 
               <div class="row mb-4">
                 <div class="col-md-6">
-                  <label class="form-label fw-bold">Price Estimate (ZWL) <span class="text-danger">*</span></label>
+                  <label class="form-label fw-bold">Price Estimate (US$) <span class="text-danger">*</span></label>
                   <input type="number" name="price_estimate"
                     class="form-control @error('price_estimate') is-invalid @enderror" required step="0.01"
                     min="0" placeholder="0.00" value="{{ old('price_estimate') }}">
@@ -116,14 +116,7 @@
 
               <div class="row mb-4">
                 <div class="col-md-6">
-                  <label class="form-label fw-bold">Service Image</label>
-                  <input type="file" name="image_path" class="form-control @error('image_path') is-invalid @enderror"
-                    accept="image/*">
-                  <small class="text-muted">Max 2MB (JPEG, PNG, GIF)</small>
-                  @error('image_path')
-                    <span class="invalid-feedback d-block">{{ $message }}</span>
-                  @enderror
-                </div>
+                  
               </div>
 
               <div class="row mt-6">
