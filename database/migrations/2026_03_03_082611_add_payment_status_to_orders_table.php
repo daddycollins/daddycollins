@@ -12,7 +12,9 @@ return new class extends Migration
 public function up()
 {
     Schema::table('orders', function (Blueprint $table) {
-        $table->string('payment_status')->default('unpaid');
+        if (!Schema::hasColumn('orders', 'payment_status')) {
+            $table->string('payment_status')->default('unpaid');
+        }
     });
 }
 
