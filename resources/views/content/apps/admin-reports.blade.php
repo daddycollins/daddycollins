@@ -173,7 +173,7 @@
           <div class="card border-0 shadow-sm">
             <div class="card-body">
               <p class="text-muted small mb-1">Total Revenue</p>
-              <h3 class="mb-2">ZWL {{ number_format($totalRevenue, 0) }}</h3>
+              <h3 class="mb-2">US$ {{ number_format($totalRevenue, 0) }}</h3>
               <p class="mb-0"><span class="badge bg-label-success"><i
                     class="icon-base ri ri-arrow-up-s-line me-1"></i>All Time</span></p>
             </div>
@@ -183,7 +183,7 @@
           <div class="card border-0 shadow-sm">
             <div class="card-body">
               <p class="text-muted small mb-1">Monthly Revenue</p>
-              <h3 class="mb-2">ZWL {{ number_format($monthlyRevenue, 0) }}</h3>
+              <h3 class="mb-2">US$ {{ number_format($monthlyRevenue, 0) }}</h3>
               <p class="mb-0"><span class="badge bg-label-info">Current Month</span></p>
             </div>
           </div>
@@ -192,7 +192,7 @@
           <div class="card border-0 shadow-sm">
             <div class="card-body">
               <p class="text-muted small mb-1">Completed Payments</p>
-              <h3 class="mb-2">ZWL {{ number_format($completedPayments, 0) }}</h3>
+              <h3 class="mb-2">US$ {{ number_format($completedPayments, 0) }}</h3>
               <p class="mb-0"><span class="badge bg-label-success">Paid</span></p>
             </div>
           </div>
@@ -201,7 +201,7 @@
           <div class="card border-0 shadow-sm">
             <div class="card-body">
               <p class="text-muted small mb-1">Pending Payments</p>
-              <h3 class="mb-2">ZWL {{ number_format($pendingPayments, 0) }}</h3>
+              <h3 class="mb-2">US$ {{ number_format($pendingPayments, 0) }}</h3>
               <p class="mb-0"><span class="badge bg-label-warning">Awaiting</span></p>
             </div>
           </div>
@@ -251,7 +251,7 @@
                         </span>
                         {{ round($artisan->reviews_avg_rating ?? 0, 2) }}
                       </td>
-                      <td class="py-3"><strong>ZWL
+                      <td class="py-3"><strong>US$
                           {{ number_format($artisan->orders_sum_total_amount ?? 0, 0) }}</strong></td>
                     </tr>
                   @empty
@@ -283,7 +283,7 @@
                     @forelse($revenueByCategory as $category)
                       <tr>
                         <td class="py-3"><strong>{{ $category->category }}</strong></td>
-                        <td class="py-3">ZWL {{ number_format($category->orders_sum_total_amount ?? 0, 0) }}</td>
+                        <td class="py-3">US$ {{ number_format($category->orders_sum_total_amount ?? 0, 0) }}</td>
                       </tr>
                     @empty
                       <tr>
@@ -320,7 +320,7 @@
                   <tbody>
                     <tr>
                       <td class="py-3"><strong>Average Order Value</strong></td>
-                      <td class="py-3">ZWL {{ number_format($avgOrderValue, 0) }}</td>
+                      <td class="py-3">US$ {{ number_format($avgOrderValue, 0) }}</td>
                     </tr>
                     <tr>
                       <td class="py-3"><strong>Total Orders</strong></td>
@@ -655,7 +655,7 @@
                     </tr>
                     <tr>
                       <td class="py-3"><strong>Avg Order Value</strong></td>
-                      <td class="py-3">ZWL {{ number_format($avgOrderValue, 0) }}</td>
+                      <td class="py-3">US$ {{ number_format($avgOrderValue, 0) }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -940,7 +940,7 @@
         return 'N/A';
       }
       if (header.includes('revenue') || header.includes('amount') || header.includes('total')) {
-        return 'ZWL ' + Number(value).toLocaleString('en-US', {
+        return 'US$ ' + Number(value).toLocaleString('en-US', {
           maximumFractionDigits: 0
         });
       } else if (header.includes('rating')) {
@@ -1141,7 +1141,7 @@
               title: 'Reports Generated!',
               html: `<div class="text-start">
     <p><strong>Date Range:</strong> ${data.data.startDate} to ${data.data.endDate}</p>
-    <p><strong>Total Revenue:</strong> ZWL ${Number(data.data.totalRevenue).toLocaleString()}</p>
+    <p><strong>Total Revenue:</strong>US$  ${Number(data.data.totalRevenue).toLocaleString()}</p>
     <p><strong>Total Orders:</strong> ${data.data.totalOrders}</p>
     <p><strong>Completed Orders:</strong> ${data.data.completedOrders}</p>
     <p><strong>Active Users:</strong> ${data.data.activeUsers}/${data.data.totalUsers}</p>

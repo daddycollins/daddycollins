@@ -162,12 +162,6 @@
       ]
     },
     {
-<<<<<<< HEAD
-      "name": "My Services",
-      "icon": "menu-icon icon-base ri ri-service-line",
-      "slug": "artisan-my-services",
-      "url": "artisan/my-services",
-=======
       "name": "Financial",
       "icon": "menu-icon icon-base ri ri-bank-card-line",
       "slug": "artisan-financial",
@@ -179,17 +173,12 @@
           "url": "artisan/view/payments"
         }
       ],
->>>>>>> 5f0b906535cdabb51075ad95429d59bcf757ef2f
       "roles": [
         "artisan"
       ]
     },
     {
-<<<<<<< HEAD
-      "name": "Reviews",
-=======
       "name": "Reviews & Ratings",
->>>>>>> 5f0b906535cdabb51075ad95429d59bcf757ef2f
       "icon": "menu-icon icon-base ri ri-star-line",
       "slug": "artisan-my-reviews",
       "url": "artisan/reviews",

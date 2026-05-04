@@ -9,7 +9,7 @@
     </div>
     <div class="mb-3">
       <strong>Category:</strong> {{ $requirement->category ?? '-' }}<br>
-      <strong>Budget:</strong> {{ $requirement->budget ?? '-' }}<br>
+      <strong>Budget:US$</strong> {{ $requirement->budget ?? '-' }}<br>
       <strong>Deadline:</strong>
       @if ($requirement->deadline)
         {{ \Carbon\Carbon::parse($requirement->deadline)->format('Y-m-d') }}
@@ -28,7 +28,7 @@
             <tr>
               <th>Artisan</th>
               <th>Bidder Info</th>
-              <th>Amount</th>
+              <th>(US$)Amount</th>
               <th>Proposal</th>
               <th>Status</th>
               <th>Actions</th>

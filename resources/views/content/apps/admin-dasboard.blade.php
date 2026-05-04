@@ -203,7 +203,7 @@
                       <td class="py-3 px-4">{{ $order->client->name ?? 'N/A' }}</td>
                       <td class="py-3 px-4">{{ $order->artisan->user->name ?? 'N/A' }}</td>
                       <td class="py-3 px-4">{{ $order->service_name ?? 'Service' }}</td>
-                      <td class="py-3 px-4"><strong>ZWL {{ number_format($order->total_amount, 2) }}</strong></td>
+                      <td class="py-3 px-4"><strong>US$ {{ number_format($order->total_amount, 2) }}</strong></td>
                       <td class="py-3 px-4">
                         <span
                           class="badge bg-label-{{ $order->status === 'completed' ? 'success' : ($order->status === 'pending' ? 'warning' : 'danger') }}">
@@ -469,7 +469,7 @@
             }
           },
           series: [{
-            name: 'Revenue (ZWL)',
+            name: 'Revenue (US$)',
             data: {!! json_encode($revenueData) !!}
           }],
           xaxis: {

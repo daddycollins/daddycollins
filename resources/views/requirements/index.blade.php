@@ -9,7 +9,7 @@
         <tr>
           <th>Title</th>
           <th>Category</th>
-          <th>Budget</th>
+          <th>(US$)Budget</th>
           <th>Status</th>
           <th>Deadline</th>
           <th>Actions</th>
@@ -20,7 +20,7 @@
           <tr>
             <td>{{ $requirement->title }}</td>
             <td>{{ $requirement->category }}</td>
-            <td>{{ $requirement->budget }}</td>
+            <td>${{ $requirement->budget }}</td>
             <td>{{ ucfirst($requirement->status) }}</td>
             <td>
               @if ($requirement->deadline)

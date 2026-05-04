@@ -40,7 +40,7 @@
             <div class="d-flex justify-content-between align-items-center">
               <div>
                 <p class="text-muted small mb-1">Pending Payouts</p>
-                <h4 class="text-warning">ZWL {{ number_format($stats['total_pending'] ?? 0, 2) }}</h4>
+                <h4 class="text-warning">US$ {{ number_format($stats['total_pending'] ?? 0, 2) }}</h4>
               </div>
               <i class="ri-time-line" style="font-size: 2rem; color: #ffc107;"></i>
             </div>
@@ -53,7 +53,7 @@
             <div class="d-flex justify-content-between align-items-center">
               <div>
                 <p class="text-muted small mb-1">Processed Payouts</p>
-                <h4 class="text-success">ZWL {{ number_format($stats['total_processed'] ?? 0, 2) }}</h4>
+                <h4 class="text-success">US$ {{ number_format($stats['total_processed'] ?? 0, 2) }}</h4>
               </div>
               <i class="ri-check-double-line" style="font-size: 2rem; color: #28a745;"></i>
             </div>
@@ -66,7 +66,7 @@
             <div class="d-flex justify-content-between align-items-center">
               <div>
                 <p class="text-muted small mb-1">Failed Payouts</p>
-                <h4 class="text-danger">ZWL {{ number_format($stats['total_failed'] ?? 0, 2) }}</h4>
+                <h4 class="text-danger">US$ {{ number_format($stats['total_failed'] ?? 0, 2) }}</h4>
               </div>
               <i class="ri-close-circle-line" style="font-size: 2rem; color: #dc3545;"></i>
             </div>
@@ -120,7 +120,7 @@
             <tr>
               <th><i class="ri-hashtag-line"></i> ID</th>
               <th><i class="ri-user-line"></i> Artisan</th>
-              <th><i class="ri-money-dollar-circle-line"></i> Amount (ZWL)</th>
+              <th><i class="ri-money-dollar-circle-line"></i> Amount (US$)</th>
               <th><i class="ri-bank-card-line"></i> Payment Method</th>
               <th><i class="ri-flag-line"></i> Status</th>
               <th><i class="ri-calendar-line"></i> Created</th>
@@ -140,7 +140,7 @@
                     <span>{{ $payout->artisan->user->name ?? 'N/A' }}</span>
                   </div>
                 </td>
-                <td><strong class="text-success">ZWL {{ number_format($payout->amount, 2) }}</strong></td>
+                <td><strong class="text-success">US$ {{ number_format($payout->amount, 2) }}</strong></td>
                 <td>
                   <span class="badge bg-label-secondary">
                     @if ($payout->payment_method === 'bank_transfer')

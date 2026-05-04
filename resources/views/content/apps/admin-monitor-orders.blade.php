@@ -105,7 +105,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Revenue (Today)</p>
-              <h3 class="mb-2">ZWL {{ number_format($todayRevenue, 2) }}</h3>
+              <h3 class="mb-2">US$ {{ number_format($todayRevenue, 2) }}</h3>
               <p class="mb-0"><span class="badge bg-label-success">+12.5%</span></p>
             </div>
             <div class="avatar avatar-lg bg-label-success">
@@ -209,7 +209,7 @@
                   {{ ucfirst($order->order_type) }}
                 </span>
               </td>
-              <td class="py-3"><strong>ZWL {{ number_format($order->total_amount ?? $order->amount, 2) }}</strong></td>
+              <td class="py-3"><strong>US$ {{ number_format($order->total_amount ?? $order->amount, 2) }}</strong></td>
               <td class="py-3">
                 <span
                   class="badge {{ $order->status === 'completed' ? 'bg-label-success' : ($order->status === 'processing' ? 'bg-label-info' : ($order->status === 'pending' ? 'bg-label-warning' : ($order->status === 'held' ? 'bg-label-secondary' : ($order->status === 'paid' ? 'bg-label-success' : 'bg-label-danger')))) }}">
@@ -395,15 +395,15 @@
                             <td>{{ $item->artisanService?->service_name ?? 'Item #' . $item->item_id }}</td>
                             <td><span class="badge bg-label-secondary">{{ ucfirst($item->item_type) }}</span></td>
                             <td class="text-center">{{ $item->quantity }}</td>
-                            <td class="text-end">ZWL {{ number_format($item->price, 2) }}</td>
-                            <td class="text-end">ZWL {{ number_format($item->price * $item->quantity, 2) }}</td>
+                            <td class="text-end">US$ {{ number_format($item->price, 2) }}</td>
+                            <td class="text-end">US$ {{ number_format($item->price * $item->quantity, 2) }}</td>
                           </tr>
                         @endforeach
                       </tbody>
                       <tfoot class="border-top">
                         <tr>
                           <td colspan="4" class="text-end fw-semibold">Total</td>
-                          <td class="text-end fw-bold">ZWL {{ number_format($order->total_amount ?? $order->amount, 2) }}</td>
+                          <td class="text-end fw-bold">US$ {{ number_format($order->total_amount ?? $order->amount, 2) }}</td>
                         </tr>
                       </tfoot>
                     </table>
@@ -422,7 +422,7 @@
                     </h6>
                     <div class="d-flex justify-content-between mb-2">
                       <span class="text-muted">Amount</span>
-                      <span class="fw-semibold">ZWL {{ number_format($order->total_amount ?? $order->amount, 2) }}</span>
+                      <span class="fw-semibold">US$ {{ number_format($order->total_amount ?? $order->amount, 2) }}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                       <span class="text-muted">Method</span>

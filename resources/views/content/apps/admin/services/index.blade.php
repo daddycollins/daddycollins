@@ -94,7 +94,7 @@
                 </td>
                 <td><strong>{{ $service->service_name }}</strong></td>
                 <td><span class="badge bg-label-secondary">{{ $service->category }}</span></td>
-                <td><strong class="text-success">ZWL {{ number_format($service->price_estimate, 2) }}</strong></td>
+                <td><strong class="text-success">US$ {{ number_format($service->price_estimate, 2) }}</strong></td>
                 <td>
                   @if ($service->rate_type)
                     <span class="badge bg-label-info">{{ ucfirst(str_replace('_', ' ', $service->rate_type)) }}</span>
