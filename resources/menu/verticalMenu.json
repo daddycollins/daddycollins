@@ -112,55 +112,87 @@
       ]
     },
     {
-      "name": "Profile",
-      "icon": "menu-icon icon-base ri ri-user-line",
-      "slug": "artisan-profile",
-      "url": "artisan/profile",
+      "name": "Account",
+      "icon": "menu-icon icon-base ri ri-account-box-line",
+      "slug": "artisan-account",
+      "submenu": [
+        {
+          "name": "Profile",
+          "icon": "menu-icon icon-base ri ri-user-line",
+          "slug": "artisan-profile",
+          "url": "artisan/profile"
+        },
+        {
+          "name": "Verification Status",
+          "icon": "menu-icon icon-base ri ri-checkbox-circle-line",
+          "slug": "artisan-verification",
+          "url": "artisan/verification"
+        }
+      ],
       "roles": [
         "artisan"
       ]
     },
     {
-      "name": "My Orders",
-      "icon": "menu-icon icon-base ri ri-shopping-cart-line",
-      "slug": "artisan-my-orders",
-      "url": "artisan/my-orders",
+      "name": "Business",
+      "icon": "menu-icon icon-base ri ri-briefcase-line",
+      "slug": "artisan-business",
+      "submenu": [
+        {
+          "name": "My Orders",
+          "icon": "menu-icon icon-base ri ri-shopping-cart-line",
+          "slug": "artisan-my-orders",
+          "url": "artisan/my-orders"
+        },
+        {
+          "name": "My Products",
+          "icon": "menu-icon icon-base ri ri-product-hunt-line",
+          "slug": "artisan-my-products",
+          "url": "artisan/my-products"
+        },
+        {
+          "name": "My Services",
+          "icon": "menu-icon icon-base ri ri-service-line",
+          "slug": "artisan-my-services",
+          "url": "artisan/my-services"
+        }
+      ],
       "roles": [
         "artisan"
       ]
     },
     {
+<<<<<<< HEAD
       "name": "My Services",
       "icon": "menu-icon icon-base ri ri-service-line",
       "slug": "artisan-my-services",
       "url": "artisan/my-services",
+=======
+      "name": "Financial",
+      "icon": "menu-icon icon-base ri ri-bank-card-line",
+      "slug": "artisan-financial",
+      "submenu": [
+        {
+          "name": "Payment History",
+          "icon": "menu-icon icon-base ri ri-history-line",
+          "slug": "artisan-view-payments",
+          "url": "artisan/view/payments"
+        }
+      ],
+>>>>>>> 5f0b906535cdabb51075ad95429d59bcf757ef2f
       "roles": [
         "artisan"
       ]
     },
     {
+<<<<<<< HEAD
       "name": "Reviews",
+=======
+      "name": "Reviews & Ratings",
+>>>>>>> 5f0b906535cdabb51075ad95429d59bcf757ef2f
       "icon": "menu-icon icon-base ri ri-star-line",
       "slug": "artisan-my-reviews",
       "url": "artisan/reviews",
-      "roles": [
-        "artisan"
-      ]
-    },
-    {
-      "name": "Payments",
-      "icon": "menu-icon icon-base ri ri-bank-card-line",
-      "slug": "artisan-view-payments",
-      "url": "artisan/view/payments",
-      "roles": [
-        "artisan"
-      ]
-    },
-    {
-      "name": "Verification",
-      "icon": "menu-icon icon-base ri ri-checkbox-circle-line",
-      "slug": "artisan-verification",
-      "url": "artisan/verification",
       "roles": [
         "artisan"
       ]
@@ -205,46 +237,77 @@
       ]
     },
     {
-      "name": "My Orders",
+      "name": "Shopping",
       "icon": "menu-icon icon-base ri ri-shopping-bag-line",
-      "slug": "user-my-orders",
-      "url": "user/orders",
+      "slug": "user-shopping",
+      "submenu": [
+        {
+          "name": "My Orders",
+          "icon": "menu-icon icon-base ri ri-shopping-bag-line",
+          "slug": "user-my-orders",
+          "url": "user/orders"
+        },
+        {
+          "name": "My Cart",
+          "icon": "menu-icon icon-base ri ri-shopping-cart-line",
+          "slug": "cart",
+          "url": "cart"
+        },
+        {
+          "name": "Browse Artisans",
+          "icon": "menu-icon icon-base ri ri-user-star-line",
+          "slug": "user-browse-artisans",
+          "url": "user/browse"
+        }
+      ],
       "roles": [
         "client"
       ]
     },
     {
-      "name": "My Cart",
-      "icon": "menu-icon icon-base ri ri-shopping-cart-line",
-      "slug": "cart",
-      "url": "cart",
+      "name": "Interactions",
+      "icon": "menu-icon icon-base ri ri-chat-3-line",
+      "slug": "user-interactions",
+      "submenu": [
+        {
+          "name": "My Reviews",
+          "icon": "menu-icon icon-base ri ri-star-line",
+          "slug": "user-create-review",
+          "url": "user/create/review"
+        }
+      ],
       "roles": [
         "client"
       ]
     },
     {
-      "name": "Browse Artisans",
-      "icon": "menu-icon icon-base ri ri-user-star-line",
-      "slug": "user-browse-artisans",
-      "url": "user/browse",
+      "name": "Account",
+      "icon": "menu-icon icon-base ri ri-account-box-line",
+      "slug": "user-account",
+      "submenu": [
+        {
+          "name": "Profile",
+          "icon": "menu-icon icon-base ri ri-user-line",
+          "slug": "user-profile",
+          "url": "user/profile"
+        }
+      ],
       "roles": [
         "client"
       ]
     },
     {
-      "name": "My Reviews",
-      "icon": "menu-icon icon-base ri ri-star-line",
-      "slug": "user-create-review",
-      "url": "user/create/review",
-      "roles": [
-        "client"
-      ]
-    },
-    {
-      "name": "Profile",
-      "icon": "menu-icon icon-base ri ri-user-line",
-      "slug": "user-profile",
-      "url": "user/profile",
+      "name": "Financial",
+      "icon": "menu-icon icon-base ri ri-wallet-line",
+      "slug": "user-financial",
+      "submenu": [
+        {
+          "name": "Payment History",
+          "icon": "menu-icon icon-base ri ri-history-line",
+          "slug": "user-my-orders",
+          "url": "user/orders"
+        }
+      ],
       "roles": [
         "client"
       ]

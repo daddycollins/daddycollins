@@ -96,8 +96,16 @@
 
             <!-- Manual Actions -->
             <div class="d-grid gap-2" id="manual-actions">
-              <button type="button" class="btn btn-outline-primary" onclick="checkStatus()">
-                <i class="ri-refresh-line me-2"></i>Check Status Again
+              <button type="button" class="btn btn-primary btn-lg" id="check-btn" onclick="startStatusCheck()">
+                <i class="ri-refresh-line me-2"></i>Check Payment Status
+              </button>
+              <button type="button" class="btn btn-outline-secondary" id="proceed-btn" style="display: none;"
+                onclick="proceedToSuccess()">
+                <i class="ri-arrow-right-line me-2"></i>View Order Details
+              </button>
+              <button type="button" class="btn btn-outline-danger" id="retry-btn" style="display: none;"
+                onclick="location.href='javascript:history.back()'">
+                <i class="ri-arrow-left-line me-2"></i>Go Back
               </button>
             </div>
           </div>
@@ -107,79 +115,94 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const orderId = {{ $order->id }};
-      const statusSpinner = document.getElementById('status-spinner');
-      const statusSuccess = document.getElementById('status-success');
-      const statusError = document.getElementById('status-error');
-      const redirectTimer = document.getElementById('redirect-timer');
-      const timerCount = document.getElementById('timer-count');
-      const statusBadge = document.getElementById('status-badge');
-      const manualActions = document.getElementById('manual-actions');
-      let pollCount = 0;
-      const maxPolls = 20; // Stop after 60 seconds (20 polls × 3 seconds)
+    let isChecking = false;
+    const orderId = {{ $order->id }};
+    const statusSpinner = document.getElementById('status-spinner');
+    const statusSuccess = document.getElementById('status-success');
+    const statusError = document.getElementById('status-error');
+    const redirectTimer = document.getElementById('redirect-timer');
+    const timerCount = document.getElementById('timer-count');
+    const statusBadge = document.getElementById('status-badge');
+    const manualActions = document.getElementById('manual-actions');
+    const checkBtn = document.getElementById('check-btn');
+    const proceedBtn = document.getElementById('proceed-btn');
+    const retryBtn = document.getElementById('retry-btn');
 
-      function checkStatus() {
-        fetch(`/payment/api/status/{{ $order->id }}`)
-          .then(response => response.json())
-          .then(data => {
-            pollCount++;
+    function startStatusCheck() {
+      if (isChecking) return;
+      isChecking = true;
+      checkBtn.disabled = true;
+      checkBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Checking...';
+      statusSpinner.style.display = 'block';
+      statusSuccess.style.display = 'none';
+      statusError.style.display = 'none';
+      proceedBtn.style.display = 'none';
+      retryBtn.style.display = 'none';
 
-            if (data.status === 'paid' || data.paid) {
-              statusSpinner.style.display = 'none';
-              statusSuccess.style.display = 'block';
-              statusBadge.textContent = 'PAID';
-              statusBadge.className = 'badge bg-success';
-              redirectTimer.style.display = 'block';
-              manualActions.style.display = 'none';
-
-              let count = 5;
-              const interval = setInterval(() => {
-                count--;
-                timerCount.textContent = count;
-                if (count === 0) {
-                  clearInterval(interval);
-                  window.location.href = data.redirect || `/payment/{{ $order->id }}/success`;
-                }
-              }, 1000);
-            } else if (data.status === 'failed' || !data.success) {
-              statusSpinner.style.display = 'none';
-              statusError.style.display = 'block';
-              statusBadge.textContent = 'FAILED';
-              statusBadge.className = 'badge bg-danger';
-              document.getElementById('error-message').textContent = data.message ||
-                'Payment could not be processed. Please try again.';
-              manualActions.innerHTML =
-                '<a href="javascript:history.back()" class="btn btn-outline-danger"><i class="ri-arrow-left-line me-2"></i>Go Back</a>';
-            } else if (pollCount < maxPolls) {
-              // Continue polling
-              setTimeout(checkStatus, 3000);
-            } else {
-              // Timeout - stop polling
-              statusSpinner.style.display = 'none';
-              statusError.style.display = 'block';
-              statusBadge.textContent = 'TIMEOUT';
-              statusBadge.className = 'badge bg-warning';
-              document.getElementById('error-message').textContent =
-                'Payment verification timed out. Please check your PayNow account.';
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            if (pollCount < maxPolls) {
-              setTimeout(checkStatus, 3000);
-            } else {
-              statusSpinner.style.display = 'none';
-              statusError.style.display = 'block';
-              document.getElementById('error-message').textContent =
-                'Network error. Please try again or contact support.';
-            }
-          });
-      }
-
-      // Check immediately
       checkStatus();
-    });
+    }
+
+    function proceedToSuccess() {
+      window.location.href = `/payment/{{ $order->id }}/success`;
+    }
+
+    function checkStatus() {
+      fetch(`/payment/api/status/{{ $order->id }}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'paid' || data.paid) {
+            // Payment successful - stop polling and show success
+            statusSpinner.style.display = 'none';
+            statusSuccess.style.display = 'block';
+            statusBadge.textContent = 'PAID';
+            statusBadge.className = 'badge bg-success';
+            redirectTimer.style.display = 'none';
+
+            // Show proceed button instead of check button
+            checkBtn.style.display = 'none';
+            proceedBtn.style.display = 'block';
+
+            isChecking = false;
+          } else if (data.status === 'failed' || !data.success) {
+            // Payment failed - show error and retry button
+            statusSpinner.style.display = 'none';
+            statusError.style.display = 'block';
+            statusBadge.textContent = 'FAILED';
+            statusBadge.className = 'badge bg-danger';
+            document.getElementById('error-message').textContent = data.message ||
+              'Payment could not be processed. Please try again.';
+
+            checkBtn.style.display = 'none';
+            retryBtn.style.display = 'block';
+
+            isChecking = false;
+          } else {
+            // Still pending - offer to check again manually
+            statusSpinner.style.display = 'none';
+            statusBadge.textContent = 'PENDING';
+            statusBadge.className = 'badge bg-warning';
+
+            checkBtn.disabled = false;
+            checkBtn.innerHTML = '<i class="ri-refresh-line me-2"></i>Check Again';
+
+            isChecking = false;
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          statusSpinner.style.display = 'none';
+          statusError.style.display = 'block';
+          document.getElementById('error-message').textContent =
+            'Network error. Please try again or contact support.';
+
+          checkBtn.disabled = false;
+          checkBtn.innerHTML = '<i class="ri-refresh-line me-2"></i>Check Again';
+
+          isChecking = false;
+        });
+    }
+
+    // Don't automatically check status - wait for user to click button
   </script>
 
   <style>

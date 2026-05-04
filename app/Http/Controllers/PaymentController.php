@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\ArtisanService;
 use App\Models\ArtisanGood;
-use App\Models\ArtisanProfile;
-use App\Services\PaynowService;
-use App\Services\OrderService;
 use Illuminate\Http\Request;
+use App\Models\ArtisanProfile;
+use App\Models\ArtisanService;
+use App\Services\OrderService;
+use App\Services\PaynowService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
@@ -173,28 +175,13 @@ class PaymentController extends Controller
         $item->increment('stock_quantity', $validated['quantity']);
       }
 
-      \Log::error('Payment checkout error: ' . $e->getMessage(), [
+      Log::error('Payment checkout error: ' . $e->getMessage(), [
         'user_id' => auth()->id(),
         'item_type' => $validated['item_type'] ?? null,
         'item_id' => $validated['item_id'] ?? null,
       ]);
 
       return redirect()->back()->withInput()->with('error', 'Checkout error: ' . $e->getMessage());
-    }
-
-      DB::commit();
-
-      // Redirect to payment status page
-      return redirect()->route('payment.status', $order->id);
-    } catch (\Exception $e) {
-      DB::rollBack();
-
-      // Restore stock if product was decremented
-      if (isset($item) && $validated['item_type'] === 'product') {
-        $item->increment('stock_quantity', $validated['quantity']);
-      }
-
-      return redirect()->back()->with('error', $e->getMessage());
     }
   }
 
@@ -261,5 +248,52 @@ class PaymentController extends Controller
       'order' => $order->load('items', 'artisan.user', 'client'),
       'items' => $order->items,
     ]);
+  }
+
+  /**
+   * Refresh payment status for an order (API endpoint)
+   */
+  public function refreshPaymentStatus(Order $order)
+  {
+    // Check if user is authorized to view this order
+    if (Auth::id() !== $order->client_id && Auth::user()->role !== 'admin') {
+      return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+    }
+
+    try {
+      // Check payment status from Paynow
+      $paynowStatus = $this->paynowService->checkPaymentStatus($order);
+
+      // If payment is confirmed as paid but order still shows unpaid, update it
+      if ($paynowStatus['paid'] && $order->payment_status !== 'paid') {
+        $order->update([
+          'payment_status' => 'paid',
+          'status' => 'paid',
+        ]);
+
+        return response()->json([
+          'success' => true,
+          'message' => 'Payment confirmed',
+          'status' => 'paid',
+          'updated' => true,
+        ]);
+      }
+
+      // Return current status if already paid or still pending/failed
+      return response()->json([
+        'success' => true,
+        'message' => 'Status checked',
+        'status' => $order->payment_status,
+        'paynowStatus' => $paynowStatus['status'],
+        'updated' => false,
+      ]);
+    } catch (\Exception $e) {
+      Log::error('Error refreshing payment status: ' . $e->getMessage());
+      return response()->json([
+        'success' => false,
+        'message' => 'Failed to check payment status',
+        'error' => $e->getMessage(),
+      ], 500);
+    }
   }
 }

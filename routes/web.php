@@ -574,6 +574,7 @@ Route::prefix('payment')->name('payment.')->group(function () {
     Route::post('checkout', [App\Http\Controllers\PaymentController::class, 'processCheckout'])->name('process');
     Route::get('{order}/status', [App\Http\Controllers\PaymentController::class, 'paymentStatus'])->name('status');
     Route::get('api/status/{order}', [App\Http\Controllers\PaymentController::class, 'checkPaymentStatus'])->name('check-status');
+    Route::post('{order}/refresh-status', [App\Http\Controllers\PaymentController::class, 'refreshPaymentStatus'])->name('refresh-status');
     Route::get('{order}/success', [App\Http\Controllers\PaymentController::class, 'paymentSuccess'])->name('success');
   });
 });
