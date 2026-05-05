@@ -89,7 +89,7 @@
       ]
     },
     {
-      "name": "Product Categories",
+      "name": "Service Categories",
       "icon": "menu-icon icon-base ri ri-folder-2-line",
       "slug": "admin.product-categories",
       "url": "admin/product-categories",
@@ -98,7 +98,7 @@
       ]
     },
     {
-      "name": "Product Units",
+      "name": "Measurement Units",
       "icon": "menu-icon icon-base ri ri-ruler-line",
       "slug": "admin.product-units",
       "url": "admin/product-units",
