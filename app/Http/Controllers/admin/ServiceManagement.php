@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Models\ArtisanService;
 use App\Models\ArtisanProfile;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -34,7 +35,7 @@ class ServiceManagement extends Controller
 
     $services = $query->paginate(15);
     $artisans = ArtisanProfile::with('user')->get();
-    $categories = ArtisanService::select('category')->distinct()->pluck('category');
+    $categories = ProductCategory::where('is_active', true)->get();
 
     return view('content.apps.admin.services.index', compact('services', 'artisans', 'categories'));
   }
@@ -43,7 +44,8 @@ class ServiceManagement extends Controller
   public function create()
   {
     $artisans = ArtisanProfile::with('user')->get();
-    return view('content.apps.admin.services.create', compact('artisans'));
+    $categories = ProductCategory::where('is_active', true)->get();
+    return view('content.apps.admin.services.create', compact('artisans', 'categories'));
   }
 
   // Store service
@@ -75,7 +77,8 @@ class ServiceManagement extends Controller
   public function edit(ArtisanService $service)
   {
     $artisans = ArtisanProfile::with('user')->get();
-    return view('content.apps.admin.services.edit', compact('service', 'artisans'));
+    $categories = ProductCategory::where('is_active', true)->get();
+    return view('content.apps.admin.services.edit', compact('service', 'artisans', 'categories'));
   }
 
   // Update service

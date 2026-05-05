@@ -23,7 +23,7 @@
       </div>
     </div>
 
-    @if ($message = Session::get('success'))
+    @if ($message = session('success'))
       <div class="alert alert-success alert-dismissible fade show" role="alert">
         <i class="ri-check-line me-2"></i>{{ $message }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -76,7 +76,7 @@
                   <span class="badge bg-light text-dark">{{ $unit->abbreviation }}</span>
                 </td>
                 <td>
-                  <span class="text-muted">{{ Str::limit($unit->description, 50) }}</span>
+                  <span class="text-muted">{{ Illuminate\Support\Str::limit($unit->description, 50) }}</span>
                 </td>
                 <td>
                   @if ($unit->is_active)
@@ -88,8 +88,9 @@
                 <td>{{ $unit->created_at->format('M d, Y') }}</td>
                 <td>
                   <div class="dropdown">
-                    <button class="btn btn-icon btn-text-secondary rounded-pill" type="button" data-bs-toggle="dropdown">
-                      <i class="ri-more-2-line"></i>
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                      data-bs-toggle="dropdown">
+                      <i class="ri-settings-line me-1"></i>Actions
                     </button>
                     <div class="dropdown-menu dropdown-menu-end">
                       <a class="dropdown-item" href="{{ route('admin.product-units.edit', $unit->id) }}">

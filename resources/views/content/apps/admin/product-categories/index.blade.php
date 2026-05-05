@@ -23,7 +23,7 @@
       </div>
     </div>
 
-    @if ($message = Session::get('success'))
+    @if ($message = session('success'))
       <div class="alert alert-success alert-dismissible fade show" role="alert">
         <i class="ri-check-line me-2"></i>{{ $message }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -72,7 +72,7 @@
                 <td>{{ $loop->iteration }}</td>
                 <td><strong>{{ $category->name }}</strong></td>
                 <td>
-                  <span class="text-muted">{{ Str::limit($category->description, 50) }}</span>
+                  <span class="text-muted">{{ Illuminate\Support\Str::limit($category->description, 50) }}</span>
                 </td>
                 <td>
                   @if ($category->is_active)
@@ -84,8 +84,9 @@
                 <td>{{ $category->created_at->format('M d, Y') }}</td>
                 <td>
                   <div class="dropdown">
-                    <button class="btn btn-icon btn-text-secondary rounded-pill" type="button" data-bs-toggle="dropdown">
-                      <i class="ri-more-2-line"></i>
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                      data-bs-toggle="dropdown">
+                      <i class="ri-settings-line me-1"></i>Actions
                     </button>
                     <div class="dropdown-menu dropdown-menu-end">
                       <a class="dropdown-item" href="{{ route('admin.product-categories.edit', $category->id) }}">

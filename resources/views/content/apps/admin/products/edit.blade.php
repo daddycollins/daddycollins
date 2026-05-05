@@ -52,8 +52,14 @@
               <div class="row mb-4">
                 <div class="col-md-6">
                   <label class="form-label fw-bold">Category <span class="text-danger">*</span></label>
-                  <input type="text" name="category" class="form-control @error('category') is-invalid @enderror"
-                    required placeholder="e.g., Electronics, Furniture" value="{{ old('category', $product->category) }}">
+                  <select name="category" class="form-select select2 @error('category') is-invalid @enderror" required>
+                    <option value="">Select Category</option>
+                    @foreach ($categories as $category)
+                      <option value="{{ $category->name }}" @if ($product->category == $category->name) selected @endif>
+                        {{ $category->name }}
+                      </option>
+                    @endforeach
+                  </select>
                   @error('category')
                     <span class="invalid-feedback">{{ $message }}</span>
                   @enderror
@@ -61,9 +67,8 @@
 
                 <div class="col-md-6">
                   <label class="form-label fw-bold">Price (ZWL) <span class="text-danger">*</span></label>
-                  <input type="number" name="price" class="form-control @error('price') is-invalid @enderror"
-                    required step="0.01" min="0.01" placeholder="0.00"
-                    value="{{ old('price', $product->price) }}">
+                  <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" required
+                    step="0.01" min="0.01" placeholder="0.00" value="{{ old('price', $product->price) }}">
                   @error('price')
                     <span class="invalid-feedback">{{ $message }}</span>
                   @enderror
@@ -159,4 +164,16 @@
       </div>
     </div>
   </div>
+
+@section('page-script')
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      $('.select2').select2({
+        theme: 'bootstrap-5',
+        width: '100%'
+      });
+    });
+  </script>
 @endsection
