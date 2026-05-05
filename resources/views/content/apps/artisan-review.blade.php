@@ -603,7 +603,7 @@
 
             <!-- Select Order (for pending reviews) -->
             <div class="mb-4" id="selectOrderDiv">
-              <label class="form-label">Select Completed Order to Review</label>
+              <label class="form-label">Select Order to Review</label>
               <select class="form-select" name="order_id" id="orderSelect" required>
                 <option value="">Choose an order...</option>
                 @forelse ($pendingReviewOrders as $order)
@@ -622,11 +622,12 @@
                     {{ $artisanName }} - {{ $serviceName }} ({{ $order->created_at->format('M d, Y') }})
                   </option>
                 @empty
-                  <option value="" disabled>No completed orders available</option>
+                  <option value="" disabled>No orders available for review</option>
                 @endforelse
               </select>
               @if ($pendingReviewOrders->count() == 0)
-                <small class="text-muted">No completed orders available for review.</small>
+                <small class="text-muted">No orders available for review. Complete orders with payment to start rating
+                  artisans.</small>
               @endif
             </div>
 

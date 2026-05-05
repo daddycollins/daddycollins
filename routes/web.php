@@ -588,6 +588,8 @@ Route::middleware(['auth'])->group(function () {
   Route::resource('requirements', RequirementController::class);
   Route::post('requirements/{requirement}/bids', [BidController::class, 'store'])->name('bids.store');
   Route::post('bids/{bid}/accept', [BidController::class, 'accept'])->name('bids.accept');
+  Route::get('bids/{bid}/checkout', [BidController::class, 'showCheckout'])->name('bids.checkout');
+  Route::post('bids/{bid}/payment', [BidController::class, 'processPayment'])->name('bids.payment');
 });
 
 // Artisan Bidding Pages
