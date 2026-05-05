@@ -97,6 +97,33 @@
       ]
     },
     {
+      "name": "Product Categories",
+      "icon": "menu-icon icon-base ri ri-folder-2-line",
+      "slug": "admin.product-categories",
+      "url": "admin/product-categories",
+      "roles": [
+        "admin"
+      ]
+    },
+    {
+      "name": "Product Units",
+      "icon": "menu-icon icon-base ri ri-ruler-line",
+      "slug": "admin.product-units",
+      "url": "admin/product-units",
+      "roles": [
+        "admin"
+      ]
+    },
+    {
+      "name": "Currencies",
+      "icon": "menu-icon icon-base ri ri-money-dollar-circle-line",
+      "slug": "admin.currencies",
+      "url": "admin/currencies",
+      "roles": [
+        "admin"
+      ]
+    },
+    {
       "menuHeader": "Artisan Panel",
       "roles": [
         "artisan"

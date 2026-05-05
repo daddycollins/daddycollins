@@ -85,6 +85,9 @@ use App\Http\Controllers\admin\ArtsnVerification;
 use App\Http\Controllers\admin\ServiceManagement;
 use App\Http\Controllers\admin\PayoutManagement;
 use App\Http\Controllers\admin\ProductManagement;
+use App\Http\Controllers\admin\ProductCategoryController;
+use App\Http\Controllers\admin\ProductUnitController;
+use App\Http\Controllers\admin\CurrencyController;
 use App\Http\Controllers\admin\PaynowAccountManagement;
 use App\Http\Controllers\apps\EcommerceDashboard;
 use App\Http\Controllers\apps\EcommerceOrderList;
@@ -461,6 +464,37 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/{account}', [PaynowAccountManagement::class, 'destroy'])->name('destroy');
     Route::get('/api/data', [PaynowAccountManagement::class, 'getAccountsData'])->name('api.data');
   });
+
+  // Product Categories Management Routes
+  Route::prefix('admin/product-categories')->name('admin.product-categories.')->group(function () {
+    Route::get('/', [ProductCategoryController::class, 'index'])->name('index');
+    Route::get('/create', [ProductCategoryController::class, 'create'])->name('create');
+    Route::post('/', [ProductCategoryController::class, 'store'])->name('store');
+    Route::get('/{productCategory}/edit', [ProductCategoryController::class, 'edit'])->name('edit');
+    Route::put('/{productCategory}', [ProductCategoryController::class, 'update'])->name('update');
+    Route::delete('/{productCategory}', [ProductCategoryController::class, 'destroy'])->name('destroy');
+  });
+
+  // Product Units Management Routes
+  Route::prefix('admin/product-units')->name('admin.product-units.')->group(function () {
+    Route::get('/', [ProductUnitController::class, 'index'])->name('index');
+    Route::get('/create', [ProductUnitController::class, 'create'])->name('create');
+    Route::post('/', [ProductUnitController::class, 'store'])->name('store');
+    Route::get('/{productUnit}/edit', [ProductUnitController::class, 'edit'])->name('edit');
+    Route::put('/{productUnit}', [ProductUnitController::class, 'update'])->name('update');
+    Route::delete('/{productUnit}', [ProductUnitController::class, 'destroy'])->name('destroy');
+  });
+
+  // Currencies Management Routes
+  Route::prefix('admin/currencies')->name('admin.currencies.')->group(function () {
+    Route::get('/', [CurrencyController::class, 'index'])->name('index');
+    Route::get('/create', [CurrencyController::class, 'create'])->name('create');
+    Route::post('/', [CurrencyController::class, 'store'])->name('store');
+    Route::get('/{currency}/edit', [CurrencyController::class, 'edit'])->name('edit');
+    Route::put('/{currency}', [CurrencyController::class, 'update'])->name('update');
+    Route::delete('/{currency}', [CurrencyController::class, 'destroy'])->name('destroy');
+    Route::get('/{currency}/set-default', [CurrencyController::class, 'setDefault'])->name('setDefault');
+  });
 });
 
 // client/general user routes
@@ -499,7 +533,7 @@ Route::middleware(['auth', 'role:client'])->group(function () {
   Route::prefix('checkout')->name('checkout.')->group(function () {
     Route::get('/{cart}', [App\Http\Controllers\CheckoutController::class, 'show'])->name('show');
     Route::post('/process/{cart}', [App\Http\Controllers\CheckoutController::class, 'process'])->name('process');
-    Route::get('/success/{order}', [App\Http\Controllers\CheckoutController::class, 'success'])->name('success');
+    Route::get('/success/{order?}', [App\Http\Controllers\CheckoutController::class, 'success'])->name('success');
   });
 });
 
