@@ -69,6 +69,13 @@ class CheckoutController extends Controller
             // Create order
             $order = $this->orderService->createOrderFromCart($cart, $validated);
 
+            // Store order reference in session for fallback if Paynow redirect fails
+            session([
+                'last_order_id' => $order->id,
+                'last_order_reference' => $order->paynow_reference ?? $order->id,
+                'last_order_timestamp' => now()->timestamp
+            ]);
+
             // Initiate Paynow payment
             $paymentResult = $this->paynowService->initiatePayment($order, $validated['phone']);
 
@@ -94,15 +101,47 @@ class CheckoutController extends Controller
 
     /**
      * Show order success page
+     * Handles generic redirects from Paynow (which may not include order ID)
      */
-    public function success(Order $order)
+    public function success(Request $request, Order $order = null)
     {
+        // Try multiple ways to locate the order
+
+        // 1. If order ID is provided via route binding
+        if ($order) {
+            $order = $order;
+        }
+        // 2. Try to get from query string parameter
+        elseif ($request->query('order_id')) {
+            $order = Order::find($request->query('order_id'));
+        }
+        // 3. Try to get from query string reference (Paynow reference)
+        elseif ($request->query('reference')) {
+            $order = Order::where('paynow_reference', $request->query('reference'))->first();
+        }
+        // 4. Fall back to session-stored order (when generic redirect with no params)
+        elseif (session('last_order_id') && session('last_order_timestamp')) {
+            // Only use session if it's recent (within 15 minutes)
+            if (now()->timestamp - session('last_order_timestamp') < 900) {
+                $order = Order::find(session('last_order_id'));
+            }
+        }
+
+        // If no order found through any method
+        if (!isset($order) || !$order) {
+            return redirect()->route('user-my-orders')
+                ->with('error', 'Order not found. Please check your orders list.');
+        }
+
         // Verify ownership
         if ($order->client_id !== auth()->id()) {
             return redirect()->route('user-my-orders')->with('error', 'Unauthorized');
         }
 
         $order->load(['items.artisanService', 'items.artisanGood', 'artisan.user']);
+
+        // Clear session data after use
+        session()->forget(['last_order_id', 'last_order_reference', 'last_order_timestamp']);
 
         return view('content.apps.order-success', compact('order'));
     }

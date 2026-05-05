@@ -547,10 +547,11 @@ class GeneralUSerController extends Controller
             ->whereYear('created_at', now()->year)
             ->count();
 
-        // Get completed orders without reviews (pending reviews)
+        // Get rateable orders without reviews (pending reviews)
+        // Orders can be rated once they're 'paid', 'pending' (payment initiated), or 'completed'
         $reviewedOrderIds = Review::where('client_id', $user->id)->pluck('order_id')->toArray();
         $pendingReviewOrders = Order::where('client_id', $user->id)
-            ->where('status', 'completed')
+            ->whereIn('status', ['paid', 'pending', 'completed'])
             ->whereNotIn('id', $reviewedOrderIds)
             ->with([
                 'artisan' => function ($q) {
@@ -724,9 +725,9 @@ class GeneralUSerController extends Controller
             return redirect()->route('user-my-orders')->with('error', 'Unauthorized access');
         }
 
-        // Check if order is completed
-        if ($order->status !== 'completed') {
-            return redirect()->route('user-my-orders')->with('error', 'Can only review completed orders');
+        // Check if order is rateable (can be rated once placed/paid/completed)
+        if (!in_array($order->status, ['pending', 'paid', 'completed'])) {
+            return redirect()->route('user-my-orders')->with('error', 'Can only review pending, paid, or completed orders');
         }
 
         // Check if review already exists
@@ -783,9 +784,9 @@ class GeneralUSerController extends Controller
             return redirect()->back()->with('error', 'Unauthorized access');
         }
 
-        // Check if order is completed
-        if ($order->status !== 'completed') {
-            return redirect()->back()->with('error', 'Can only review completed orders');
+        // Check if order is rateable (can be rated once placed/paid/completed)
+        if (!in_array($order->status, ['pending', 'paid', 'completed'])) {
+            return redirect()->back()->with('error', 'Can only review pending, paid, or completed orders');
         }
 
         // Check if review already exists

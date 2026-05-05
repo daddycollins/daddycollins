@@ -39,7 +39,8 @@
             <select name="category" class="form-select">
               <option value="">All Categories</option>
               @foreach ($categories as $category)
-                <option value="{{ $category }}" @if (request('category') === $category) selected @endif>{{ $category }}
+                <option value="{{ $category->name }}" @if (request('category') === $category->name) selected @endif>
+                  {{ $category->name }}
                 </option>
               @endforeach
             </select>

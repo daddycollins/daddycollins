@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Models\ArtisanGood;
 use Illuminate\Http\Request;
 use App\Models\ArtisanProfile;
+use App\Models\ProductCategory;
 use App\Http\Controllers\Controller;
 
 class ProductManagement extends Controller
@@ -45,7 +46,8 @@ class ProductManagement extends Controller
     // Summary stats
     $stats = [
       'total_products' => ArtisanGood::count(),
-            'total_stock_value' => ArtisanGood::selectRaw('SUM(stock_quantity * price) as value')->value('value') ?? 0,];
+      'total_stock_value' => ArtisanGood::selectRaw('SUM(stock_quantity * price) as value')->value('value') ?? 0,
+    ];
 
     return view('content.apps.admin.products.index', compact('products', 'artisans', 'stats'));
   }
@@ -54,7 +56,8 @@ class ProductManagement extends Controller
   public function create()
   {
     $artisans = ArtisanProfile::with('user')->get();
-    return view('content.apps.admin.products.create', compact('artisans'));
+    $categories = ProductCategory::where('is_active', true)->get();
+    return view('content.apps.admin.products.create', compact('artisans', 'categories'));
   }
 
   // Store product
@@ -65,10 +68,10 @@ class ProductManagement extends Controller
       'product_name' => 'required|string|max:255',
       'category' => 'required|string|max:100',
       'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0.01',
-            'stock_quantity' => 'required|integer|min:0',
-            'unit' => 'nullable|string|max:50',
-            'availability' => 'nullable|in:available,unavailable',
+      'price' => 'required|numeric|min:0.01',
+      'stock_quantity' => 'required|integer|min:0',
+      'unit' => 'nullable|string|max:50',
+      'availability' => 'nullable|in:available,unavailable',
     ]);
     ArtisanGood::create($validated);
 
@@ -80,7 +83,8 @@ class ProductManagement extends Controller
   public function edit(ArtisanGood $product)
   {
     $artisans = ArtisanProfile::with('user')->get();
-    return view('content.apps.admin.products.edit', compact('product', 'artisans'));
+    $categories = ProductCategory::where('is_active', true)->get();
+    return view('content.apps.admin.products.edit', compact('product', 'artisans', 'categories'));
   }
 
   // Update product
@@ -90,10 +94,10 @@ class ProductManagement extends Controller
       'product_name' => 'required|string|max:255',
       'category' => 'required|string|max:100',
       'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0.01',
-            'stock_quantity' => 'required|integer|min:0',
-            'unit' => 'nullable|string|max:50',
-            'availability' => 'nullable|in:available,unavailable',
+      'price' => 'required|numeric|min:0.01',
+      'stock_quantity' => 'required|integer|min:0',
+      'unit' => 'nullable|string|max:50',
+      'availability' => 'nullable|in:available,unavailable',
     ]);
 
     $product->update($validated);
