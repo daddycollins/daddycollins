@@ -81,7 +81,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <p class="text-muted small mb-1">Total Revenue</p>
-              <h3 class="mb-2">ZWL {{ number_format($totalRevenue, 0) }}</h3>
+              <h3 class="mb-2">USD {{ number_format($totalRevenue, 0) }}</h3>
               <p class="mb-0"><span class="badge bg-label-info"><i class="icon-base ri ri-arrow-up-s-line me-1"></i>From
                   completed orders</span></p>
             </div>
@@ -176,7 +176,7 @@
                     class="badge bg-label-{{ $order->order_type === 'service' ? 'primary' : 'info' }}">{{ ucfirst($order->order_type) }}</span>
                 </td>
                 <td>{{ $order->created_at->format('d M Y') }}</td>
-                <td><strong>ZWL {{ number_format($order->total_amount, 2) }}</strong></td>
+                <td><strong>USD {{ number_format($order->total_amount, 2) }}</strong></td>
                 <td>
                   <span
                     class="badge bg-label-{{ $order->status === 'completed'

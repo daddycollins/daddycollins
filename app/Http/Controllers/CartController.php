@@ -38,7 +38,7 @@ class CartController extends Controller
     {
         $validated = $request->validate([
             'artisan_id' => 'required|exists:artisan_profiles,id',
-            'item_type' => 'required|in:service,product',
+            'item_type' => 'required|in:service',
             'item_id' => 'required|integer',
             'quantity' => 'nullable|integer|min:1',
             'notes' => 'nullable|string|max:500'

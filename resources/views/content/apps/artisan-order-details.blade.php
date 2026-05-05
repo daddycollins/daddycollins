@@ -59,9 +59,9 @@
                     <br />
                     <small class="text-muted">{{ Str::limit($item->description ?? '', 50) }}</small>
                   </td>
-                  <td>ZWL {{ number_format($item->unit_price, 2) }}</td>
+                  <td>USD {{ number_format($item->unit_price, 2) }}</td>
                   <td>{{ $item->quantity }}</td>
-                  <td><strong>ZWL {{ number_format($item->total_price, 2) }}</strong></td>
+                  <td><strong>USD {{ number_format($item->total_price, 2) }}</strong></td>
                 </tr>
               @empty
                 <tr>
@@ -83,15 +83,15 @@
         <div class="card-body">
           <div class="row mb-3">
             <div class="col-6 text-start"><strong>Subtotal:</strong></div>
-            <div class="col-6 text-end">ZWL {{ number_format($order->total_amount * 0.85, 2) }}</div>
+            <div class="col-6 text-end">USD {{ number_format($order->total_amount * 0.85, 2) }}</div>
           </div>
           <div class="row mb-3">
             <div class="col-6 text-start"><strong>Shipping:</strong></div>
-            <div class="col-6 text-end">ZWL {{ number_format($order->total_amount * 0.05, 2) }}</div>
+            <div class="col-6 text-end">USD {{ number_format($order->total_amount * 0.05, 2) }}</div>
           </div>
           <div class="row mb-3">
             <div class="col-6 text-start"><strong>Tax (10%):</strong></div>
-            <div class="col-6 text-end">ZWL {{ number_format($order->total_amount * 0.1, 2) }}</div>
+            <div class="col-6 text-end">USD {{ number_format($order->total_amount * 0.1, 2) }}</div>
           </div>
           <hr />
           <div class="row">
@@ -99,7 +99,7 @@
               <h5 class="mb-0">Total Amount:</h5>
             </div>
             <div class="col-6 text-end">
-              <h5 class="mb-0 text-success">ZWL {{ number_format($order->total_amount, 2) }}</h5>
+              <h5 class="mb-0 text-success">USD {{ number_format($order->total_amount, 2) }}</h5>
             </div>
           </div>
         </div>
