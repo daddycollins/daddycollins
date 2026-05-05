@@ -69,15 +69,7 @@
         "admin"
       ]
     },
-    {
-      "name": "Product Management",
-      "icon": "menu-icon icon-base ri ri-shopping-bag-line",
-      "slug": "admin.products",
-      "url": "admin/products",
-      "roles": [
-        "admin"
-      ]
-    },
+  
     {
       "name": "Payout Management",
       "icon": "menu-icon icon-base ri ri-bank-card-line",
