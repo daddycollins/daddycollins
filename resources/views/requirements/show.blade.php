@@ -154,7 +154,7 @@
                             <div class="col-md-3">
                               <p class="text-muted small mb-1">Proposal</p>
                               <p class="mb-0 text-truncate" style="max-height: 40px;">
-                                {{ $bid->proposal ? Str::limit($bid->proposal, 50) : <span class="text-muted">No proposal</span> }}
+                            {{ $bid->proposal ? str($bid->proposal)->limit(50) : 'No proposal' }}
                               </p>
                             </div>
 
